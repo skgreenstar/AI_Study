@@ -26,8 +26,8 @@
           "icon": "🎨",
           "color": "#ef6797",
           "description": "확률적 생성 과정부터 Diffusion과 대규모 비전 모델까지",
-          "href": "../topics/diffusion-prerequisites.html",
-          "status": "선수지식 보기"
+          "href": "../graduate/diffusion-lvm/index.html",
+          "status": "0주차 학습 가능"
         },
         {
           "id": "industrial-ai",
