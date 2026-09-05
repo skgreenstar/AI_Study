@@ -1,0 +1,22 @@
+(()=>{const D=[
+["Diffusion","/dɪˈfjuːʒən/","디퓨전","확산","노이즈를 더하는 과정과 노이즈에서 데이터를 복원하는 과정을 이용하는 생성 방식","안개 낀 그림을 조금씩 선명하게 복원","원본|노이즈 추가|순수 노이즈|복원·생성"],
+["Score Matching","/skɔːr ˈmætʃɪŋ/","스코어 매칭","점수 함수 맞추기","확률밀도가 높아지는 방향을 가리키는 벡터장을 학습하는 방법","안개 속에서 데이터가 많은 쪽을 알려주는 나침반","현재 위치|Score 방향|고밀도 영역|데이터"],
+["Flow Matching","/floʊ ˈmætʃɪŋ/","플로 매칭","흐름 맞추기","노이즈에서 데이터로 이동시키는 시간별 속도장을 학습하는 방법","입자를 목적지까지 옮기는 바람 지도","노이즈|속도장|연속 이동|데이터"],
+["Latent Space","/ˈleɪtənt speɪs/","레이턴트 스페이스","잠재공간","데이터의 핵심 특징을 작은 차원의 좌표로 압축해 표현하는 공간","큰 그림을 핵심 특징만 담은 설계도로 접기","원본|인코더|압축 표현|디코더"],
+["Guidance","/ˈɡaɪdəns/","가이던스","생성 방향 안내","텍스트나 클래스 조건에 맞도록 생성 방향을 조절하는 방법","프롬프트 목적지로 이끄는 내비게이션","노이즈|조건|방향 보정|조건부 결과"],
+["Gaussian","/ˈɡaʊsiən/","가우시안","정규분포","평균 주변에 값이 많이 모이고 멀어질수록 적어지는 종 모양 분포","과녁 중심에 점이 많고 바깥으로 갈수록 드문 모습","평균|중심 집중|분산|퍼짐"],
+["Artificial Intelligence","/ˌɑːrtɪˈfɪʃəl ɪnˈtelɪdʒəns/","아티피셜 인텔리전스","인공지능","사람의 인식·학습·추론·생성 능력을 컴퓨터로 구현하는 가장 넓은 개념","보고 생각한 뒤 행동하는 기계를 만드는 큰 우산","입력|인식·학습|판단|행동"],
+["Machine Learning","/məˈʃiːn ˈlɜːrnɪŋ/","머신 러닝","기계학습","규칙을 모두 작성하는 대신 데이터에서 판단 패턴을 배우는 AI 방법","정답 규칙 대신 예시를 보며 감을 익히는 견습생","데이터|패턴 학습|모델|예측"],
+["Deep Learning","/diːp ˈlɜːrnɪŋ/","딥 러닝","심층학습","여러 층의 신경망이 단순 특징부터 복잡한 특징까지 단계적으로 학습하는 방법","선·모양·부품·사물을 층별로 알아보기","입력|얕은 특징|깊은 특징|예측"],
+["Perceptron","/pərˈsepˌtrɑːn/","퍼셉트론","초기 인공 뉴런","입력의 가중합이 기준을 넘는지로 출력을 정하는 선형 분류 모델","여러 점수를 더해 합격선을 넘는지 판단","입력|가중합|기준 비교|0 또는 1"],
+["Transformer","/trænsˈfɔːrmər/","트랜스포머","문맥 변환 신경망","Attention과 FFN을 반복해 토큰 표현을 전체 문맥에 맞게 변환하는 구조","회의 참석자들이 서로의 말을 참고해 생각을 갱신","토큰|Attention|FFN|문맥 표현"],
+["Attention","/əˈtenʃən/","어텐션","주의집중","현재 정보를 해석할 때 다른 정보를 얼마나 참고할지 계산하는 방법","중요한 단어를 비추는 스포트라이트","Query|Key 비교|관심 비율|Value 혼합"],
+["Large Language Model","/lɑːrdʒ ˈlæŋɡwɪdʒ ˈmɑːdəl/","라지 랭귀지 모델","거대언어모델","대규모 텍스트로 다음 토큰을 예측하도록 학습한 언어 모델","수많은 글을 읽고 다음 표현을 예측하는 언어 엔진","텍스트|사전학습|토큰 예측|응답"],
+["Multimodal","/ˌmʌltiˈmoʊdəl/","멀티모달","다중양식","텍스트·이미지·음성·영상 등 여러 정보 형태를 함께 처리하는 능력","눈과 귀와 언어를 함께 사용해 판단","여러 입력|공통 표현|통합 추론|응답"],
+["Agentic AI","/eɪˈdʒentɪk eɪ aɪ/","에이전틱 에이아이","목표 지향형 AI","목표를 계획으로 나누고 도구를 실행하며 결과에 따라 다음 행동을 정하는 시스템","대답만 하지 않고 도구로 일을 끝내는 실행자","목표|계획|도구|관찰·수정"],
+["Workflow","/ˈwɜːrkfloʊ/","워크플로우","정해진 작업 흐름","실행 순서와 분기가 코드나 규칙으로 미리 정해진 처리 과정","경로와 정류장이 고정된 버스 노선","입력|고정 단계|조건 분기|결과"],
+["RAG","/ræɡ/","래그","검색 증강 생성","관련 외부 문서를 먼저 검색해 그 근거를 LLM에 제공하고 답을 생성하는 방식","기억만 믿지 않고 서류함에서 근거를 찾아 답하기","질문|검색|근거 결합|답변"],
+["Inference","/ˈɪnfərəns/","인퍼런스","추론·모델 실행","학습된 모델이 새 입력을 받아 실제 예측이나 생성을 수행하는 단계","공부한 내용을 시험장에서 꺼내 답하는 순간","새 입력|모델 실행|점수·확률|결과"],
+["Quantization","/ˌkwɑːntəˈzeɪʃən/","퀀터제이션","양자화","모델 숫자의 비트 수를 줄여 메모리와 연산량을 절약하는 경량화 기법","충분히 정확한 작은 자를 사용해 짐 줄이기","고정밀 모델|범위 보정|저정밀 변환|가벼운 실행"],
+["Domain Adaptation","/doʊˈmeɪn ˌædæpˈteɪʃən/","도메인 어댑테이션","도메인 적응","학습 환경과 실제 환경의 데이터 차이를 줄여 새 환경에서도 성능을 유지하는 방법","맑은 날 배운 운전을 비 오는 공장 도로에 적응","원천 데이터|분포 차이|적응|목표 환경"]
+];const E=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));const items=[...document.querySelectorAll("h2,h3,h4,b,.node,.en,.kicker")],used=new Set;for(const el of items){if(el.closest(".inline-term-panel,.term-tip,summary,script,style")||el.querySelector(".inline-term-icon"))continue;const text=el.textContent.toLowerCase(),section=el.closest("section,.section")||document.body,si=[...document.querySelectorAll("section,.section")].indexOf(section);for(const d of D){const key=d[0]+"@"+si;if(used.has(key)||!text.includes(d[0].toLowerCase()))continue;const b=document.createElement("button");b.type="button";b.className="inline-term-icon";b.textContent="i";b.title=d[0]+" 설명 보기";b.setAttribute("aria-expanded","false");const p=document.createElement("div");p.className="inline-term-panel";p.hidden=true;p.innerHTML='<div class="inline-term-pron"><span>'+E(d[0])+'</span><span>'+E(d[1])+'</span><span>'+E(d[2])+'</span></div><strong>한글 뜻: '+E(d[3])+'</strong><div>'+E(d[4])+'</div><div class="inline-term-analogy"><b>💡 직관적 비유</b> '+E(d[5])+'</div><div class="inline-term-flow">'+d[6].split("|").map((x,i)=>(i?'<span class="inline-term-arrow">→</span>':'')+"<span>"+E(x)+"</span>").join("")+"</div>";b.onclick=()=>{const o=p.hidden;p.hidden=!o;b.setAttribute("aria-expanded",String(o))};el.append(" ",b);el.insertAdjacentElement("afterend",p);used.add(key)}}}})();
