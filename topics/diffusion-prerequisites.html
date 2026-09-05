@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>디퓨전 선수지식 전체 | AI 시각 백과사전</title>
+<style>
+:root{--bg:#f4f1ff;--ink:#202038;--muted:#69677c;--card:#fff;--violet:#7357e8;--pink:#ef6797;--blue:#4d8df7;--mint:#41bda5;--yellow:#ffc94b;--red:#ef6a6a;--line:#e4def7;--shadow:0 16px 40px rgba(60,42,120,.10)}
+*{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;color:var(--ink);font-family:Pretendard,"Noto Sans KR",system-ui,sans-serif;background:radial-gradient(circle at 10% 0,#efe5ff 0,transparent 35%),var(--bg);line-height:1.65}
+.wrap{max-width:1120px;margin:auto;padding:28px 20px 80px}.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#382276,#7657e8 58%,#d85c99);color:white;border-radius:32px;padding:48px;box-shadow:var(--shadow)}
+.hero h1{font-size:clamp(32px,6vw,62px);line-height:1.08;margin:10px 0 18px;letter-spacing:-2px}.hero p{max-width:680px;font-size:18px;opacity:.92}.pill{display:inline-block;padding:7px 13px;border-radius:99px;background:rgba(255,255,255,.16);font-size:13px;font-weight:800}.noise{position:absolute;right:-40px;bottom:-35px;width:320px;height:260px;opacity:.30;background-image:radial-gradient(#fff 1px,transparent 1px);background-size:9px 9px;transform:rotate(-8deg)}
+.route{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:28px 0}.route a{text-decoration:none;color:var(--ink);background:white;border-radius:18px;padding:16px 12px;text-align:center;box-shadow:0 8px 20px rgba(60,42,120,.07);font-weight:800}.route b{display:block;color:var(--violet);font-size:12px}.route a:not(:last-child)::after{content:'→';position:absolute}.section{margin-top:58px}.section h2{font-size:clamp(26px,4vw,40px);letter-spacing:-1px;margin:0 0 8px}.lead{color:var(--muted);margin:0 0 24px}.legend,.grid,.compare{display:grid;gap:16px}.legend{grid-template-columns:repeat(3,1fr)}.legend>div,.card,.checkpoint,.formula-box{background:var(--card);border-radius:22px;padding:22px;box-shadow:var(--shadow)}
+.must{border-top:6px solid var(--pink)}.along{border-top:6px solid var(--yellow)}.later{border-top:6px solid var(--mint)}.grid{grid-template-columns:repeat(2,1fr)}.card{border:1px solid var(--line)}.card h3{margin:0 0 7px;font-size:22px}.tag{display:inline-block;font-size:12px;font-weight:900;padding:4px 10px;border-radius:99px;margin-bottom:10px}.tag.p{background:#ffe6ef;color:#af315e}.tag.y{background:#fff2c9;color:#865d00}.tag.g{background:#ddf7ee;color:#14725f}.why{padding:12px 14px;border-radius:13px;background:#f6f3ff;margin-top:13px;font-size:14px}.visual{min-height:150px;border-radius:18px;margin:16px 0;padding:17px;background:#faf9ff;border:1px dashed #cfc3f4;display:flex;align-items:center;justify-content:center}.balls{display:flex;align-items:end;gap:6px;height:105px}.balls i{display:block;width:17px;border-radius:12px 12px 4px 4px;background:linear-gradient(var(--pink),var(--violet))}.equation{font-family:Georgia,serif;font-size:clamp(18px,3vw,28px);text-align:center;color:#3a286f}.decode{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.decode span{padding:10px;border-radius:12px;background:#f4f1ff;text-align:center;font-size:13px}.flow{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}.node{min-width:105px;padding:15px 10px;border-radius:16px;text-align:center;font-weight:800;background:white;border:2px solid var(--line)}.arrow{font-size:25px;color:var(--violet)}.noisy{background-image:repeating-linear-gradient(45deg,#bbb 0 2px,#eee 2px 5px)!important;color:#352766}.half{background:linear-gradient(135deg,#806be5 45%,#ddd 46% 55%,#ed71a1 56%)!important;color:white}.clean{background:linear-gradient(135deg,#7357e8,#ef6797)!important;color:white}.big-picture{padding:28px;background:#211640;color:white;border-radius:28px}.big-picture .node{color:var(--ink)}.schedule{display:grid;grid-template-columns:120px 1fr;gap:12px}.day{font-weight:900;color:var(--violet);padding-top:16px}.lesson{background:white;border-left:7px solid var(--violet);border-radius:16px;padding:16px 20px}.lesson b{display:block}.lesson small{color:var(--muted)}.checklist label{display:block;background:white;margin:9px 0;padding:14px 17px;border-radius:14px;cursor:pointer}.checklist input{accent-color:var(--violet);transform:scale(1.25);margin-right:10px}.checkpoint{background:linear-gradient(135deg,#fff,#fff8dc);border:2px solid #ffe08a}.stop{background:#fff0f0;border-left:6px solid var(--red);padding:16px;border-radius:14px}.ok{background:#e9fbf6;border-left:6px solid var(--mint);padding:16px;border-radius:14px}.footer{text-align:center;margin-top:55px;color:var(--muted)}
+.encyclopedia-bar{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:16px;font-size:14px}.encyclopedia-bar b{font-size:19px}.encyclopedia-bar span{color:var(--muted)}.usecase{display:grid;grid-template-columns:90px 1fr;gap:16px;align-items:center}.usecase .icon{height:82px;border-radius:22px;display:grid;place-items:center;font-size:38px;background:linear-gradient(135deg,#eee9ff,#ffe8f1)}.formula-read{margin-top:12px;padding:14px;border-radius:14px;background:#201640;color:white}.formula-read b{color:#ffd564}.route{grid-template-columns:repeat(6,1fr)}.quiz details{background:white;margin:10px 0;padding:15px 18px;border-radius:15px;box-shadow:var(--shadow)}.quiz summary{font-weight:850;cursor:pointer}.answer{margin-top:12px;padding:12px;border-radius:12px;background:#e9fbf6}
+@media(max-width:760px){.hero{padding:34px 25px}.noise{display:none}.route{grid-template-columns:1fr 1fr}.legend,.grid{grid-template-columns:1fr}.schedule{grid-template-columns:1fr}.day{padding-top:6px}.decode{grid-template-columns:1fr}.route a:not(:last-child)::after{display:none}.encyclopedia-bar{align-items:flex-start;flex-direction:column}.usecase{grid-template-columns:1fr}.usecase .icon{height:70px}}
+@media print{body{background:white}.route{display:none}.card,.legend>div,.checkpoint{box-shadow:none;break-inside:avoid}.section{break-inside:auto}.hero{box-shadow:none}}
+</style>
+</head>
+<body><main class="wrap">
+<div class="encyclopedia-bar"><b>AI VISUAL ENCYCLOPEDIA</b><span>생성모델 · 완전 입문 → 중급 · 문서 ID: diffusion-prerequisites</span></div>
+<header class="hero"><span class="pill">DIFFUSION PRE-FLIGHT MAP</span><h1>디퓨전 수업<br>생존 지도</h1><p>수학 전체를 다시 배울 필요는 없다. <b>이미지에 노이즈를 넣고, 다시 걷어내는 과정</b>을 이해하는 데 필요한 조각만 순서대로 채운다.</p><div class="noise"></div></header>
+
+<nav class="route"><a href="#map"><b>STEP 0</b>전체 지도</a><a href="#ml"><b>STEP 1</b>ML 기초</a><a href="#prob"><b>STEP 2</b>확률·분포</a><a href="#diff"><b>STEP 3</b>디퓨전 연결</a><a href="#practice"><b>STEP 4</b>실무 연결</a><a href="#plan"><b>STEP 5</b>7일 계획</a></nav>
+
+<section class="section" id="map"><h2>먼저, 어디까지 알아야 할까?</h2><p class="lead">우선순위를 색으로 구분했다. 분홍색만 먼저 끝내면 수업에 들어갈 수 있다.</p>
+<div class="legend"><div class="must"><b>🔴 수업 전 필수</b><br>모르면 설명 자체가 안 들리는 개념</div><div class="along"><b>🟡 수업과 병행</b><br>처음엔 직관만, 수식은 나중에</div><div class="later"><b>🟢 나중에 확장</b><br>논문을 깊게 읽을 때 필요한 내용</div></div>
+<div class="big-picture" style="margin-top:20px"><div class="flow"><div class="node">ML 학습<br><small>오차 줄이기</small></div><div class="arrow">→</div><div class="node">확률분포<br><small>값의 지도</small></div><div class="arrow">→</div><div class="node">가우시안 노이즈<br><small>무작위 재료</small></div><div class="arrow">→</div><div class="node">노이즈 예측<br><small>신경망</small></div><div class="arrow">→</div><div class="node clean">이미지 생성<br><small>반복 복원</small></div></div></div></section>
+
+<section class="section" id="ml"><h2>1. 머신러닝 기초 — “모델은 무엇을 배우나?”</h2><p class="lead">디퓨전도 결국 <b>정답과 예측의 차이를 줄이는 머신러닝</b>이다.</p><div class="grid">
+<article class="card"><span class="tag p">필수 ①</span><h3>입력 → 모델 → 출력</h3><div class="visual flow"><div class="node">흐린 이미지<br>xₜ</div><div class="arrow">→</div><div class="node">신경망<br>εθ</div><div class="arrow">→</div><div class="node">예측 노이즈<br>ε̂</div></div><p><b>비유:</b> 얼룩진 사진을 보고 “이 얼룩이 원래 사진에 추가된 것”이라고 맞히는 탐정.</p><div class="why">디퓨전 연결: 모델은 완성 이미지를 한 번에 그리기보다, 현재 단계에 섞인 <b>노이즈를 예측</b>한다.</div></article>
+<article class="card"><span class="tag p">필수 ②</span><h3>손실함수와 학습</h3><div class="visual"><div style="width:90%"><div style="display:flex;justify-content:space-between"><span>실제 노이즈 ε</span><span>예측 ε̂</span></div><div style="height:16px;background:#ece8fa;border-radius:10px;margin:15px 0"><div style="width:28%;height:100%;background:linear-gradient(90deg,var(--pink),var(--violet));border-radius:10px"></div></div><b>둘의 간격을 작게 = 학습</b></div></div><p>손실함수는 모델에게 주는 <b>틀린 정도 점수</b>. 경사하강법은 점수가 내려가는 방향으로 파라미터를 조금씩 바꾸는 과정이다.</p><div class="equation">Loss = ‖ ε − ε̂ ‖²</div></article>
+<article class="card"><span class="tag p">필수 ③</span><h3>학습과 추론</h3><div class="visual flow"><div class="node">학습<br>정답 노이즈 있음</div><div class="arrow">≠</div><div class="node clean">추론<br>노이즈만 있음</div></div><p><b>학습:</b> 정답 노이즈를 알려주고 맞히는 연습.<br><b>추론:</b> 무작위 노이즈에서 시작해 여러 번 제거하며 그림 생성.</p></article>
+<article class="card"><span class="tag y">병행</span><h3>텐서와 차원</h3><div class="visual flow"><div class="node">높이 H</div><div class="node">너비 W</div><div class="node">채널 C</div><div class="node">배치 B</div></div><p>이미지는 숫자 상자이며 보통 <b>[B, C, H, W]</b> 모양이다. 수식의 x는 숫자 하나가 아니라 이미지 전체 텐서일 수 있다.</p></article>
+</div></section>
+
+<section class="section" id="prob"><h2>2. 확률과 분포 — “랜덤도 규칙이 있다”</h2><p class="lead">디퓨전 수식에서 가장 자주 마주칠 개념들이다. 계산보다 그림의 뜻을 먼저 잡는다.</p><div class="grid">
+<article class="card"><span class="tag p">필수 ④</span><h3>평균·분산·표준편차</h3><div class="visual"><div class="balls"><i style="height:15px"></i><i style="height:30px"></i><i style="height:55px"></i><i style="height:90px"></i><i style="height:105px"></i><i style="height:90px"></i><i style="height:55px"></i><i style="height:30px"></i><i style="height:15px"></i></div></div><p><b>평균 μ:</b> 분포의 중심. <b>분산 σ²:</b> 값들이 중심에서 얼마나 퍼졌는지. <b>표준편차 σ:</b> 퍼짐을 원래 단위로 표현.</p><div class="why">N(0,1)은 “중심은 0, 표준편차는 1인 정규분포”라는 뜻.</div></article>
+<article class="card"><span class="tag p">필수 ⑤</span><h3>확률분포와 샘플링</h3><div class="visual flow"><div class="node">분포<br>가능성 지도</div><div class="arrow">🎲</div><div class="node">샘플<br>실제 값 하나</div></div><p><b>분포</b>는 값이 나올 가능성의 지도, <b>샘플링</b>은 그 지도에 따라 값을 실제로 하나 뽑는 행동이다.</p><div class="why">디퓨전 연결: ε ~ N(0,I)는 “정규분포에서 노이즈 ε를 뽑아라.”</div></article>
+<article class="card"><span class="tag p">필수 ⑥</span><h3>정규분포(가우시안)</h3><div class="visual"><svg viewBox="0 0 300 120" width="100%" aria-label="정규분포 곡선"><path d="M10 105 C85 105 86 18 150 18 C214 18 215 105 290 105" fill="none" stroke="#7357e8" stroke-width="7"/><line x1="150" y1="15" x2="150" y2="110" stroke="#ef6797" stroke-dasharray="5"/><text x="142" y="118" fill="#202038">μ</text></svg></div><p>가운데 값은 자주, 멀리 떨어진 값은 드물다. 여러 방향에 무작위 잡음을 만들기 편해서 디퓨전의 기본 재료로 쓴다.</p></article>
+<article class="card"><span class="tag p">필수 ⑦</span><h3>조건부확률</h3><div class="visual flow"><div class="node noisy">현재의 흐린 그림<br>xₜ</div><div class="arrow">알 때</div><div class="node half">조금 전 그림은?<br>xₜ₋₁</div></div><p>“현재 상태가 주어졌을 때 이전 상태는 얼마나 가능할까?”를 나타낸다.</p><div class="equation">p(xₜ₋₁ | xₜ)</div><div class="why">세로 막대 | 는 “~가 주어졌을 때”라고 읽는다.</div></article>
+<article class="card"><span class="tag y">병행</span><h3>결합·주변·베이즈</h3><p><b>결합:</b> 두 사건을 함께 본 분포<br><b>주변:</b> 관심 없는 변수를 합쳐 없앤 분포<br><b>베이즈:</b> 관찰 후 믿음을 업데이트하는 규칙</p><div class="why">역과정의 확률적 해석에 도움되지만, 첫 수업 전에 계산까지 할 필요는 없다.</div></article>
+<article class="card"><span class="tag g">나중에</span><h3>KL divergence·ELBO</h3><p>두 분포가 얼마나 다른지, 직접 계산하기 어려운 가능도를 어떤 하한으로 학습할지를 다룬다.</p><div class="stop"><b>처음부터 여기에 매달리지 말기.</b> DDPM 논문의 유도 과정을 읽을 때 다시 돌아오면 된다.</div></article>
+</div></section>
+
+<section class="section" id="diff"><h2>3. 이제 디퓨전으로 연결</h2><p class="lead">앞에서 배운 조각들이 하나의 이야기로 합쳐진다.</p>
+<div class="card"><h3>전체 과정: 망가뜨리기는 쉽고, 복원하기는 배워야 한다</h3><div class="visual flow"><div class="node clean">x₀<br>원본</div><div class="arrow">＋noise</div><div class="node half">x₁₀₀<br>조금 흐림</div><div class="arrow">＋noise</div><div class="node noisy">xₜ<br>거의 잡음</div><div class="arrow">＋noise</div><div class="node noisy">xT<br>순수 잡음</div></div><p style="text-align:center"><b>Forward process q:</b> 정해진 규칙으로 노이즈 추가 → <b>Reverse process pθ:</b> 신경망이 노이즈를 예측해 제거</p></div>
+<div class="grid" style="margin-top:16px">
+<article class="card"><span class="tag p">핵심 수식 1</span><h3>한 번에 원하는 단계 만들기</h3><div class="formula-box"><div class="equation">xₜ = √ᾱₜ x₀ + √(1−ᾱₜ) ε</div><div class="decode"><span><b>x₀</b><br>원본 이미지</span><span><b>ᾱₜ</b><br>원본 보존량</span><span><b>ε</b><br>추가 노이즈</span></div></div><p>말로 읽으면: <b>“t단계 이미지는 남아 있는 원본 + 추가된 노이즈”</b></p></article>
+<article class="card"><span class="tag p">핵심 수식 2</span><h3>모델이 실제로 연습하는 것</h3><div class="formula-box"><div class="equation">E[ ‖ ε − εθ(xₜ,t) ‖² ]</div><div class="decode"><span><b>ε</b><br>실제 노이즈</span><span><b>εθ</b><br>예측 노이즈</span><span><b>t</b><br>현재 시간 단계</span></div></div><p>말로 읽으면: <b>“실제 노이즈와 예측 노이즈의 차이를 평균적으로 줄여라.”</b></p></article>
+</div>
+<div class="checkpoint" style="margin-top:18px"><h3>✅ 이 문장이 이해되면 디퓨전 입장 가능</h3><p>“원본 이미지에 정규분포에서 뽑은 노이즈를 단계별로 섞고, 신경망은 현재 이미지와 timestep을 보고 그 노이즈를 맞히도록 손실함수로 학습한다. 생성할 때는 순수 노이즈에서 예측된 노이즈를 반복해서 걷어낸다.”</p></div></section>
+
+<section class="section" id="practice"><h2>4. 실무에서는 어디에 연결될까?</h2><p class="lead">디퓨전은 그림 생성 기술 하나가 아니라, <b>복잡한 데이터의 분포를 배우고 새로운 샘플을 만드는 방법</b>이다.</p><div class="grid">
+<article class="card usecase"><div class="icon">🎨</div><div><h3>이미지 생성·편집</h3><p>텍스트 조건을 함께 주면 원하는 장면을 만들고, 마스크를 주면 특정 영역만 다시 그릴 수 있다.</p><div class="why"><b>연결 개념:</b> 조건부확률 · 샘플링 · 잠재 공간</div></div></article>
+<article class="card usecase"><div class="icon">🎬</div><div><h3>영상·음성 생성</h3><p>시간축의 일관성을 유지하면서 프레임이나 음성 표현의 노이즈를 단계적으로 제거한다.</p><div class="why"><b>연결 개념:</b> 텐서 · 조건부 생성 · 시간 의존성</div></div></article>
+<article class="card usecase"><div class="icon">🧬</div><div><h3>분자·단백질 설계</h3><p>이미지 대신 원자 좌표나 분자 구조에 노이즈를 주고 가능한 새 구조를 생성하도록 학습한다.</p><div class="why"><b>연결 개념:</b> 데이터 분포 · 3차원 좌표 · 제약 조건</div></div></article>
+<article class="card usecase"><div class="icon">🏭</div><div><h3>복원·이상 탐지</h3><p>정상 패턴을 복원하게 한 뒤 잘 복원되지 않는 부분을 이상 후보로 판단하는 데 활용할 수 있다.</p><div class="why"><b>연결 개념:</b> Denoising · 재구성 오차 · 정상 분포</div></div></article>
+</div><div class="formula-read"><b>실무 판단 질문:</b> “내 데이터를 조금씩 망가뜨렸다가 복원하는 과정을 정의할 수 있는가?” 가능하다면 디퓨전 접근을 검토할 수 있다.</div></section>
+
+<section class="section" id="plan"><h2>5. 수업 전 7일 압축 계획</h2><p class="lead">하루 40~60분. “보고 설명하기”가 목표이고, 증명은 목표가 아니다.</p><div class="schedule">
+<div class="day">DAY 1</div><div class="lesson"><b>머신러닝 한 바퀴</b><small>입력·모델·출력·파라미터·학습·추론을 하나의 그림으로 설명</small></div>
+<div class="day">DAY 2</div><div class="lesson"><b>손실함수와 경사하강법</b><small>MSE가 왜 “차이 줄이기”인지, 학습률이 무엇인지</small></div>
+<div class="day">DAY 3</div><div class="lesson"><b>평균·분산·정규분포</b><small>N(0,1)을 말로 풀고 종 모양 그림에서 μ와 σ 찾기</small></div>
+<div class="day">DAY 4</div><div class="lesson"><b>분포·샘플링·조건부확률</b><small>ε ~ N(0,I), p(A|B)를 한국어로 읽기</small></div>
+<div class="day">DAY 5</div><div class="lesson"><b>텐서와 이미지 노이즈 실습</b><small>이미지 배열에 Gaussian noise를 더했을 때 변화 관찰</small></div>
+<div class="day">DAY 6</div><div class="lesson"><b>Forward / Reverse 과정</b><small>x₀ → xT와 xT → x₀를 그림 없이 말로 설명</small></div>
+<div class="day">DAY 7</div><div class="lesson"><b>핵심 수식 2개 해부</b><small>기호를 가리고 각각의 역할을 직접 써보기</small></div>
+</div></section>
+
+<section class="section"><h2>6. 내 준비도 체크</h2><div class="checklist">
+<label><input type="checkbox">학습과 추론의 차이를 설명할 수 있다.</label>
+<label><input type="checkbox">손실함수는 ‘틀린 정도’라는 감각이 있다.</label>
+<label><input type="checkbox">평균과 분산이 각각 중심과 퍼짐이라는 걸 안다.</label>
+<label><input type="checkbox">N(0,1), ε ~ N(0,I)를 말로 읽을 수 있다.</label>
+<label><input type="checkbox">분포와 샘플링의 차이를 설명할 수 있다.</label>
+<label><input type="checkbox">p(xₜ₋₁|xₜ)의 세로 막대 뜻을 안다.</label>
+<label><input type="checkbox">Forward와 Reverse process를 그림으로 그릴 수 있다.</label>
+</div><div class="ok" style="margin-top:18px"><b>5개 이상 체크:</b> 바로 수업에 들어가도 좋다. 3~4개면 수업과 병행, 0~2개면 위 7일 계획을 먼저 한 바퀴 돌리면 된다.</div></section>
+
+<section class="section quiz"><h2>확인 퀴즈 3문항</h2><p class="lead">정답을 외우는 대신, 머릿속에 흐름도가 그려지는지 확인한다.</p>
+<details><summary>Q1. 디퓨전 모델은 완성 이미지를 한 번에 예측할까?</summary><div class="answer"><b>아니야.</b> 기본 DDPM에서는 현재 상태에 섞인 노이즈를 예측하고, 그 노이즈를 여러 단계에 걸쳐 제거한다.</div></details>
+<details><summary>Q2. ε ~ N(0,I)는 무슨 뜻일까?</summary><div class="answer">엡실론이라는 노이즈를 평균 0인 표준 정규분포에서 무작위로 뽑는다는 뜻이다.</div></details>
+<details><summary>Q3. 생성 과정에서 학습용 원본 이미지가 직접 필요할까?</summary><div class="answer"><b>아니야.</b> 학습이 끝난 모델은 순수 노이즈에서 시작해 학습한 분포를 따라 새로운 샘플을 만든다.</div></details>
+</section>
+
+<section class="section"><h2>7. 지금은 버려도 되는 것</h2><div class="grid"><div class="stop">❌ 확률론 교과서 처음부터 완독</div><div class="stop">❌ 모든 수식의 엄밀한 증명</div><div class="stop">❌ 확률과정 전체 선행학습</div><div class="stop">❌ U-Net 코드를 처음부터 구현</div></div><p class="lead" style="margin-top:18px">대신 수업에서 모르는 기호가 나오면 <b>① 어떻게 읽는지 ② 무엇을 뜻하는지 ③ 흐름에서 무슨 역할인지</b> 세 가지만 먼저 잡는다.</p></section>
+<section class="section"><h2>8. 다음에 연결할 항목</h2><div class="grid"><div class="card"><span class="tag p">먼저 복습</span><h3>정규분포</h3><p>노이즈가 왜 Gaussian인지 더 깊게 이해한다.</p></div><div class="card"><span class="tag y">다음 학습</span><h3>DDPM과 DDIM</h3><p>학습 방식은 비슷하지만 샘플링 속도가 어떻게 달라지는지 비교한다.</p></div><div class="card"><span class="tag g">확장 학습</span><h3>Stable Diffusion</h3><p>픽셀 공간 대신 잠재 공간에서 디퓨전을 수행하는 이유를 배운다.</p></div><div class="card"><span class="tag g">구조 학습</span><h3>U-Net과 Attention</h3><p>노이즈 예측 신경망 내부가 어떻게 생겼는지 연결한다.</p></div></div></section>
+<footer class="footer">AI 시각 백과사전 · 작성 상태: 초안 완성 · 마지막 검토: 2026-09-05</footer>
+</main></body></html>
