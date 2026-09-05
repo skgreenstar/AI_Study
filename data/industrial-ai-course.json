@@ -9,6 +9,21 @@
   },
   "weeks": [
     {
+      "week": 0,
+      "title": "한 학기 전체 지도와 수업 준비",
+      "subtitle": "강의 목표·16주 로드맵·선수지식·평가 방식·우뇌형 학습 전략",
+      "icon": "🗺️",
+      "color": "#294f92",
+      "href": "week0.html",
+      "status": "먼저 보기",
+      "topics": [
+        "한 학기 로드맵",
+        "Python·선형대수·ML",
+        "평가 기준",
+        "시각형 공부법"
+      ]
+    },
+    {
       "week": 1,
       "title": "산업 AI 개요와 발전 흐름",
       "subtitle": "AI 개념·역사·생성형 AI·Agentic AI·산업 적용",
@@ -16,7 +31,12 @@
       "color": "#4f7cff",
       "href": "week1.html",
       "status": "학습 가능",
-      "topics": ["AI·ML·DL", "Transformer·GPT", "Agentic AI", "산업 AI 사례"]
+      "topics": [
+        "AI·ML·DL",
+        "Transformer·GPT",
+        "Agentic AI",
+        "산업 AI 사례"
+      ]
     }
   ]
 }
