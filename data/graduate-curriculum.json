@@ -1,0 +1,44 @@
+{
+  "page": {
+    "title": "대학원",
+    "description": "학기별 과목과 학습 자료를 한곳에서 관리합니다.",
+    "updated": "2026-09-05"
+  },
+  "semesters": [
+    {
+      "id": "2026-fall",
+      "label": "2026년 2학기",
+      "shortLabel": "26-2",
+      "status": "진행 예정",
+      "courses": [
+        {
+          "id": "transformer-llm",
+          "title": "트랜스포머와 거대언어모델",
+          "icon": "🧠",
+          "color": "#7357e8",
+          "description": "Attention부터 Transformer 구조와 LLM 학습·활용까지",
+          "href": null,
+          "status": "자료 준비 중"
+        },
+        {
+          "id": "diffusion-lvm",
+          "title": "디퓨전과 거대비전모델",
+          "icon": "🎨",
+          "color": "#ef6797",
+          "description": "확률적 생성 과정부터 Diffusion과 대규모 비전 모델까지",
+          "href": "../topics/diffusion-prerequisites.html",
+          "status": "선수지식 보기"
+        },
+        {
+          "id": "industrial-ai",
+          "title": "산업 AI의 기초",
+          "icon": "🏭",
+          "color": "#41bda5",
+          "description": "산업 데이터, 예측 모델링과 현장 AI 시스템의 기본기",
+          "href": null,
+          "status": "자료 준비 중"
+        }
+      ]
+    }
+  ]
+}
