@@ -17,8 +17,8 @@
           "icon": "🧠",
           "color": "#7357e8",
           "description": "Attention부터 Transformer 구조와 LLM 학습·활용까지",
-          "href": null,
-          "status": "자료 준비 중"
+          "href": "../graduate/transformer-llm/index.html",
+          "status": "0차시 학습 가능"
         },
         {
           "id": "diffusion-lvm",
