@@ -1,0 +1,22 @@
+{
+  "course": {
+    "id": "industrial-ai",
+    "title": "산업 AI의 기초",
+    "icon": "🏭",
+    "semester": "2026년 2학기",
+    "description": "산업 데이터와 AI 모델이 실제 현장 시스템으로 연결되는 과정을 학습합니다.",
+    "updated": "2026-09-05"
+  },
+  "weeks": [
+    {
+      "week": 1,
+      "title": "산업 AI 개요와 발전 흐름",
+      "subtitle": "AI 개념·역사·생성형 AI·Agentic AI·산업 적용",
+      "icon": "🧭",
+      "color": "#4f7cff",
+      "href": "week1.html",
+      "status": "학습 가능",
+      "topics": ["AI·ML·DL", "Transformer·GPT", "Agentic AI", "산업 AI 사례"]
+    }
+  ]
+}
