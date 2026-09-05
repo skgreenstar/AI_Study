@@ -62,6 +62,28 @@ GitHub Pages가 활성화되어 있으면 병합된 내용이 백과사전 사�
   - 디퓨전과 거대비전모델
   - 산업 AI의 기초
 
+## IT 카테고리를 수정하는 방법
+
+메인의 6개 IT 카테고리 카드와 각 카테고리의 학습 항목은  
+[data/knowledge-categories.json](data/knowledge-categories.json)에서 통합 관리합니다.
+
+- categories 배열에 객체를 추가하면 메인 카드가 자동 생성됩니다.
+- 해당 객체의 topics 배열에 학습 항목을 추가하면 카테고리 페이지에 자동 표시됩니다.
+- title, icon, color, description을 바꾸면 메인과 카테고리 화면에 함께 반영됩니다.
+- 새 카테고리는 categories 폴더의 기존 HTML 하나를 복사한 뒤 body의 data-category 값만 새 id로 바꾸면 됩니다.
+
+~~~json
+{
+  "id": "new-topic",
+  "title": "새 학습 항목",
+  "tag": "입문",
+  "description": "학습 항목 소개",
+  "path": "선수지식 → 현재 개념 → 다음 학습",
+  "href": "topics/new-topic.html",
+  "status": "학습 시작"
+}
+~~~
+
 ## 대학원 과목을 수정하는 방법
 
 대학원 화면은 HTML을 직접 수정하지 않아도 됩니다.  
@@ -93,7 +115,8 @@ AI_Study/
 ├── assets/
 │   └── how-to-use-v2.svg             # 사용방법 이미지
 ├── data/
-│   └── graduate-curriculum.json       # 대학원 학기·과목 수정 데이터
+│   ├── knowledge-categories.json      # IT 카테고리·학습 항목 데이터
+│   └── graduate-curriculum.json       # 대학원 학기·과목 데이터
 ├── graduate/
 │   └── index.html                     # 반응형 대학원 과목 화면
 ├── categories/                        # IT 지식 카테고리 화면
