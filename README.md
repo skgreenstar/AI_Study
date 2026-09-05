@@ -56,6 +56,32 @@ GitHub Pages가 활성화되어 있으면 병합된 내용이 백과사전 사�
 ## 현재 항목
 
 - [디퓨전 선수지식 전체](topics/diffusion-prerequisites.html)
+- [대학원 학기별 학습 공간](graduate/index.html)
+  - 2026년 2학기
+  - 트랜스포머와 거대언어모델
+  - 디퓨전과 거대비전모델
+  - 산업 AI의 기초
+
+## 대학원 과목을 수정하는 방법
+
+대학원 화면은 HTML을 직접 수정하지 않아도 됩니다.  
+[data/graduate-curriculum.json](data/graduate-curriculum.json)에서 학기와 과목 정보만 추가하거나 수정하세요.
+
+과목의 href에는 연결할 학습 페이지 경로를 입력합니다. 아직 페이지가 없다면 null로 두면 **자료 준비 중** 상태로 표시됩니다.
+
+~~~json
+{
+  "id": "new-course",
+  "title": "새 과목명",
+  "icon": "📘",
+  "color": "#7357e8",
+  "description": "과목 소개",
+  "href": "../topics/new-course.html",
+  "status": "학습 시작"
+}
+~~~
+
+새 학기는 semesters 배열에 기존 학기 객체를 복사해서 추가하면 자동으로 새 탭이 생성됩니다.
 
 ## 폴더 안내
 
@@ -65,7 +91,12 @@ AI_Study/
 ├── CONTRIBUTING.md                   # 사람의 협업 규칙
 ├── index.html                        # 백과사전 첫 화면
 ├── assets/
-│   └── how-to-use-v2.svg                # 사용방법 이미지
+│   └── how-to-use-v2.svg             # 사용방법 이미지
+├── data/
+│   └── graduate-curriculum.json       # 대학원 학기·과목 수정 데이터
+├── graduate/
+│   └── index.html                     # 반응형 대학원 과목 화면
+├── categories/                        # IT 지식 카테고리 화면
 ├── prompts/
 │   ├── agent-template.md             # 공통 에이전트 프롬프트
 │   └── create-topic.md               # 간단한 주제 생성 프롬프트
