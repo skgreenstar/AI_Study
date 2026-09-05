@@ -1,0 +1,23 @@
+{
+  "course": {
+    "id": "diffusion-lvm",
+    "title": "디퓨전과 거대비전모델",
+    "icon": "🎨",
+    "semester": "2026년 2학기",
+    "description": "디퓨전·Score Matching·Flow Matching에서 잠재공간, 가이던스, 이미지 생성 구조와 모델 학습까지 연결합니다.",
+    "prerequisiteHref": "../../topics/diffusion-prerequisites.html",
+    "updated": "2026-09-05"
+  },
+  "weeks": [
+    {
+      "week": 0,
+      "title": "한 학기 전체 지도와 선수지식",
+      "subtitle": "16주 로드맵·핵심 개념 관계·권장 선수지식·평가 방식",
+      "icon": "🗺️",
+      "color": "#7657e8",
+      "href": "week0.html",
+      "status": "먼저 보기",
+      "topics": ["Diffusion", "Score Matching", "Flow Matching", "Latent·Guidance"]
+    }
+  ]
+}
