@@ -1,11 +1,51 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AI 시각 백과사전</title><style>
-:root{--bg:#f4f1ff;--ink:#202038;--muted:#69677c;--card:#fff;--violet:#7357e8;--pink:#ef6797;--line:#e4def7;--shadow:0 16px 40px rgba(60,42,120,.10)}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 10% 0,#efe5ff,transparent 35%),var(--bg);color:var(--ink);font-family:Pretendard,"Noto Sans KR",system-ui,sans-serif;line-height:1.65}.wrap{max-width:1080px;margin:auto;padding:28px 20px 80px}.hero{background:linear-gradient(135deg,#382276,#7657e8 58%,#d85c99);color:white;border-radius:30px;padding:42px;box-shadow:var(--shadow)}h1{font-size:clamp(34px,6vw,60px);line-height:1.08;margin:8px 0 16px}.hero p{max-width:660px;font-size:18px;opacity:.92}.section{margin-top:42px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.card{display:block;text-decoration:none;color:inherit;background:white;border:1px solid var(--line);border-top:6px solid var(--pink);border-radius:22px;padding:24px;box-shadow:var(--shadow)}.card h2{margin:8px 0}.tag{display:inline-block;background:#eee9ff;color:#513ca9;font-size:12px;font-weight:900;padding:5px 10px;border-radius:99px}.path{color:var(--muted);font-size:14px}.empty{border:2px dashed #c9bced;border-radius:22px;padding:24px;color:var(--muted)}@media(max-width:700px){.hero{padding:30px 24px}.grid{grid-template-columns:1fr}}
-</style></head><body><main class="wrap">
-<header class="hero"><small>FAMILY KNOWLEDGE GRAPH</small><h1>AI 시각 백과사전</h1><p>개념을 따로 외우지 않고 선수지식 → 현재 개념 → 다음 학습으로 연결합니다.</p></header>
-<section class="section"><h2>학습 항목</h2><div class="grid">
-<a class="card" href="topics/diffusion-prerequisites.html"><span class="tag">생성모델 · 기초→중급</span><h2>디퓨전 선수지식 전체</h2><p>머신러닝 기초와 확률분포부터 디퓨전 핵심 수식, 실무 활용까지.</p><div class="path">ML 기초 → 확률과 분포 → 디퓨전 → Stable Diffusion</div></a>
-<div class="empty"><b>다음 항목 자리</b><br>새 Pull Request가 병합되면 이곳에 연결합니다.</div>
-</div></section></main></body></html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="그림과 연결로 이해하는 협업형 IT 지식 백과사전">
+<title>AI Study | IT 시각 백과사전</title>
+<style>
+:root{--bg:#f7f5ff;--ink:#202038;--muted:#6b6980;--card:#fff;--violet:#7357e8;--pink:#ef6797;--blue:#4d8df7;--mint:#41bda5;--yellow:#ffc94b;--line:#e8e3f7;--shadow:0 18px 50px rgba(60,42,120,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 8% 0,#eee4ff 0,transparent 30%),radial-gradient(circle at 100% 90%,#ffe8f1 0,transparent 28%),var(--bg);color:var(--ink);font-family:Pretendard,"Noto Sans KR",system-ui,sans-serif;line-height:1.6}
+.wrap{max-width:1160px;margin:auto;padding:24px 22px 90px}.nav{display:flex;align-items:center;justify-content:space-between;padding:8px 2px 24px}.brand{font-size:19px;font-weight:950;letter-spacing:-.4px}.brand i{color:var(--violet);font-style:normal}.nav a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:750}
+.hero{position:relative;overflow:hidden;min-height:360px;display:grid;align-items:center;background:linear-gradient(135deg,#2f1c69,#7252e4 55%,#d85699);color:#fff;border-radius:34px;padding:58px;box-shadow:var(--shadow)}.hero:after{content:"";position:absolute;right:-45px;bottom:-85px;width:380px;height:380px;border:55px solid rgba(255,255,255,.10);border-radius:50%}.eyebrow{font-size:13px;font-weight:900;letter-spacing:1.8px;opacity:.8}.hero h1{font-size:clamp(52px,9vw,92px);letter-spacing:-4px;line-height:.98;margin:13px 0 22px}.hero p{max-width:650px;margin:0;font-size:clamp(16px,2.2vw,20px);opacity:.9}.flow{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin-top:30px;font-size:13px;font-weight:850}.flow span{background:rgba(255,255,255,.14);padding:7px 12px;border-radius:99px}.flow b{opacity:.6}
+.intro{display:flex;align-items:end;justify-content:space-between;gap:20px;margin:52px 2px 20px}.intro h2{font-size:clamp(28px,4vw,42px);line-height:1.15;margin:0;letter-spacing:-1.5px}.intro p{color:var(--muted);margin:0}.search{width:100%;border:1px solid var(--line);background:#fff;border-radius:18px;padding:16px 18px;font:inherit;box-shadow:0 8px 24px rgba(60,42,120,.06);outline:none}.search:focus{border-color:var(--violet);box-shadow:0 0 0 4px rgba(115,87,232,.12)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:20px}.card{--accent:var(--violet);position:relative;display:flex;flex-direction:column;min-height:260px;padding:25px;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-top:6px solid var(--accent);border-radius:24px;box-shadow:var(--shadow);transition:.22s ease}.card:hover{transform:translateY(-7px);box-shadow:0 24px 54px rgba(60,42,120,.16);border-color:var(--accent)}.icon{display:grid;place-items:center;width:52px;height:52px;border-radius:16px;background:color-mix(in srgb,var(--accent) 15%,white);font-size:27px}.card h3{font-size:23px;margin:19px 0 5px;letter-spacing:-.7px}.card p{color:var(--muted);margin:0}.meta{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:22px;font-size:13px;font-weight:850}.count{color:var(--accent)}.go{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;font-size:17px}.pink{--accent:#ef6797}.blue{--accent:#4d8df7}.mint{--accent:#41bda5}.yellow{--accent:#e9a91b}.red{--accent:#ef6a6a}.empty-result{display:none;text-align:center;color:var(--muted);padding:40px}
+.guide{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:54px}.panel{border-radius:24px;padding:28px;background:#221743;color:#fff}.panel.light{background:#fff;color:var(--ink);border:1px solid var(--line)}.panel h3{margin:0 0 8px;font-size:22px}.panel p{margin:0;opacity:.78}.panel a{display:inline-block;margin-top:17px;color:inherit;font-weight:850}
+footer{display:flex;justify-content:space-between;gap:20px;color:var(--muted);font-size:13px;margin-top:44px;padding:20px 2px;border-top:1px solid var(--line)}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.hero{padding:42px 30px}.intro{align-items:start;flex-direction:column}.guide{grid-template-columns:1fr}}
+@media(max-width:560px){.wrap{padding:14px 14px 60px}.grid{grid-template-columns:1fr}.hero{min-height:330px;border-radius:25px}.hero h1{letter-spacing:-2.5px}.card{min-height:225px}footer{flex-direction:column}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<nav class="nav"><div class="brand"><i>AI</i> Study</div><a href="README.md">협업 가이드 ↗</a></nav>
+<header class="hero">
+  <div><div class="eyebrow">VISUAL IT KNOWLEDGE MAP</div><h1>AI Study</h1><p>복잡한 IT 지식을 그림처럼 보고, 서로 연결하며 이해하는 시각 백과사전입니다.</p>
+  <div class="flow"><span>기초 개념</span><b>→</b><span>핵심 원리</span><b>→</b><span>실무 활용</span><b>→</b><span>다음 학습</span></div></div>
+</header>
+<section>
+  <div class="intro"><div><h2>어디서부터<br>탐험할까요?</h2></div><p>카드를 누르면 분야별 지식 디렉토리로 이동합니다.</p></div>
+  <input class="search" id="search" aria-label="카테고리 검색" placeholder="🔎  AI, 데이터베이스, 클라우드… 검색">
+  <div class="grid" id="grid">
+    <a class="card" href="categories/ai-ml.html" data-keywords="ai 인공지능 머신러닝 딥러닝 생성형 디퓨전"><span class="icon">🧠</span><h3>AI · 머신러닝</h3><p>확률 기초부터 딥러닝, 생성형 AI와 에이전트까지</p><div class="meta"><span class="count">1개 항목</span><span class="go">→</span></div></a>
+    <a class="card pink" href="categories/computer-science.html" data-keywords="컴퓨터공학 cs 운영체제 알고리즘 자료구조"><span class="icon">⚙️</span><h3>컴퓨터공학</h3><p>자료구조, 알고리즘, 운영체제와 컴퓨터 구조</p><div class="meta"><span class="count">확장 준비</span><span class="go">→</span></div></a>
+    <a class="card blue" href="categories/software-development.html" data-keywords="소프트웨어 개발 프로그래밍 백엔드 프론트엔드 api"><span class="icon">💻</span><h3>소프트웨어 개발</h3><p>프로그래밍 언어부터 API, 테스트와 설계 원칙까지</p><div class="meta"><span class="count">확장 준비</span><span class="go">→</span></div></a>
+    <a class="card mint" href="categories/data-database.html" data-keywords="데이터 데이터베이스 db sql nosql 파이프라인"><span class="icon">🗄️</span><h3>데이터 · DB</h3><p>SQL, NoSQL, 데이터 모델링과 파이프라인</p><div class="meta"><span class="count">확장 준비</span><span class="go">→</span></div></a>
+    <a class="card yellow" href="categories/infra-cloud.html" data-keywords="인프라 클라우드 devops docker kubernetes aws azure"><span class="icon">☁️</span><h3>인프라 · 클라우드</h3><p>Docker, Kubernetes, 네트워크와 클라우드 운영</p><div class="meta"><span class="count">확장 준비</span><span class="go">→</span></div></a>
+    <a class="card red" href="categories/security-network.html" data-keywords="보안 네트워크 인증 권한 암호화"><span class="icon">🛡️</span><h3>보안 · 네트워크</h3><p>통신 구조, 인증·인가, 보안의 핵심 원리</p><div class="meta"><span class="count">확장 준비</span><span class="go">→</span></div></a>
+  </div>
+  <div class="empty-result" id="empty">일치하는 카테고리가 아직 없어요. 새 항목으로 함께 확장할 수 있습니다.</div>
+</section>
+<section class="guide">
+  <div class="panel"><h3>지식은 선이 될 때 기억됩니다</h3><p>각 문서는 선수지식 → 현재 개념 → 다음 개념으로 이어집니다.</p></div>
+  <div class="panel light"><h3>새로운 항목을 추가하고 싶나요?</h3><p>공통 에이전트 프롬프트를 사용하면 같은 디자인과 구조로 확장할 수 있습니다.</p><a href="prompts/agent-template.md">프롬프트 템플릿 열기 →</a></div>
+</section>
+<footer><b>AI Study</b><span>시각적으로 연결되는 협업형 IT 백과사전</span></footer>
+</main>
+<script>
+const input=document.getElementById('search'),cards=[...document.querySelectorAll('.card')],empty=document.getElementById('empty');
+input.addEventListener('input',()=>{const q=input.value.trim().toLowerCase();let n=0;cards.forEach(c=>{const show=!q||(c.textContent+' '+c.dataset.keywords).toLowerCase().includes(q);c.style.display=show?'flex':'none';if(show)n++});empty.style.display=n?'none':'block'});
+</script>
+</body></html>
