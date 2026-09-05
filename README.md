@@ -2,7 +2,7 @@
 
 그림·비유·수식 해부·실무 사례로 AI 개념을 연결하는 공동 학습 저장소입니다.
 
-![AI 시각 백과사전 협업 사용 방법](assets/how-to-use.svg)
+![AI 시각 백과사전 협업 사용 방법](assets/how-to-use-v2.svg)
 
 ## 가장 쉬운 사용 방법
 
@@ -65,7 +65,7 @@ AI_Study/
 ├── CONTRIBUTING.md                   # 사람의 협업 규칙
 ├── index.html                        # 백과사전 첫 화면
 ├── assets/
-│   └── how-to-use.svg                # 사용방법 이미지
+│   └── how-to-use-v2.svg                # 사용방법 이미지
 ├── prompts/
 │   ├── agent-template.md             # 공통 에이전트 프롬프트
 │   └── create-topic.md               # 간단한 주제 생성 프롬프트
