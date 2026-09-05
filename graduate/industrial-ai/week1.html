@@ -1,0 +1,1085 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>산업AI의 기초 1주차 — 시각형 학습노트</title>
+<style>
+:root{
+  --bg:#f7f8fb; --card:#ffffff; --ink:#152033; --muted:#5f6b7a;
+  --line:#dfe5ee; --navy:#0d2347; --blue:#4f7cff; --teal:#22b8a7;
+  --amber:#f2a93b; --rose:#e85d75; --violet:#7a63d8; --green:#2ca86b;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter, Pretendard, "Noto Sans KR", Arial, sans-serif;line-height:1.65}
+a{color:inherit}
+.wrap{max-width:1160px;margin:auto;padding:28px 20px 80px}
+.hero{background:linear-gradient(135deg,#0d2347,#294f92);color:white;border-radius:26px;padding:34px 34px 28px;box-shadow:0 18px 45px rgba(13,35,71,.18)}
+.hero h1{font-size:clamp(30px,4vw,52px);line-height:1.15;margin:0 0 12px}
+.hero p{margin:8px 0;color:#e9eef8;font-size:18px}
+.badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.badge{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:7px 12px;font-size:14px}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:850px){.g2,.g3{grid-template-columns:1fr}}
+.section{margin-top:34px}
+.section h2{font-size:30px;margin:0 0 14px}
+.section h3{font-size:21px;margin:0 0 8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 6px 20px rgba(26,40,64,.06)}
+.card.soft{box-shadow:none}
+.kicker{font-weight:800;color:var(--blue);letter-spacing:.03em;text-transform:uppercase;font-size:13px}
+.callout{border-left:5px solid var(--amber);background:#fffaf0;padding:16px 18px;border-radius:14px}
+.tip{border-left:5px solid var(--teal);background:#effbf8;padding:16px 18px;border-radius:14px}
+.warn{border-left:5px solid var(--rose);background:#fff3f5;padding:16px 18px;border-radius:14px}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.big{font-size:22px;font-weight:800}
+.flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0}
+.node{padding:10px 14px;border-radius:14px;font-weight:800;border:1px solid var(--line);background:#fff}
+.arrow{font-weight:900;color:var(--muted)}
+.ai{background:#eef3ff;border-color:#cbd7ff}.ml{background:#fff7e8;border-color:#ffe2aa}.dl{background:#effbf8;border-color:#b7eadf}
+.timeline{position:relative;padding:8px 0 4px}
+.timeline:before{content:"";position:absolute;top:28px;left:0;right:0;height:4px;background:#dfe5ee;border-radius:4px}
+.titems{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;position:relative}
+.titem{text-align:center;font-size:12px}
+.dot{width:18px;height:18px;border-radius:50%;background:var(--blue);margin:12px auto 8px;border:4px solid #fff;box-shadow:0 0 0 2px var(--blue)}
+.titem:nth-child(n+5) .dot{background:var(--rose);box-shadow:0 0 0 2px var(--rose)}
+.titem b{display:block;font-size:13px}
+@media(max-width:900px){.timeline:before{display:none}.titems{grid-template-columns:repeat(2,1fr)}.titem{background:white;border:1px solid var(--line);border-radius:12px;padding:8px}.dot{margin:4px auto}}
+.triad{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:700px){.triad{grid-template-columns:1fr}}
+.pillbox{border-radius:18px;padding:18px;color:white;min-height:150px}
+.pillbox h3{font-size:24px}
+.data{background:#4f7cff}.compute{background:#f2a93b}.algo{background:#22b8a7}
+.venn{position:relative;height:280px;max-width:540px;margin:0 auto}
+.circ{position:absolute;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;text-align:center}
+.c1{width:270px;height:210px;left:20px;top:34px;background:rgba(232,93,117,.18);border:3px solid rgba(232,93,117,.5)}
+.c2{width:190px;height:150px;left:170px;top:64px;background:rgba(242,169,59,.22);border:3px solid rgba(242,169,59,.55)}
+.c3{width:115px;height:95px;left:280px;top:92px;background:rgba(34,184,167,.25);border:3px solid rgba(34,184,167,.55)}
+.c1 span{transform:translateX(-65px)} .c2 span{transform:translateX(-20px)} .c3 span{font-size:14px}
+.arch{display:grid;grid-template-columns:1fr 70px 1fr;align-items:center;gap:8px}
+@media(max-width:720px){.arch{grid-template-columns:1fr}.arch .mid{transform:rotate(90deg)}}
+.arch .mid{text-align:center;font-size:38px;font-weight:900;color:var(--blue)}
+.matrix{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:800px){.matrix{grid-template-columns:1fr}}
+.mcard{padding:16px;border-radius:16px;background:white;border:1px solid var(--line)}
+.mcard b{font-size:18px}
+.tag{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:800;background:#eef2f7;color:#3f4d5d;margin-top:8px}
+.eq{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#f5f7fb;border:1px solid var(--line);padding:11px 13px;border-radius:12px}
+.logic{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:720px){.logic{grid-template-columns:1fr}}
+.logic svg{width:100%;height:auto}
+.agentloop{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;align-items:center}
+.agentloop div{padding:12px 8px;text-align:center;border-radius:12px;background:#fff;border:1px solid var(--line);font-weight:800}
+@media(max-width:850px){.agentloop{grid-template-columns:repeat(2,1fr)}}
+.compare{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border:1px solid var(--line);border-radius:16px}
+.compare th,.compare td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+.compare th{background:#f1f4f9;text-align:left}
+.compare tr:last-child td{border-bottom:none}
+.checklist label{display:block;padding:9px 0;border-bottom:1px dashed var(--line)}
+details{background:white;border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin:10px 0}
+summary{cursor:pointer;font-weight:800}
+.footer{margin-top:40px;color:var(--muted);font-size:13px;text-align:center}
+.sticky{position:sticky;top:10px;z-index:2;background:rgba(247,248,251,.92);backdrop-filter:blur(8px);border:1px solid var(--line);padding:10px 12px;border-radius:16px;margin:18px 0}
+.sticky a{text-decoration:none;margin-right:12px;font-size:14px;color:#30425e}
+
+.ko{font-weight:600;color:#66758a;font-size:.92em}
+.hero .ko,.pillbox .ko{color:inherit;opacity:.9}
+
+.logic-plot{background:#fbfcff;border:1px solid var(--line);border-radius:16px;padding:10px;margin-top:12px}
+.logic-plot svg{display:block;width:100%;height:220px}
+.axis{stroke:#7c8798;stroke-width:1.5}
+.gridline{stroke:#e7ebf2;stroke-width:1}
+.boundary{stroke:#e85d75;stroke-width:3;stroke-dasharray:7 5}
+.pt0{fill:#fff;stroke:#4f7cff;stroke-width:4}
+.pt1{fill:#22b8a7;stroke:#0d756b;stroke-width:2}
+.vtimeline{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:16px;position:relative}
+.vtimeline:before{content:"";position:absolute;left:8%;right:8%;top:30px;height:5px;background:#dfe5ee;border-radius:10px}
+.vmile{position:relative;text-align:center;padding:0 12px 14px}
+.vmile .vyear{position:relative;z-index:1;width:62px;height:62px;margin:0 auto 12px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#4f7cff;color:#fff;font-weight:900;border:5px solid #fff;box-shadow:0 0 0 2px #4f7cff}
+.vmile h4{margin:4px 0;font-size:17px}.vmile p{font-size:13px;color:var(--muted);margin:5px 0}
+@media(max-width:800px){.vtimeline{grid-template-columns:1fr}.vtimeline:before{left:30px;right:auto;top:0;bottom:0;width:4px;height:auto}.vmile{text-align:left;padding-left:85px;min-height:115px}.vmile .vyear{position:absolute;left:0;top:0}}
+.concept-visual{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:center}
+@media(max-width:800px){.concept-visual{grid-template-columns:1fr}}
+.mini-diagram{background:#fbfcff;border:1px solid var(--line);border-radius:16px;padding:14px}
+
+.storyflow{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;margin-top:12px}
+.storybox{flex:1 1 150px;min-width:140px;padding:14px;border:1px solid var(--line);border-radius:14px;background:#fbfcff;text-align:center}
+.storyarrow{display:flex;align-items:center;font-weight:900;color:var(--muted)}
+.layercake{display:flex;flex-direction:column;gap:6px;max-width:560px;margin:14px auto}
+.layercake>div{padding:14px;border-radius:12px;border:1px solid var(--line);text-align:center}
+.factoryflow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}
+@media(max-width:800px){.factoryflow{grid-template-columns:1fr}.storyarrow{transform:rotate(90deg);justify-content:center}}
+.course-nav{max-width:1160px;margin:18px auto 0;padding:0 20px}.course-nav a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:#40536d;font-weight:800;background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 14px;box-shadow:0 5px 15px rgba(26,40,64,.06)}
+</style>
+</head>
+<body>
+<nav class="course-nav"><a href="index.html">← 산업 AI의 기초 · 주차 목록</a></nav>
+<div class="wrap">
+  <section class="hero">
+    <div class="kicker" style="color:#cfe0ff">GITA407 · Week 1</div>
+    <h1>산업AI의 기초 1주차<br/>시각형 완전정복 노트</h1>
+    <p><b>Introduction to Industrial AI: concepts, applications, and historical development</b></p>
+    <p>“용어를 외우는 수업”이 아니라, <b>AI가 어떻게 ‘지각 → 학습/추론 → 행동’하는 시스템으로 발전했는지</b> 한 장의 흐름으로 이해하는 것이 핵심입니다.</p>
+    <div class="tip" style="margin-top:18px;background:rgba(255,255,255,.12);color:white;border-left-color:#7ee2d5">
+<b>이 자료 보는 법</b> — <b>그림·타임라인으로 먼저 이해</b>하고 → <b>PDF 원문 용어</b>를 연결한 뒤 → <b>🎯 시험 포인트</b>로 정리하세요.
+<span class="small">💡 표시는 이해를 돕기 위한 쉬운 설명입니다. 같은 개념은 한 섹션에 모으되, 서로 다른 예시·그림·설명은 삭제하지 않고 함께 보존합니다.</span>
+</div>
+<div class="badges">
+      <span class="badge">AI 개념</span><span class="badge">AI 역사</span><span class="badge">Perceptron → Deep Learning <span class='ko'>(딥러닝)</span></span>
+      <span class="badge">Transformer → GPT</span><span class="badge">Multimodal <span class='ko'>(멀티모달·다중양식)</span></span><span class="badge">Agentic AI <span class='ko'>(에이전트형 AI)</span></span><span class="badge">Industrial AI 사례</span>
+    </div>
+  </section>
+
+  <div class="sticky">
+    <a href="#map">① 전체지도</a><a href="#foundation">② AI 기초</a><a href="#history">③ 역사</a>
+    <a href="#genai">④ 생성형AI</a><a href="#agent">⑤ Agentic AI <span class='ko'>(에이전트형 AI)</span></a><a href="#industrial">⑥ 산업AI</a><a href="#quiz">⑦ 셀프체크</a>
+  </div>
+
+  <section class="section" id="map">
+    <h2>🧠 먼저 머릿속에 넣을 “한 장짜리 전체 지도”</h2>
+    <div class="card">
+      <div class="flow">
+        <div class="node ai">인공지능 AI</div><div class="arrow">→</div>
+        <div class="node ml">머신러닝 ML</div><div class="arrow">→</div>
+        <div class="node dl">딥러닝 DL</div><div class="arrow">→</div>
+        <div class="node">Transformer</div><div class="arrow">→</div>
+        <div class="node">LLM / Multimodal <span class='ko'>(멀티모달·다중양식)</span></div><div class="arrow">→</div>
+        <div class="node">Agentic AI <span class='ko'>(에이전트형 AI)</span></div>
+      </div>
+      <div class="callout"><b>1주차의 핵심 스토리:</b> “인간의 지능을 흉내 내는 AI”가 단순 규칙·선형분류기에서 시작해, 데이터·GPU·알고리즘의 발전으로 딥러닝이 커지고, Transformer와 대규모 사전학습을 거쳐, 이제는 도구를 사용하고 목표를 향해 행동하는 <b>AI 시스템</b>으로 확장되고 있다.</div>
+    </div>
+
+    <div class="grid g3" style="margin-top:18px">
+      <div class="card"><div class="kicker">Input</div><div class="big">PERCEIVE</div><p>이미지 · 텍스트 · 센서 데이터처럼 외부 정보를 받아들임</p></div>
+      <div class="card"><div class="kicker">Intelligence</div><div class="big">LEARN / REASON</div><p>패턴 · 규칙 · 표현(representation)을 학습하거나 추론</p></div>
+      <div class="card"><div class="kicker">Output</div><div class="big">ACT / GENERATE</div><p>예측 · 콘텐츠 생성 · 제어 · 행동으로 결과를 만듦</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="foundation">
+    <h2>1. AI를 정확히 어떻게 정의해야 하나?</h2>
+    <div class="grid g2">
+      <div class="card">
+        <div class="kicker">강의자료 정의</div>
+        <h3>“인간의 학습·추론·지각 능력을 인공적으로 구현하는 분야”</h3>
+        <p>강의에서는 Marvin Minsky의 고전적 정의와 함께, 오늘날 더 실용적인 작업 정의를 제시합니다.</p>
+        <div class="tip"><b>작업 정의:</b> 정보를 지각하고, 그 정보에서 학습하거나 추론한 뒤, 의사결정·예측·콘텐츠·행동을 만들어 내는 시스템.</div>
+      </div>
+      <div class="card">
+        <div class="kicker">시각적으로 기억</div>
+        <div class="venn">
+          <div class="circ c1"><span>Artificial<br/>Intelligence</span></div>
+          <div class="circ c2"><span>Machine<br/>Learning</span></div>
+          <div class="circ c3"><span>Deep<br/>Learning</span></div>
+        </div>
+        <p class="small muted">강의 슬라이드의 포함관계: AI ⊃ ML ⊃ DL</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <h3>AI / ML / DL을 한 번에 구분하기</h3>
+      <table class="compare">
+        <tr><th>구분</th><th>핵심 질문</th><th>강의식 이해</th></tr>
+        <tr><td><b>AI</b></td><td>기계가 지능적으로 행동하는가?</td><td>인간의 사고·판단·지각을 흉내 내는 가장 큰 범주</td></tr>
+        <tr><td><b>ML</b></td><td>데이터로부터 스스로 패턴을 배우는가?</td><td>규칙을 전부 사람이 코딩하지 않고 데이터에서 학습</td></tr>
+        <tr><td><b>DL</b></td><td>신경망을 깊게 쌓아 복잡한 표현을 학습하는가?</td><td>인공신경망을 활용하는 ML의 한 방식</td></tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>2. 왜 지금 AI가 폭발적으로 성장했나?</h2>
+      <div class="triad">
+        <div class="pillbox data"><h3>DATA</h3><p>디지털 흔적, 센서, 웹 규모 데이터셋</p></div>
+        <div class="pillbox compute"><h3>COMPUTE</h3><p>GPU, 가속기, 클라우드 인프라</p></div>
+        <div class="pillbox algo"><h3>ALGORITHMS</h3><p>딥러닝, Transformer, 최적화 기법</p></div>
+      </div>
+      <div class="tip" style="margin-top:14px"><b>암기 문장:</b> AI 성능이 갑자기 “마법처럼” 좋아진 게 아니라, <b>데이터 × 컴퓨팅 × 알고리즘</b>이 동시에 스케일링되면서 실용성이 커졌다.</div>
+    </div>
+
+    <div class="section">
+      <h2>3. AI는 어디에 쓰이나?</h2>
+      <div class="matrix">
+        <div class="mcard"><b>👁 Computer Vision <span class='ko'>(컴퓨터 비전)</span></b><p>입력: 이미지/영상<br/>출력: 분류, 탐지, 분할</p><span class="tag">See</span></div>
+        <div class="mcard"><b>💬 Natural Language <span class='ko'>(자연어)</span></b><p>입력: 텍스트/음성<br/>출력: 번역, QA, 챗</p><span class="tag">Talk</span></div>
+        <div class="mcard"><b>✨ Generative AI <span class='ko'>(생성형 AI)</span></b><p>입력: 멀티모달 프롬프트<br/>출력: 텍스트·이미지·영상·코드</p><span class="tag">Create</span></div>
+        <div class="mcard"><b>🤖 Robotics</b><p>입력: 센서 + 행동 공간<br/>출력: 이동, 조작</p><span class="tag">Act</span></div>
+        <div class="mcard"><b>🎯 Reinforcement Learning <span class='ko'>(강화학습)</span></b><p>상태 + 보상<br/>출력: 순차 의사결정</p><span class="tag">Decide</span></div>
+        <div class="mcard"><b>📈 Data / Prediction</b><p>테이블 + 시계열<br/>출력: 예측, 이상탐지</p><span class="tag">Predict</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="history">
+    <h2>4. 역사 파트는 3개의 줄로 분리해서 기억하기</h2>
+    <div class="callout">
+      <b>헷갈림 방지:</b> PDF는 <b>AI 전체 역사</b>, <b>Neural Network 역사</b>, 그리고 이후의
+      <b>Transformer → LLM → Multimodal <span class='ko'>(멀티모달·다중양식)</span> → Agentic AI <span class='ko'>(에이전트형 AI)</span></b> 흐름을 여러 슬라이드에서 설명합니다.
+      아래에서는 이 세 흐름을 섞지 않고 따로 정리했습니다.
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <div class="kicker">① [PDF 원문] A Very Short History of AI</div>
+      <h3>AI 전체 역사</h3>
+      <div class="timeline">
+        <div class="titems">
+          <div class="titem"><div class="dot"></div><b>1950</b>Turing Test</div>
+          <div class="titem"><div class="dot"></div><b>1956</b>“Artificial Intelligence <span class='ko'>(인공지능)</span>”</div>
+          <div class="titem"><div class="dot"></div><b>1980s</b>Expert Systems</div>
+          <div class="titem"><div class="dot"></div><b>1997</b>Deep Blue</div>
+          <div class="titem"><div class="dot"></div><b>2012</b>Deep Learning <span class='ko'>(딥러닝)</span> Breakthrough</div>
+          <div class="titem"><div class="dot"></div><b>2016</b>AlphaGo</div>
+          <div class="titem"><div class="dot"></div><b>2022</b>ChatGPT</div>
+          <div class="titem"><div class="dot"></div><b>2025–26</b>Multimodal <span class='ko'>(멀티모달·다중양식)</span> & Agentic AI <span class='ko'>(에이전트형 AI)</span></div>
+        </div>
+      </div>
+      <div class="warn" style="margin-top:14px">
+        <b>[PDF 원문] AI Winters</b><br/>
+        “Periods when AI failed to meet high expectations, leading to reduced funding and interest.”<br/>
+        <span class="small">💡 이해 보충: AI에 대한 기대가 실제 성과보다 너무 컸고, 기대를 충족하지 못하면서 투자와 관심이 감소했던 시기를 뜻합니다.</span>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <div class="kicker">② [PDF 원문] History of Neural Networks</div>
+      <h3>Perceptron → XOR 한계 → MLP → Deep Learning <span class='ko'>(딥러닝)</span></h3>
+      <div class="flow">
+        <div class="node"><b>1958</b><br/>Perceptron</div><div class="arrow">→</div>
+        <div class="node"><b>1969</b><br/>XOR limitation</div><div class="arrow">→</div>
+        <div class="node"><b>1986</b><br/>MLP</div><div class="arrow">→</div>
+        <div class="node"><b>2006~</b><br/>Deep Learning <span class='ko'>(딥러닝)</span></div>
+      </div>
+      <table class="compare">
+        <tr><th>PDF 표현</th><th>정확한 의미</th><th>💡 이해 보충</th></tr>
+        <tr><td><b>Single-layer Perceptron (SLP) <span class='ko'>(단층 퍼셉트론)</span></b><br/>Artificial neural network (linear classifier <span class='ko'>(선형 분류기)</span>)</td><td>선형 결정경계로 분류하는 단층 신경망</td><td><code>y=ax+b</code> 같은 “직선 경계”를 떠올리면 직관적으로 이해하기 쉬움</td></tr>
+        <tr><td><b>AND / OR: linearly separable <span class='ko'>(선형 분리 가능)</span></b></td><td>하나의 선형 결정경계로 클래스를 분리 가능</td><td>직선 하나로 두 그룹을 가를 수 있음</td></tr>
+        <tr><td><b>XOR: not linearly separable <span class='ko'>(선형 분리 불가능)</span></b></td><td>하나의 선형 결정경계로 분리 불가능</td><td>대각선 방향으로 클래스가 섞여 있어 직선 하나로는 못 가름</td></tr>
+        <tr><td><b>Multi-layer Perceptron (MLP) <span class='ko'>(다층 퍼셉트론)</span></b><br/>Solution to nonlinearly separable problem <span class='ko'>(비선형 분리 문제)</span></td><td>Hidden layer를 둔 다층 구조로 비선형 분리 문제를 표현</td><td>여러 단계의 표현 변환으로 XOR 같은 패턴도 다룰 수 있음</td></tr>
+      </table>
+
+      <div class="card" style="margin-top:18px;background:#fbfcff">
+        <div class="kicker">🧠 표를 그림으로 바꾸면 이렇게 이해하면 됨</div>
+        <h3>SLP는 “선 하나”, MLP는 “여러 경계를 조합”</h3>
+
+        <div class="concept-visual">
+          <div class="mini-diagram">
+            <h4>① Single-layer Perceptron (SLP) <span class="ko">(단층 퍼셉트론)</span></h4>
+            <svg viewBox="0 0 430 210" width="100%" aria-label="단층 퍼셉트론 직관 그림">
+              <circle cx="55" cy="65" r="24" fill="#eef3ff" stroke="#4f7cff" stroke-width="2"/><text x="45" y="70">x₁</text>
+              <circle cx="55" cy="145" r="24" fill="#eef3ff" stroke="#4f7cff" stroke-width="2"/><text x="45" y="150">x₂</text>
+              <circle cx="205" cy="105" r="38" fill="#fff7e8" stroke="#f2a93b" stroke-width="2"/><text x="178" y="100" font-size="13">Σwx+b</text><text x="183" y="120" font-size="12">판단 1번</text>
+              <circle cx="355" cy="105" r="30" fill="#eafaf7" stroke="#22b8a7" stroke-width="2"/><text x="346" y="110">y</text>
+              <path d="M80 70 L166 95" stroke="#6d7787" stroke-width="2"/><path d="M80 140 L166 115" stroke="#6d7787" stroke-width="2"/>
+              <path d="M244 105 L323 105" stroke="#6d7787" stroke-width="2" marker-end="url(#a1)"/>
+              <defs><marker id="a1" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#6d7787"/></marker></defs>
+              <text x="128" y="190" font-size="13" fill="#596579">하나의 선형 결정경계 → 직선 하나로 나눌 수 있는 문제</text>
+            </svg>
+            <div class="tip"><b>AND / OR ✅</b><br/>0과 1 사이에 <b>직선 하나</b>를 그으면 구분된다.<br/>→ <b>linearly separable <span class="ko">(선형 분리 가능)</span></b></div>
+
+            <div class="concept-visual" style="margin-top:14px">
+              <div class="logic-plot">
+                <h4 style="margin:4px 0 8px">AND</h4>
+                <svg viewBox="0 0 260 220" aria-label="AND 선형 분리 그림">
+                  <line class="gridline" x1="55" y1="170" x2="220" y2="170"/><line class="gridline" x1="55" y1="65" x2="220" y2="65"/>
+                  <line class="gridline" x1="70" y1="185" x2="70" y2="35"/><line class="gridline" x1="190" y1="185" x2="190" y2="35"/>
+                  <line class="axis" x1="45" y1="185" x2="225" y2="185"/><line class="axis" x1="45" y1="190" x2="45" y2="30"/>
+                  <text x="190" y="207" font-size="12">x₁</text><text x="20" y="48" font-size="12">x₂</text>
+                  <circle class="pt0" cx="70" cy="170" r="9"/><circle class="pt0" cx="190" cy="170" r="9"/><circle class="pt0" cx="70" cy="65" r="9"/>
+                  <circle class="pt1" cx="190" cy="65" r="10"/>
+                  <line class="boundary" x1="115" y1="35" x2="220" y2="145"/>
+                  <text x="77" y="165" font-size="12">0</text><text x="197" y="165" font-size="12">0</text><text x="77" y="60" font-size="12">0</text><text x="197" y="60" font-size="12">1</text>
+                </svg>
+                <p class="small"><b>핵심:</b> 1인 점 하나를 나머지 0과 직선 하나로 분리 가능.</p>
+              </div>
+
+              <div class="logic-plot">
+                <h4 style="margin:4px 0 8px">OR</h4>
+                <svg viewBox="0 0 260 220" aria-label="OR 선형 분리 그림">
+                  <line class="gridline" x1="55" y1="170" x2="220" y2="170"/><line class="gridline" x1="55" y1="65" x2="220" y2="65"/>
+                  <line class="gridline" x1="70" y1="185" x2="70" y2="35"/><line class="gridline" x1="190" y1="185" x2="190" y2="35"/>
+                  <line class="axis" x1="45" y1="185" x2="225" y2="185"/><line class="axis" x1="45" y1="190" x2="45" y2="30"/>
+                  <text x="190" y="207" font-size="12">x₁</text><text x="20" y="48" font-size="12">x₂</text>
+                  <circle class="pt0" cx="70" cy="170" r="9"/>
+                  <circle class="pt1" cx="190" cy="170" r="10"/><circle class="pt1" cx="70" cy="65" r="10"/><circle class="pt1" cx="190" cy="65" r="10"/>
+                  <line class="boundary" x1="48" y1="105" x2="135" y2="190"/>
+                  <text x="77" y="165" font-size="12">0</text><text x="197" y="165" font-size="12">1</text><text x="77" y="60" font-size="12">1</text><text x="197" y="60" font-size="12">1</text>
+                </svg>
+                <p class="small"><b>핵심:</b> 0인 점 하나와 나머지 1들을 직선 하나로 분리 가능.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mini-diagram">
+            <h4>② 그런데 XOR은?</h4>
+            <svg viewBox="0 0 430 210" width="100%" aria-label="XOR 한계 직관 그림">
+              <line x1="65" y1="175" x2="370" y2="175" stroke="#7c8798" stroke-width="2"/>
+              <line x1="65" y1="180" x2="65" y2="25" stroke="#7c8798" stroke-width="2"/>
+              <circle cx="120" cy="140" r="13" fill="#fff" stroke="#4f7cff" stroke-width="4"/><text x="113" y="145">0</text>
+              <circle cx="315" cy="55" r="13" fill="#fff" stroke="#4f7cff" stroke-width="4"/><text x="308" y="60">0</text>
+              <circle cx="120" cy="55" r="14" fill="#22b8a7" stroke="#0d756b" stroke-width="2"/><text x="113" y="60" fill="#fff">1</text>
+              <circle cx="315" cy="140" r="14" fill="#22b8a7" stroke="#0d756b" stroke-width="2"/><text x="308" y="145" fill="#fff">1</text>
+              <line x1="90" y1="105" x2="350" y2="105" stroke="#e85d75" stroke-width="3" stroke-dasharray="7 5"/>
+              <text x="160" y="98" font-size="13" fill="#e85d75">직선 하나로는 실패 ✕</text>
+              <text x="160" y="198" font-size="13" fill="#596579">0과 1이 대각선으로 교차</text>
+            </svg>
+            <div class="warn"><b>XOR ❌</b><br/>어느 방향으로 직선을 그어도 0/1이 함께 남는다.<br/>→ <b>not linearly separable <span class="ko">(선형 분리 불가능)</span></b></div>
+          </div>
+        </div>
+
+        <div class="mini-diagram" style="margin-top:16px">
+          <h4>③ Multi-layer Perceptron (MLP) <span class="ko">(다층 퍼셉트론)</span>이 등장하면</h4>
+          <svg viewBox="0 0 760 250" width="100%" aria-label="MLP가 XOR을 해결하는 직관 그림">
+            <text x="35" y="28" font-size="13" fill="#596579">Input</text>
+            <circle cx="75" cy="80" r="25" fill="#eef3ff" stroke="#4f7cff" stroke-width="2"/><text x="64" y="85">x₁</text>
+            <circle cx="75" cy="170" r="25" fill="#eef3ff" stroke="#4f7cff" stroke-width="2"/><text x="64" y="175">x₂</text>
+
+            <text x="260" y="28" font-size="13" fill="#596579">Hidden layer (은닉층)</text>
+            <circle cx="315" cy="70" r="34" fill="#fff7e8" stroke="#f2a93b" stroke-width="2"/><text x="295" y="65" font-size="12">경계 A</text><text x="294" y="82" font-size="11">특징 변환</text>
+            <circle cx="315" cy="175" r="34" fill="#fff7e8" stroke="#f2a93b" stroke-width="2"/><text x="295" y="170" font-size="12">경계 B</text><text x="294" y="187" font-size="11">특징 변환</text>
+
+            <text x="520" y="28" font-size="13" fill="#596579">Output</text>
+            <circle cx="565" cy="122" r="37" fill="#eafaf7" stroke="#22b8a7" stroke-width="2"/><text x="543" y="118" font-size="12">조합</text><text x="543" y="136" font-size="12">판단</text>
+
+            <path d="M100 80 L280 70" stroke="#7c8798" stroke-width="2"/><path d="M100 80 L280 175" stroke="#7c8798" stroke-width="2"/>
+            <path d="M100 170 L280 70" stroke="#7c8798" stroke-width="2"/><path d="M100 170 L280 175" stroke="#7c8798" stroke-width="2"/>
+            <path d="M350 70 L528 112" stroke="#7c8798" stroke-width="2"/><path d="M350 175 L528 132" stroke="#7c8798" stroke-width="2"/>
+
+            <rect x="635" y="62" width="105" height="125" rx="14" fill="#fbfcff" stroke="#dfe5ee"/>
+            <circle cx="665" cy="95" r="8" fill="#fff" stroke="#4f7cff" stroke-width="3"/>
+            <circle cx="710" cy="155" r="8" fill="#fff" stroke="#4f7cff" stroke-width="3"/>
+            <circle cx="710" cy="95" r="9" fill="#22b8a7" stroke="#0d756b" stroke-width="2"/>
+            <circle cx="665" cy="155" r="9" fill="#22b8a7" stroke="#0d756b" stroke-width="2"/>
+            <line x1="650" y1="125" x2="725" y2="125" stroke="#e85d75" stroke-width="2"/>
+            <line x1="650" y1="132" x2="725" y2="132" stroke="#e85d75" stroke-width="2"/>
+            <text x="650" y="212" font-size="12" fill="#596579">XOR도 표현 가능</text>
+          </svg>
+
+          <div class="flow" style="margin-top:8px">
+            <div class="node"><b>입력 x₁, x₂</b></div><div class="arrow">→</div>
+            <div class="node"><b>Hidden layer</b><br/><span class="ko">여러 특징/경계 생성</span></div><div class="arrow">→</div>
+            <div class="node"><b>경계들을 조합</b></div><div class="arrow">→</div>
+            <div class="node"><b>XOR 분류 가능</b></div>
+          </div>
+        </div>
+
+        <div class="callout" style="margin-top:16px">
+          <b>한 문장으로 머릿속에 박기:</b><br/>
+          <b>SLP = 자 하나 들고 직선 한 번 그어서 나누는 모델.</b><br/>
+          <b>MLP = Hidden layer에서 여러 판단을 만든 뒤 조합해서 더 복잡한 경계를 만드는 모델.</b><br/>
+          그래서 PDF가 MLP를 <b>“Solution to nonlinearly separable problem”</b>으로 연결하는 거야.
+        </div>
+      </div>
+
+      <div class="tip" style="margin-top:14px">
+        <b>🎯 시험 포인트:</b> “Single-layer Perceptron (SLP) <span class='ko'>(단층 퍼셉트론)</span>은 linear classifier <span class='ko'>(선형 분류기)</span>이다.
+        AND와 OR은 linearly separable <span class='ko'>(선형 분리 가능)</span>하지만 XOR은 not linearly separable <span class='ko'>(선형 분리 불가능)</span>이므로 SLP로 해결할 수 없다.
+        이후 Multi-layer Perceptron (MLP) <span class='ko'>(다층 퍼셉트론)</span>은 nonlinearly separable problem <span class='ko'>(비선형 분리 문제)</span>을 해결할 수 있는 구조로 제시된다.”
+      </div>
+      <div class="warn" style="margin-top:12px">
+        <b>주의:</b> <code>y=ax+b로 안 된다</code>는 표현은 <b>PDF 원문 용어가 아니라 이해를 위한 비유</b>입니다.
+        답안에서는 <b>linear classifier <span class='ko'>(선형 분류기)</span> / linearly separable <span class='ko'>(선형 분리 가능)</span> / not linearly separable <span class='ko'>(선형 분리 불가능)</span></b>을 우선 사용하세요.
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <div class="kicker">③ [PDF 원문] The Rise of Modern / Agentic AI <span class='ko'>(에이전트형 AI)</span></div>
+      <h3>Transformer 이후 능력의 확장</h3>
+      <div class="flow">
+        <div class="node">2017<br/><b>Transformer</b></div><div class="arrow">→</div>
+        <div class="node">2018<br/><b>BERT</b></div><div class="arrow">→</div>
+        <div class="node">2020<br/><b>GPT-3</b></div><div class="arrow">→</div>
+        <div class="node">2022<br/><b>ChatGPT</b></div><div class="arrow">→</div>
+        <div class="node">2024<br/><b>Gemini 1.5</b></div><div class="arrow">→</div>
+        <div class="node">2025+<br/><b>Agentic AI <span class='ko'>(에이전트형 AI)</span></b></div>
+      </div>
+      <p><b>[PDF 원문 요약]</b> MODEL ARCHITECTURE → PRE-TRAINING → SCALE → ALIGNMENT → MULTIMODALITY → AUTONOMY</p>
+      <div class="tip" style="margin-top:10px">
+        <b>여기서는 연도 흐름만 기억하면 됩니다.</b> Transformer·BERT·GPT·Multimodal·Agentic AI의 구조와 차이는 뒤의 해당 개념 섹션에서 중복 없이 한 번씩 깊게 설명합니다.
+      </div>
+    </div>
+
+<div class="card" style="margin-top:18px">
+      <h3>딥러닝이 늦게 성공한 이유</h3>
+      <div class="grid g2">
+        <div>
+          <div class="warn"><b>과거의 병목</b><br/>높은 계산비용 + 부족한 학습데이터</div>
+          <p>그래서 2000년대 초까지는 SVM, GMM 같은 상대적으로 단순한 모델이 더 인기 있었습니다.</p>
+        </div>
+        <div>
+          <div class="tip"><b>돌파구</b><br/>GPU + Big Data + 학습시간을 줄이는 다양한 기법</div>
+          <p>딥러닝이 “원리는 있었는데 현실적으로 못 돌리던 기술”에서 “대규모로 돌릴 수 있는 기술”로 변했습니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <div class="kicker">[PDF 원문 흐름] Deep Learning Milestones</div>
+      <h3>딥러닝 전환점 4개 — “학습 가능 → 음성 성과 → 비전 돌파 → 강화학습 상징”</h3>
+      <div class="vtimeline">
+        <div class="vmile">
+          <div class="vyear">2006</div>
+          <h4>Layer-wise Pre-training<br/><span class="ko">(층별 사전학습)</span></h4>
+          <p>Unsupervised layer-wise pretraining이 깊은 신경망 학습의 현실적 가능성을 넓힘.</p>
+          <span class="tag">깊게 학습할 길을 열다</span>
+        </div>
+        <div class="vmile">
+          <div class="vyear">2009</div>
+          <h4>Speech Recognition<br/><span class="ko">(음성인식)</span></h4>
+          <p>Neural Network가 전통적인 HMM 기반 접근을 앞서는 성과가 나타남.</p>
+          <span class="tag">실제 분야에서 성과</span>
+        </div>
+        <div class="vmile">
+          <div class="vyear">2012</div>
+          <h4>AlexNet</h4>
+          <p>Object Recognition에서 큰 성능 향상. 컴퓨터비전에서 딥러닝의 결정적 전환점.</p>
+          <span class="tag">비전의 돌파구</span>
+        </div>
+        <div class="vmile">
+          <div class="vyear">2016</div>
+          <h4>AlphaGo</h4>
+          <p>Deep Reinforcement Learning <span class="ko">(심층 강화학습)</span>으로 이세돌 9단을 꺾은 상징적 성과.</p>
+          <span class="tag">판단·행동으로 확장</span>
+        </div>
+      </div>
+      <div class="tip" style="margin-top:12px">
+        <b>🧠 기억 그림:</b> 2006 <b>“깊게 학습”</b> → 2009 <b>“음성에서 증명”</b> → 2012 <b>“이미지에서 폭발”</b> → 2016 <b>“판단·행동까지”</b>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="genai">
+    <h2>5. Transformer 이후 무엇이 바뀌었나?</h2>
+    <div class="grid g2">
+      <div class="card">
+        <div class="kicker">Before Transformer</div>
+        <h3>RNN / LSTM — 왜 등장했고 무엇이 달랐나?</h3>
+
+        <div class="mini-diagram">
+          <h4>RNN <span class="ko">(순환 신경망)</span> = “앞에서 읽은 내용을 메모해서 다음 단어로 넘긴다”</h4>
+          <svg viewBox="0 0 720 235" style="width:100%;height:auto;display:block" aria-label="RNN hidden state 전달 구조">
+            <defs>
+              <marker id="rnnArrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#667085"/></marker>
+            </defs>
+            <text x="45" y="35" font-size="14" fill="#667085">시간 t-1</text>
+            <text x="280" y="35" font-size="14" fill="#667085">시간 t</text>
+            <text x="515" y="35" font-size="14" fill="#667085">시간 t+1</text>
+
+            <rect x="35" y="65" width="150" height="70" rx="14" fill="#f5f7fb" stroke="#98a2b3"/>
+            <rect x="270" y="65" width="150" height="70" rx="14" fill="#f5f7fb" stroke="#98a2b3"/>
+            <rect x="505" y="65" width="150" height="70" rx="14" fill="#f5f7fb" stroke="#98a2b3"/>
+            <text x="77" y="94" font-size="16" font-weight="700">RNN Cell</text><text x="72" y="118" font-size="13">hidden state hₜ₋₁</text>
+            <text x="312" y="94" font-size="16" font-weight="700">RNN Cell</text><text x="313" y="118" font-size="13">hidden state hₜ</text>
+            <text x="547" y="94" font-size="16" font-weight="700">RNN Cell</text><text x="543" y="118" font-size="13">hidden state hₜ₊₁</text>
+
+            <line x1="185" y1="100" x2="265" y2="100" stroke="#667085" stroke-width="2.5" marker-end="url(#rnnArrow)"/>
+            <line x1="420" y1="100" x2="500" y2="100" stroke="#667085" stroke-width="2.5" marker-end="url(#rnnArrow)"/>
+            <text x="205" y="88" font-size="12" fill="#667085">기억 전달</text><text x="440" y="88" font-size="12" fill="#667085">기억 전달</text>
+
+            <rect x="70" y="165" width="80" height="42" rx="10" fill="#eef4ff" stroke="#6172f3"/><text x="91" y="191" font-size="15">The</text>
+            <rect x="305" y="165" width="80" height="42" rx="10" fill="#eef4ff" stroke="#6172f3"/><text x="329" y="191" font-size="15">cat</text>
+            <rect x="540" y="165" width="80" height="42" rx="10" fill="#eef4ff" stroke="#6172f3"/><text x="563" y="191" font-size="15">sat</text>
+            <line x1="110" y1="165" x2="110" y2="140" stroke="#6172f3" stroke-width="2" marker-end="url(#rnnArrow)"/>
+            <line x1="345" y1="165" x2="345" y2="140" stroke="#6172f3" stroke-width="2" marker-end="url(#rnnArrow)"/>
+            <line x1="580" y1="165" x2="580" y2="140" stroke="#6172f3" stroke-width="2" marker-end="url(#rnnArrow)"/>
+          </svg>
+          <p class="small"><b>핵심:</b> 현재 단어만 보는 게 아니라 <b>이전 hidden state <span class="ko">(은닉 상태)</span></b>를 함께 받아 과거 정보를 이어간다. 하지만 문장이 아주 길어지면 초반 정보가 약해질 수 있다.</p>
+        </div>
+
+        <div class="mini-diagram" style="margin-top:12px">
+          <h4>LSTM <span class="ko">(Long Short-Term Memory)</span> = “중요한 기억은 오래 들고 가고, 필요 없는 것은 버린다”</h4>
+          <svg viewBox="0 0 720 275" style="width:100%;height:auto;display:block" aria-label="LSTM cell state와 gate 직관 구조">
+            <defs>
+              <marker id="lstmArrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#667085"/></marker>
+            </defs>
+            <text x="32" y="42" font-size="14" font-weight="700">Cell State = 장기 기억 통로</text>
+            <line x1="40" y1="65" x2="675" y2="65" stroke="#12b76a" stroke-width="6" marker-end="url(#lstmArrow)"/>
+
+            <rect x="65" y="105" width="155" height="70" rx="14" fill="#fff4e5" stroke="#f79009"/>
+            <text x="101" y="133" font-size="15" font-weight="700">Forget Gate</text><text x="92" y="157" font-size="13">무엇을 버릴까?</text>
+            <rect x="280" y="105" width="155" height="70" rx="14" fill="#eef4ff" stroke="#6172f3"/>
+            <text x="325" y="133" font-size="15" font-weight="700">Input Gate</text><text x="304" y="157" font-size="13">무엇을 기억할까?</text>
+            <rect x="495" y="105" width="155" height="70" rx="14" fill="#f4ebff" stroke="#9e77ed"/>
+            <text x="532" y="133" font-size="15" font-weight="700">Output Gate</text><text x="520" y="157" font-size="13">무엇을 꺼내 쓸까?</text>
+
+            <line x1="142" y1="105" x2="142" y2="75" stroke="#f79009" stroke-width="2" marker-end="url(#lstmArrow)"/>
+            <line x1="357" y1="105" x2="357" y2="75" stroke="#6172f3" stroke-width="2" marker-end="url(#lstmArrow)"/>
+            <line x1="572" y1="105" x2="572" y2="75" stroke="#9e77ed" stroke-width="2" marker-end="url(#lstmArrow)"/>
+
+            <rect x="230" y="215" width="260" height="42" rx="12" fill="#fbfcff" stroke="#98a2b3"/>
+            <text x="253" y="241" font-size="14">현재 입력 xₜ + 이전 hidden state hₜ₋₁</text>
+            <line x1="360" y1="215" x2="360" y2="185" stroke="#667085" stroke-width="2" marker-end="url(#lstmArrow)"/>
+          </svg>
+          <div class="tip"><b>💡 기억법:</b> RNN은 <b>메모 한 장을 계속 넘기는 사람</b>, LSTM은 그 메모에 <b>지우개(Forget) + 기록(Input) + 꺼내보기(Output)</b> 기능을 붙인 사람. 그래서 장기 의존성 문제를 완화한다.</div>
+        </div>
+
+        <div class="warn" style="margin-top:12px"><b>하지만 둘 다:</b> token을 시간 순서대로 처리하는 <b>sequential computation <span class="ko">(순차 계산)</span></b> 구조이므로 대규모 병렬 학습에는 병목이 생긴다. 이 지점이 Transformer로 이어지는 연결고리.</div>
+      </div>
+      <div class="card">
+        <div class="kicker">Transformer</div>
+        <h3>Self-Attention <span class='ko'>(자기어텐션)</span> = “모든 단어가 서로를 직접 본다”</h3>
+        <div class="flow"><div class="node">The</div><div class="node">cat</div><div class="node">sat</div><div class="node">on</div><div class="node">the</div><div class="node">mat</div></div>
+        <div class="tip">각 토큰이 다른 모든 토큰을 직접 참조 → 더 나은 병렬성 + 장거리 관계 모델링이 쉬워짐</div>
+        <div class="mini-diagram" style="margin-top:12px">
+          <svg viewBox="0 0 420 150" width="100%" aria-label="Self-Attention 직관 그림">
+            <circle cx="55" cy="75" r="27" fill="#eef3ff" stroke="#4f7cff" stroke-width="2"/><text x="40" y="80" font-size="14">The</text>
+            <circle cx="155" cy="75" r="27" fill="#eef3ff" stroke="#4f7cff" stroke-width="2"/><text x="143" y="80" font-size="14">cat</text>
+            <circle cx="265" cy="75" r="27" fill="#eef3ff" stroke="#4f7cff" stroke-width="2"/><text x="254" y="80" font-size="14">sat</text>
+            <circle cx="365" cy="75" r="27" fill="#eef3ff" stroke="#4f7cff" stroke-width="2"/><text x="351" y="80" font-size="14">mat</text>
+            <path d="M80 58 Q155 5 240 58" fill="none" stroke="#22b8a7" stroke-width="2"/>
+            <path d="M180 58 Q265 10 340 58" fill="none" stroke="#f2a93b" stroke-width="2"/>
+            <path d="M80 92 Q210 145 340 92" fill="none" stroke="#7a63d8" stroke-width="2"/>
+            <text x="120" y="18" font-size="12">토큰끼리 직접 관계를 본다</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <div class="kicker">🧠 먼저 4개를 한 장으로 구분</div>
+      <h3>Transformer / BERT / GPT / In-context Learning은 서로 같은 말이 아님</h3>
+      <div class="storyflow">
+        <div class="storybox"><b>Transformer</b><br/><span class="small">신경망의 <b>구조</b></span><br/>“단어들이 서로를 직접 본다”</div>
+        <div class="storyarrow">→</div>
+        <div class="storybox"><b>BERT</b><br/><span class="small">Transformer를 이용한 <b>언어모델</b></span><br/>“빈칸의 앞·뒤를 모두 보고 맞힌다”</div>
+        <div class="storybox"><b>GPT</b><br/><span class="small">Transformer를 이용한 <b>생성 언어모델</b></span><br/>“앞의 문맥을 보고 다음 말을 이어 쓴다”</div>
+        <div class="storyarrow">→</div>
+        <div class="storybox"><b>In-context Learning</b><br/><span class="small">GPT 계열에서 두드러진 <b>사용 방식/능력</b></span><br/>“프롬프트 속 예시를 보고 그 자리에서 규칙을 파악한다”</div>
+      </div>
+      <div class="tip"><b>한 줄 구분:</b> Transformer는 <b>뼈대</b>, BERT와 GPT는 그 뼈대를 사용한 <b>모델</b>, In-context Learning은 모델 가중치를 다시 학습하지 않고 프롬프트 안의 지시·예시로 새 작업을 수행하는 <b>능력/방식</b>.</div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <div class="kicker">① Transformer — Attention instead of recurrence</div>
+      <h3>RNN의 “전달 릴레이”를 → Self-Attention의 “직접 연결”로 바꾼 구조</h3>
+
+      <div class="concept-visual">
+        <div class="mini-diagram">
+          <h4>Before: RNN / LSTM</h4>
+          <div class="flow" style="justify-content:center">
+            <div class="node">The</div><div class="arrow">→</div>
+            <div class="node">cat</div><div class="arrow">→</div>
+            <div class="node">sat</div><div class="arrow">→</div>
+            <div class="node">mat</div>
+          </div>
+          <p class="small">정보가 <b>앞 token → 다음 token</b>으로 순서대로 이동. 멀리 있는 관계를 보려면 여러 단계를 거친다.</p>
+        </div>
+
+        <div class="mini-diagram">
+          <h4>After: Transformer / Self-Attention</h4>
+          <svg viewBox="0 0 560 250" style="width:100%;height:auto;display:block;overflow:visible" aria-label="Transformer self-attention token 직접 연결">
+            <defs>
+              <marker id="attArrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#7f56d9"/></marker>
+            </defs>
+            <rect x="30" y="25" width="90" height="48" rx="12" fill="#eef4ff" stroke="#6172f3"/><text x="57" y="55" font-size="16">The</text>
+            <rect x="160" y="25" width="90" height="48" rx="12" fill="#eef4ff" stroke="#6172f3"/><text x="190" y="55" font-size="16">cat</text>
+            <rect x="310" y="25" width="90" height="48" rx="12" fill="#eef4ff" stroke="#6172f3"/><text x="341" y="55" font-size="16">sat</text>
+            <rect x="440" y="25" width="90" height="48" rx="12" fill="#eef4ff" stroke="#6172f3"/><text x="470" y="55" font-size="16">mat</text>
+
+            <rect x="185" y="155" width="190" height="62" rx="16" fill="#f4ebff" stroke="#9e77ed" stroke-width="2"/>
+            <text x="220" y="182" font-size="17" font-weight="700">SELF-ATTENTION</text>
+            <text x="216" y="203" font-size="12">누구를 얼마나 볼지 계산</text>
+
+            <path d="M75 73 C100 125 175 135 225 155" fill="none" stroke="#7f56d9" stroke-width="2.5" marker-end="url(#attArrow)"/>
+            <path d="M205 73 C215 112 240 130 255 155" fill="none" stroke="#7f56d9" stroke-width="4" marker-end="url(#attArrow)"/>
+            <path d="M355 73 C345 112 320 130 305 155" fill="none" stroke="#7f56d9" stroke-width="2" marker-end="url(#attArrow)"/>
+            <path d="M485 73 C455 125 385 135 335 155" fill="none" stroke="#7f56d9" stroke-width="3" marker-end="url(#attArrow)"/>
+
+            <text x="30" y="112" font-size="12" fill="#667085">각 token에서 직접 연결</text>
+            <text x="390" y="238" font-size="12" fill="#027a48">선 굵기 ≈ attention 중요도</text>
+          </svg>
+          <p class="small">각 token이 다른 token을 <b>직접 참고</b>하고, 관계의 중요도(attention weight)를 계산한다.</p>
+        </div>
+      </div>
+
+      <div class="storyflow" style="margin-top:14px">
+        <div class="storybox"><b>① Token 입력</b><br/><span class="small">문장을 token으로 나눔</span></div>
+        <div class="storyarrow">→</div>
+        <div class="storybox"><b>② Self-Attention</b><br/><span class="small">token 간 관계 계산</span></div>
+        <div class="storyarrow">→</div>
+        <div class="storybox"><b>③ Contextual representation</b><br/><span class="small">주변 문맥이 반영된 표현</span></div>
+      </div>
+
+      <div class="callout" style="margin-top:14px"><b>💡 머릿속 장면:</b> RNN/LSTM은 <b>전달 릴레이</b>, Transformer는 <b>회의실</b>. 회의실에서는 멀리 앉은 사람에게도 바로 질문할 수 있다. 그래서 PDF가 강조하는 <b>better parallelism + easier long-range relationships</b>로 연결된다.</div>
+      <div class="tip" style="margin-top:10px"><b>🎯 시험 포인트:</b> Transformer는 recurrence 대신 <b>attention</b>을 중심으로 sequence를 처리하며, <b>Self-attention lets each token directly look at every other token</b>. 그 결과 RNN/LSTM보다 병렬 처리와 장거리 관계 모델링에 유리하다.</div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <div class="kicker">② BERT — Learn by Filling in the Blank</div>
+      <h3>BERT는 “빈칸 탐정”: 왼쪽 + 오른쪽 문맥을 모두 보고 정답을 추론</h3>
+      <svg viewBox="0 0 900 280" width="100%" aria-label="BERT masked language modeling 직관 그림">
+        <text x="105" y="45" font-size="20">Paris</text>
+        <text x="205" y="45" font-size="20">is</text>
+        <text x="260" y="45" font-size="20">the</text>
+        <rect x="330" y="10" width="120" height="52" rx="10" fill="#fff4e5" stroke="#f79009" stroke-width="2"/>
+        <text x="357" y="43" font-size="19" font-weight="700">[MASK]</text>
+        <text x="485" y="45" font-size="20">of</text>
+        <text x="545" y="45" font-size="20">France</text>
+
+        <path d="M110 75 C190 150, 310 155, 375 78" fill="none" stroke="#7f56d9" stroke-width="3"/>
+        <path d="M210 75 C255 120, 325 120, 375 78" fill="none" stroke="#7f56d9" stroke-width="3"/>
+        <path d="M600 75 C560 145, 470 145, 405 78" fill="none" stroke="#039855" stroke-width="3"/>
+        <path d="M500 75 C470 120, 430 120, 405 78" fill="none" stroke="#039855" stroke-width="3"/>
+
+        <text x="125" y="175" font-size="15" fill="#6941c6">← 왼쪽 문맥도 봄</text>
+        <text x="515" y="175" font-size="15" fill="#027a48">오른쪽 문맥도 봄 →</text>
+        <rect x="335" y="200" width="125" height="52" rx="12" fill="#ecfdf3" stroke="#12b76a" stroke-width="2"/>
+        <text x="355" y="233" font-size="20" font-weight="700">capital</text>
+        <text x="500" y="230" font-size="15">← 빈칸 정답 예측</text>
+      </svg>
+      <div class="tip"><b>왜 Bidirectional <span class="ko">(양방향)</span>?</b> 빈칸 왼쪽의 <b>“Paris is the”</b>뿐 아니라 오른쪽의 <b>“of France”</b>도 함께 사용하기 때문. 그래서 문장의 <b>의미를 이해·표현하는 데 강한 방식</b>으로 생각하면 직관적이야.</div>
+      <div class="warn"><b>헷갈리지 않기:</b> 여기서 BERT의 핵심 그림은 “문장을 왼쪽→오른쪽으로 계속 생성”이 아니라 <b>가려진 token을 주변 문맥으로 맞히는 것</b>.</div>
+    </div>
+
+    
+    <div class="card" style="margin-top:18px">
+      <div class="kicker">👀 같은 문장으로 BERT ↔ GPT 비교</div>
+      <h3>둘 다 Transformer 기반이지만 학습 그림이 다르다</h3>
+      <div class="concept-visual">
+        <div class="mini-diagram"><h4>BERT = 빈칸 복원</h4>
+          <p style="font-size:1.1rem">나는 오늘 <b>[MASK]</b>에 갔다.</p>
+          <p>⬅️ 왼쪽 문맥 &nbsp; 👀 &nbsp; 오른쪽 문맥 ➡️</p>
+          <div class="tip"><b>[MASK] → 학교</b></div>
+          <p class="small">Masked Language Modeling + bidirectional context</p>
+        </div>
+        <div class="mini-diagram"><h4>GPT = 다음 token 이어쓰기</h4>
+          <p style="font-size:1.1rem">나는 → 오늘 → 학교에 → <b>갔다</b> → …</p>
+          <p>➡️ 지금까지 나온 문맥으로 다음 token 예측</p>
+          <div class="tip"><b>Next-token prediction</b></div>
+          <p class="small">Autoregressive generation의 직관</p>
+        </div>
+      </div>
+      <div class="warn"><b>🎯 안전한 구분:</b> 이 강의에서는 BERT의 <b>masked/bidirectional pretraining</b>과 GPT의 <b>autoregressive next-token prediction</b> 차이를 잡으면 된다.</div>
+    </div>
+<div class="card" style="margin-top:18px">
+      <div class="kicker">③ GPT — Next-token Prediction</div>
+      <h3>GPT는 “이어쓰기 작가”: 지금까지 나온 말만 보고 다음 token을 하나씩 생성</h3>
+      <svg viewBox="0 0 900 300" width="100%" aria-label="GPT next token prediction 직관 그림">
+        <g transform="translate(55,55)">
+          <rect x="0" y="0" width="110" height="54" rx="12" fill="#f5f7fb" stroke="#98a2b3"/><text x="25" y="34" font-size="19">오늘</text>
+          <text x="125" y="34" font-size="24">→</text>
+          <rect x="165" y="0" width="110" height="54" rx="12" fill="#f5f7fb" stroke="#98a2b3"/><text x="190" y="34" font-size="19">날씨가</text>
+          <text x="290" y="34" font-size="24">→</text>
+          <rect x="330" y="0" width="110" height="54" rx="12" fill="#f5f7fb" stroke="#98a2b3"/><text x="350" y="34" font-size="19">정말</text>
+          <text x="455" y="34" font-size="24">→</text>
+          <rect x="495" y="0" width="130" height="54" rx="12" fill="#ecfdf3" stroke="#12b76a" stroke-width="2"/><text x="520" y="34" font-size="19" font-weight="700">좋네요</text>
+          <text x="642" y="34" font-size="24">→</text>
+          <rect x="680" y="0" width="110" height="54" rx="12" fill="#fff4e5" stroke="#f79009" stroke-width="2"/><text x="720" y="34" font-size="19">.</text>
+
+          <text x="0" y="105" font-size="14" fill="#667085">입력/이미 생성된 token</text>
+          <text x="495" y="105" font-size="14" fill="#027a48">다음 token 예측</text>
+          <text x="0" y="150" font-size="15">① 지금까지 나온 문맥을 읽음</text>
+          <text x="0" y="182" font-size="15">② 다음 token의 확률을 계산</text>
+          <text x="0" y="214" font-size="15">③ 하나를 선택해 붙임 → 다시 반복</text>
+        </g>
+      </svg>
+      <div class="callout"><b>💡 기억법:</b> GPT = 휴대폰 키보드의 <b>“다음 단어 자동완성”을 엄청나게 크게 확장한 것</b>이라고 생각하면 좋아. 기본 학습 목표는 단순한 <b>Next-token prediction</b>인데, 모델·데이터·compute를 크게 키우면서 다양한 능력이 나타난다는 것이 강의의 흐름.</div>
+    </div>
+
+    
+    <div class="card" style="margin-top:18px">
+      <div class="kicker">💡 이해 보충 — 학습 방식 3개</div>
+      <h3>Pre-training vs Fine-tuning vs In-context Learning</h3>
+      <div class="storyflow">
+        <div class="storybox">📚<br/><b>Pre-training</b><br/>대규모 데이터로 기본기 학습<hr/><b>Weights 변경 ✅</b></div>
+        <div class="storyarrow">→</div>
+        <div class="storybox">🎓<br/><b>Fine-tuning</b><br/>특정 업무에 맞게 추가 학습<hr/><b>Weights 변경 ✅</b></div>
+        <div class="storyarrow">≠</div>
+        <div class="storybox">📝<br/><b>In-context Learning</b><br/>prompt의 지시·예시로 현재 task 수행<hr/><b>Test-time gradient update ❌</b></div>
+      </div>
+      <div class="callout"><b>PDF 연결:</b> BERT는 <b>Pretrain once, fine-tune many tasks</b>, GPT-3는 <b>no gradient update at test time</b>과 In-context Learning의 흐름으로 제시된다.</div>
+    </div>
+<div class="card" style="margin-top:18px">
+      <div class="kicker">④ In-context Learning — Learn from the prompt, without gradient update</div>
+      <h3>“모델을 다시 훈련시키는 것”이 아니라, 문제지 앞의 예시를 보고 규칙을 눈치채는 것</h3>
+      <div class="concept-visual">
+        <div class="mini-diagram">
+          <h4>❌ 일반적인 추가 학습 / Fine-tuning 느낌</h4>
+          <div class="flow">
+            <div class="node">Training Data</div><div class="arrow">→</div>
+            <div class="node">Gradient Update</div><div class="arrow">→</div>
+            <div class="node">Weights 변경</div>
+          </div>
+          <p class="small">모델 내부 파라미터 자체가 바뀜.</p>
+        </div>
+        <div class="mini-diagram">
+          <h4>✅ In-context Learning</h4>
+          <div class="flow">
+            <div class="node">Instruction + Examples</div><div class="arrow">→</div>
+            <div class="node">같은 모델</div><div class="arrow">→</div>
+            <div class="node">새 문제 수행</div>
+          </div>
+          <p class="small"><b>Gradient update 없음.</b> 현재 prompt/context 안에서 패턴을 파악.</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px;background:#fbfcff">
+        <h4>🧩 실제로 눈으로 보면</h4>
+        <div class="storyflow">
+          <div class="storybox"><b>Zero-shot</b><br/><span class="small">예시 0개</span><br/>“다음 문장을 긍정/부정으로 분류해.”<br/><b>영화가 정말 좋았다 → ?</b></div>
+          <div class="storybox"><b>One-shot</b><br/><span class="small">예시 1개</span><br/>“별로였다 → 부정”<br/><b>영화가 정말 좋았다 → ?</b></div>
+          <div class="storybox"><b>Few-shot</b><br/><span class="small">예시 여러 개</span><br/>“최고였다→긍정”<br/>“별로였다→부정”<br/>“재미있었다→긍정”<br/><b>영화가 정말 좋았다 → ?</b></div>
+        </div>
+      </div>
+
+      <div class="tip"><b>💡 시험에서 가장 중요한 구분:</b> In-context Learning은 <b>test time에 gradient update 없이</b> instruction/examples를 이용해 새로운 task를 수행하는 것. Zero/One/Few-shot은 그 prompt 안에 <b>예시를 몇 개 주느냐</b>의 차이.</div>
+    </div>
+
+
+    <div class="section">
+      <h2>6. 먼저 용어부터 — Token / Context / Context Window / Modality</h2>
+
+      <div class="card">
+        <div class="kicker">🧩 Token → Context</div>
+        <h3>Context <span class="ko">(문맥)</span> = 모델이 “지금 답할 때 참고하고 있는 정보”</h3>
+
+        <div class="storyflow">
+          <div class="storybox"><b>Token</b><br/><span class="small">문장을 처리하기 위해 나눈 작은 단위</span><br/>“나는 / 공장 / 데이터…”</div>
+          <div class="storyarrow">→</div>
+          <div class="storybox"><b>여러 Token + 앞선 대화·자료</b><br/><span class="small">서로 연결해서 의미 파악</span></div>
+          <div class="storyarrow">→</div>
+          <div class="storybox"><b>Context</b><br/><span class="small">현재 판단에 참고되는 문맥</span></div>
+          <div class="storyarrow">→</div>
+          <div class="storybox"><b>다음 답변</b><br/><span class="small">문맥을 바탕으로 생성/추론</span></div>
+        </div>
+
+        <div class="concept-visual" style="margin-top:14px">
+          <div class="mini-diagram">
+            <h4>Context가 없으면</h4>
+            <p style="font-size:1.08rem"><b>“그거 다시 설명해줘.”</b></p>
+            <p class="small">모델 입장: ❓ <b>“그거”가 무엇인지 알 수 없음.</b></p>
+          </div>
+          <div class="mini-diagram">
+            <h4>Context가 있으면</h4>
+            <p><b>앞선 대화:</b> “Transformer의 Self-Attention을 설명해줘.”</p>
+            <p><b>다음 질문:</b> “그거 다시 설명해줘.”</p>
+            <p class="small">모델: ✅ <b>“그거 = Self-Attention”</b>이라고 문맥에서 연결.</p>
+          </div>
+        </div>
+
+        <div class="tip"><b>💡 기억법:</b> Context는 시험 볼 때 책상 위에 펼쳐 놓은 <b>참고자료</b>와 비슷하다. 지금 질문 하나뿐 아니라, 앞의 문장·대화·예시·문서 등 현재 처리에 들어온 정보가 답을 이해하는 배경이 된다.</div>
+      </div>
+
+      
+      <div class="card" style="margin-top:18px">
+        <div class="kicker">💡 이해 보충 — Transformer 선수개념</div>
+        <h3>Token → Embedding → Attention → Contextual Representation</h3>
+        <div class="storyflow">
+          <div class="storybox"><b>① Token</b><br/>문장을 작은 처리 단위로 나눔<br/><code>배 / 를 / 탔다</code></div>
+          <div class="storyarrow">→</div>
+          <div class="storybox"><b>② Embedding</b><br/>token을 숫자 벡터로 표현<br/><code>[0.21, -0.8, ...]</code></div>
+          <div class="storyarrow">→</div>
+          <div class="storybox"><b>③ Self-Attention</b><br/>다른 token과의 관계 계산<br/><span class="small">“누구를 얼마나 볼까?”</span></div>
+          <div class="storyarrow">→</div>
+          <div class="storybox"><b>④ Contextual Representation</b><br/>주변 문맥이 반영된 표현</div>
+        </div>
+        <div class="concept-visual" style="margin-top:14px">
+          <div class="mini-diagram"><h4>🍐 “배를 먹었다”</h4><p>먹었다 · 맛있다 · 과일</p><p class="small">주변 문맥 → <b>과일 배</b> 의미</p></div>
+          <div class="mini-diagram"><h4>🚢 “배를 탔다”</h4><p>탔다 · 바다 · 항구</p><p class="small">주변 문맥 → <b>선박</b> 의미</p></div>
+        </div>
+        <div class="tip"><b>핵심:</b> Embedding은 숫자 표현의 출발점이고, Self-Attention을 지나며 <b>문맥이 반영된 표현</b>으로 바뀐다고 이해하면 된다. <span class="small">※ PDF 이해를 위한 보충 설명.</span></div>
+      </div>
+<div class="card" style="margin-top:18px">
+        <div class="kicker">📏 Context Window</div>
+        <h3>Context Window <span class="ko">(문맥 창)</span> = 한 번에 참고할 수 있는 정보의 범위</h3>
+        <div style="max-width:760px;margin:16px auto">
+          <div style="border:3px solid #6172f3;border-radius:18px;padding:16px;background:#fbfcff">
+            <div style="text-align:center;font-weight:800;margin-bottom:12px">🖥️ 모델의 작업 책상 = Context Window</div>
+            <div class="storyflow">
+              <div class="storybox">📄 질문</div>
+              <div class="storybox">💬 앞선 대화</div>
+              <div class="storybox">📚 긴 문서</div>
+              <div class="storybox">💻 코드</div>
+            </div>
+          </div>
+          <div style="text-align:center;font-size:1.5rem;margin:8px">↓</div>
+          <div class="callout"><b>Long Context</b> = 이 “작업 책상”이 훨씬 커진 것. 더 긴 문서·대화·코드·영상 정보를 한 번에 참고할 수 있다는 의미.</div>
+        </div>
+        <div class="warn"><b>중요:</b> PDF도 강조하듯 <b>Context가 크다 = reasoning이 자동으로 더 좋다</b>는 뜻은 아니다. “참고할 수 있는 작업 공간이 넓어졌다”는 능력 축으로 이해해야 한다.</div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <div class="kicker">👁️👂📝 Modality → Multimodal</div>
+        <h3>Modality <span class="ko">(양식)</span> = 정보의 종류 / Multimodal = 여러 종류를 함께 다룸</h3>
+
+        <div class="storyflow">
+          <div class="storybox"><div style="font-size:2rem">📝</div><b>TEXT</b><br/><span class="small">문장·문서</span></div>
+          <div class="storybox"><div style="font-size:2rem">🖼️</div><b>IMAGE</b><br/><span class="small">사진·도면</span></div>
+          <div class="storybox"><div style="font-size:2rem">🎧</div><b>AUDIO</b><br/><span class="small">음성·소리</span></div>
+          <div class="storybox"><div style="font-size:2rem">🎬</div><b>VIDEO</b><br/><span class="small">영상</span></div>
+          <div class="storybox"><div style="font-size:2rem">💻</div><b>CODE</b><br/><span class="small">프로그램 코드</span></div>
+        </div>
+
+        <div style="text-align:center;font-size:1.8rem;margin:10px">↓ 함께 이해 ↓</div>
+
+        <div style="max-width:540px;margin:0 auto;border:2px solid #9e77ed;border-radius:18px;padding:18px;text-align:center;background:#f9f5ff">
+          <div style="font-size:1.8rem">🧠</div>
+          <b>Multimodal Foundation Model</b><br/>
+          <span class="small">Text + Image + Audio + Video + Code 등 여러 modality를 연결해 reasoning</span>
+        </div>
+
+        <div class="concept-visual" style="margin-top:14px">
+          <div class="mini-diagram">
+            <h4>❌ Text-only 예</h4>
+            <p>사용자: “이 설비 사진에서 이상한 부분 찾아줘.”</p>
+            <p class="small">텍스트만 처리하는 모델은 <b>사진 자체를 입력 정보로 이해하지 못함.</b></p>
+          </div>
+          <div class="mini-diagram">
+            <h4>✅ Multimodal 예</h4>
+            <p>📷 설비 사진 + 📝 “이 부분이 왜 이상해?”</p>
+            <p class="small">이미지와 질문을 <b>함께</b> 보고 관계를 이해해 답변.</p>
+          </div>
+        </div>
+
+        <div class="tip"><b>🏭 산업 예시:</b> 설비의 <b>카메라 이미지 + 진동/센서 정보 + 작업자 텍스트 기록</b>처럼 서로 다른 형태의 정보를 함께 연결해 판단하는 방향으로 생각하면 Multimodal이 직관적이다. <span class="small">※ 이 산업 예시는 이해 보충이며, PDF의 정의 문구 자체는 아님.</span></div>
+      </div>
+
+      
+      <div class="card" style="margin-top:18px">
+        <div class="kicker">💡 이해 보충 — Multimodal이 왜 가능한가?</div>
+        <h3>입력 형태는 달라도 관련된 의미를 연결해 표현할 수 있다</h3>
+        <div class="storyflow">
+          <div class="storybox">🖼️ 🐈<br/><b>고양이 사진</b><br/><span class="small">Image representation</span></div>
+          <div class="storyarrow">↘</div>
+          <div class="storybox" style="border-width:2px">🧠<br/><b>관련된 의미 표현</b><br/><span class="small">고양이 · cat · 동물</span></div>
+          <div class="storyarrow">↗</div>
+          <div class="storybox">📝<br/><b>“고양이”</b><br/><span class="small">Text representation</span></div>
+        </div>
+        <div class="callout"><b>산업 장면:</b> 📷 설비 사진 + 📝 “균열이 있어?” → 시각 특징과 질문의 의미를 함께 연결 → 답변/판단.</div>
+        <div class="tip"><b>주의:</b> 실제 내부 구현은 모델마다 다르다. 이 그림은 PDF의 <b>reason across modalities</b>를 이해하기 위한 개념 시각화다.</div>
+      </div>
+<div class="card" style="margin-top:18px">
+        <div class="kicker">🔗 이제 전부 연결</div>
+        <h3>Transformer → BERT/GPT → Context → Multimodal → Agentic AI</h3>
+        <div class="storyflow">
+          <div class="storybox"><b>Transformer</b><br/><span class="small">token 관계를 Attention으로 처리하는 구조</span></div>
+          <div class="storyarrow">→</div>
+          <div class="storybox"><b>BERT / GPT</b><br/><span class="small">Transformer 기반 언어모델</span></div>
+          <div class="storyarrow">→</div>
+          <div class="storybox"><b>Long Context</b><br/><span class="small">더 많은 정보를 한 번에 참고</span></div>
+          <div class="storyarrow">→</div>
+          <div class="storybox"><b>Multimodal</b><br/><span class="small">텍스트뿐 아니라 이미지·음성·영상·코드까지</span></div>
+          <div class="storyarrow">→</div>
+          <div class="storybox"><b>Agentic AI</b><br/><span class="small">도구를 사용하고 행동하며 목표 수행</span></div>
+        </div>
+        <div class="callout"><b>한 장 기억:</b> <b>Transformer는 정보를 처리하는 뼈대</b> → GPT/BERT 같은 모델 → <b>Context는 모델이 현재 참고하는 정보</b> → <b>Multimodal은 참고하는 정보의 종류가 여러 개</b> → Agent는 그 정보를 바탕으로 <b>행동까지 수행</b>.</div>
+      </div>
+    </div>
+
+    
+    <div class="card" style="margin-top:18px">
+      <div class="kicker">💡 이해 보충 — 자주 섞이는 용어</div>
+      <h3>Foundation Model / LLM / Generative AI 관계</h3>
+      <div class="concept-visual">
+        <div class="mini-diagram"><h4>모델 관점</h4>
+          <div style="border:2px solid #98a2b3;border-radius:14px;padding:12px"><b>Foundation Model</b>
+            <div style="margin:10px;padding:10px;border:2px solid #6172f3;border-radius:10px"><b>LLM</b><br/><span class="small">언어 중심의 대규모 모델 계열</span>
+              <div style="margin-top:8px;padding:8px;border:1px dashed #12b76a;border-radius:8px"><b>GPT 계열</b> — 생성 언어모델 예</div>
+            </div>
+            <div style="margin:10px;padding:10px;border:2px solid #9e77ed;border-radius:10px"><b>Multimodal Foundation Model</b><br/><span class="small">여러 modality를 함께 처리</span></div>
+          </div>
+        </div>
+        <div class="mini-diagram"><h4>능력/응용 관점</h4>
+          <p><b>Generative AI</b> = 새로운 content를 생성하는 AI 범주</p>
+          <div class="storyflow"><div class="storybox">📝 Text</div><div class="storybox">🖼️ Image</div><div class="storybox">🎬 Video</div><div class="storybox">💻 Code</div></div>
+          <p class="small"><b>LLM = Generative AI</b>로 완전히 같은 말은 아니다. LLM은 모델 계열, Generative AI는 생성 능력을 중심으로 보는 범주.</p>
+        </div>
+      </div>
+      <div class="tip"><b>PDF와의 경계:</b> 이 계층 설명은 Week 1의 Generative AI·foundation model·multimodal 흐름을 이해하기 위한 <b>💡 보충</b>이다.</div>
+    </div>
+<div class="section">
+      <h2>7. Multimodal <span class='ko'>(멀티모달·다중양식)</span> + Long Context <span class='ko'>(긴 문맥)</span></h2>
+      <div class="card">
+        <div class="flow">
+          <div class="node">TEXT</div><div class="node">IMAGE</div><div class="node">AUDIO</div><div class="node">VIDEO</div><div class="node">CODE</div>
+          <div class="arrow">→</div><div class="node ai">FOUNDATION MODEL</div>
+        </div>
+        <p>강의의 포인트는 “각 modality를 따로 처리”하는 수준을 넘어, <b>공유된 reasoning system</b> 안에서 여러 형태의 정보를 함께 다루는 방향입니다.</p>
+      </div>
+      <div class="grid g2" style="margin-top:18px">
+        <div class="card"><h3>Gemini 1.5 예시</h3><p>Multimodal <span class='ko'>(멀티모달·다중양식)</span> + Long Context <span class='ko'>(긴 문맥)</span> + Transformer/MoE 기반 효율적 구조를 대표 사례로 제시.</p></div>
+        <div class="card"><h3>1M-token context가 의미하는 것</h3><p>강의 비유: 모델의 <b>“작업 책상(working desk)”</b>이 커지는 것. 하지만 책상이 커진다고 추론이 자동으로 더 좋아지는 것은 아님.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="agent">
+    
+    <div class="card" style="margin-top:18px">
+      <div class="kicker">🧠 → 🧰 → 🤖 한 장 연결</div>
+      <h3>LLM → AI System → Agentic AI = 두뇌 → 업무 시스템 → 자율적 목표 수행</h3>
+      <div class="storyflow">
+        <div class="storybox">🧠<br/><b>LLM</b><br/><span class="small">언어 이해·생성·추론</span><hr/>“답할 수 있음”</div>
+        <div class="storyarrow">+</div>
+        <div class="storybox">🧰<br/><b>AI System</b><br/><span class="small">RAG · Tools/APIs · Memory/State · Code/Computer · Guardrails</span><hr/>“찾고 도구를 쓸 수 있음”</div>
+        <div class="storyarrow">→</div>
+        <div class="storybox">🤖<br/><b>Agentic AI</b><br/><span class="small">Goal → Plan → Act → Observe → Reflect → Update</span><hr/>“목표를 향해 다음 행동을 선택·반복”</div>
+      </div>
+      <div class="callout"><b>🏭 예:</b> “3번 설비 이상 원인을 조사해.” → 자료/센서 DB 조회 → 결과 관찰 → 가설 수정 → 추가 도구 실행.</div>
+      <div class="tip"><b>PDF 핵심:</b> From LLM to AI System의 도구 연결과 Agentic AI loop를 이어서 이해하되, <b>Use the simplest architecture that reliably solves the task.</b></div>
+    </div>
+<h2>8. 1주차에서 가장 중요한 최신 흐름: Agentic AI <span class='ko'>(에이전트형 AI)</span></h2>
+    <div class="card">
+      <div class="arch">
+        <div>
+          <h3>기존 LLM</h3>
+          <p>질문 → 답변 생성</p>
+          <div class="node">LLM</div>
+        </div>
+        <div class="mid">→</div>
+        <div>
+          <h3>AI System</h3>
+          <div class="flow">
+            <div class="node">RAG</div><div class="node">Tools / APIs <span class='ko'>(도구 / API)</span></div><div class="node">Memory / State <span class='ko'>(메모리 / 상태)</span></div><div class="node">Code / Computer</div><div class="node">Guardrails <span class='ko'>(안전장치)</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="tip"><b>강의 핵심 문장:</b> 강한 모델 자체보다, 외부 기능과 연결되어 실제로 과업을 완료하는 <b>“model → system” 전환</b>이 중요하다.</div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <h3>Agent <span class='ko'>(에이전트·자율 실행 주체)</span> 동작 루프</h3>
+      <div class="agentloop">
+        <div>GOAL</div><div>PLAN</div><div>ACT / TOOLS</div><div>OBSERVE</div><div>REFLECT</div><div>UPDATE</div>
+      </div>
+      <p class="small muted">사용자는 목표를 정하고, Agent <span class='ko'>(에이전트·자율 실행 주체)</span>는 중간 결과를 보면서 다음 경로를 동적으로 선택합니다.</p>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <h3>Workflow <span class='ko'>(워크플로·정해진 작업 흐름)</span> vs Agent <span class='ko'>(에이전트·자율 실행 주체)</span> — 시험에도, 실무에도 중요한 구분</h3>
+      <table class="compare">
+        <tr><th></th><th>Workflow <span class='ko'>(워크플로·정해진 작업 흐름)</span></th><th>Agent <span class='ko'>(에이전트·자율 실행 주체)</span></th></tr>
+        <tr><td><b>경로</b></td><td>미리 정해짐</td><td>동적으로 결정</td></tr>
+        <tr><td><b>다음 단계 결정자</b></td><td>코드</td><td>LLM</td></tr>
+        <tr><td><b>특성</b></td><td>예측 가능, 통제 쉬움</td><td>유연하지만 예측 어려움</td></tr>
+        <tr><td><b>잘 맞는 경우</b></td><td>태스크 구조가 알려져 있음</td><td>경로를 미리 완전히 정하기 어려움</td></tr>
+      </table>
+      <div class="callout" style="margin-top:12px"><b>교수님 메시지:</b> “Use the simplest architecture that reliably solves the task.” 즉, Agent <span class='ko'>(에이전트·자율 실행 주체)</span>가 멋져 보여도 Workflow <span class='ko'>(워크플로·정해진 작업 흐름)</span>로 충분하면 굳이 Agent <span class='ko'>(에이전트·자율 실행 주체)</span>를 쓸 필요가 없습니다.</div>
+      <div class="concept-visual" style="margin-top:14px">
+        <div class="mini-diagram"><h4>Workflow <span class="ko">(정해진 작업 흐름)</span></h4><p><b>“매일 18시에 보고서 생성 → 메일 전송”</b></p><p class="small">경로가 이미 명확함. 코드가 다음 단계를 결정 → 예측·통제가 쉬움.</p></div>
+        <div class="mini-diagram"><h4>Agent <span class="ko">(에이전트)</span></h4><p><b>“이번 품질 문제 원인을 조사해서 보고해”</b></p><p class="small">어떤 자료부터 볼지 미리 고정하기 어려움. LLM이 상황에 따라 다음 행동을 선택.</p></div>
+      </div>
+    </div>
+
+    <div class="grid g3" style="margin-top:18px">
+      <div class="card"><h3>Research Agent <span class='ko'>(에이전트·자율 실행 주체)</span></h3><p>검색 → 자료 읽기 → 종합 → 계획 수정</p></div>
+      <div class="card"><h3>Coding Agent <span class='ko'>(에이전트·자율 실행 주체)</span></h3><p>파일 확인 → 코드 수정 → 테스트 → 실패 원인 반복 개선</p></div>
+      <div class="card"><h3>Business Agent <span class='ko'>(에이전트·자율 실행 주체)</span></h3><p>API/사내도구를 이용해 멀티스텝 업무 처리</p></div>
+    </div>
+
+    <div class="warn" style="margin-top:18px"><b>Agentic AI <span class='ko'>(에이전트형 AI)</span>의 새로운 위험:</b> 잘못된 행동, 도구 오사용, 오류 누적, 개인정보/보안, 높은 비용과 지연. 따라서 tracing <span class='ko'>(실행 추적)</span>, evaluation <span class='ko'>(평가)</span>, permissions <span class='ko'>(권한 관리)</span>, guardrails, human oversight <span class='ko'>(사람의 감독)</span>가 필요합니다.</div>
+
+    <div class="card" style="margin-top:18px">
+      <h3>2017 → 2025+ 발전을 6단어로 압축</h3>
+      <div class="flow">
+        <div class="node">Architecture</div><div class="arrow">→</div>
+        <div class="node">Pre-training</div><div class="arrow">→</div>
+        <div class="node">Scale</div><div class="arrow">→</div>
+        <div class="node">Alignment</div><div class="arrow">→</div>
+        <div class="node">Multimodal <span class='ko'>(멀티모달·다중양식)</span>ity</div><div class="arrow">→</div>
+        <div class="node">Autonomy</div>
+      </div>
+      <p><b>Transformer → BERT → GPT-3 → ChatGPT → Gemini 1.5 → Agentic AI <span class='ko'>(에이전트형 AI)</span></b>를 “기능의 확장”으로 보면 훨씬 쉽게 외워집니다.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>9. AI가 여전히 어려워하는 것</h2>
+    <div class="matrix">
+      <div class="mcard"><b>Reliability <span class='ko'>(신뢰성)</span></b><p>틀렸는데도 자신 있게 말할 수 있음</p></div>
+      <div class="mcard"><b>Common Sense <span class='ko'>(상식)</span></b><p>사람에게 쉬운 맥락도 어려울 수 있음</p></div>
+      <div class="mcard"><b>Causality <span class='ko'>(인과성)</span></b><p>상관관계 ≠ 인과관계</p></div>
+      <div class="mcard"><b>Novel Situations</b><p>분포 변화(distribution shift <span class='ko'>(데이터 분포 변화)</span>)에 약할 수 있음</p></div>
+      <div class="mcard"><b>Values & Judgment</b><p>정답이 하나가 아닐 수 있음</p></div>
+      <div class="mcard"><b>Self-Knowledge</b><p>자신이 틀렸다는 사실을 모를 수 있음</p></div>
+    </div>
+    <div class="callout" style="margin-top:14px"><b>한 줄 요약:</b> AI는 강력한 도구이지, 틀리지 않는 신탁(oracle)이 아니다.</div>
+  </section>
+
+  <section class="section" id="industrial">
+    <h2>10. 그럼 “산업 AI”는 무엇인가?</h2>
+    <div class="card" style="margin-top:16px">
+      <div class="kicker">🏭 산업AI 사례를 하나의 공통 구조로 보기</div>
+      <h3>현장 데이터 → AI 인식/예측 → 의사결정/제어</h3>
+      <div class="storyflow">
+        <div class="storybox"><b>① Physical World</b><br/>설비·제품·공정</div><div class="storyarrow">→</div>
+        <div class="storybox"><b>② Data</b><br/>📷 Image · 📈 Sensor/Time Series · 📝 Log</div><div class="storyarrow">→</div>
+        <div class="storybox"><b>③ AI</b><br/>Detection · Classification · Forecasting · Anomaly Detection</div><div class="storyarrow">→</div>
+        <div class="storybox"><b>④ Action</b><br/>불량 판정 · 경보 · 정비 · 최적화</div>
+      </div>
+      <div class="concept-visual" style="margin-top:14px">
+        <div class="mini-diagram"><b>Vision Inspection</b><br/>제품 이미지 → 결함 탐지 → 불량 판정</div>
+        <div class="mini-diagram"><b>Process Monitoring</b><br/>센서/공정 데이터 → 이상 패턴 → 경보</div>
+        <div class="mini-diagram"><b>Manufacturing Knowledge</b><br/>공정·설비·재료 지식 → LLM/RAG → 근거 기반 QA</div>
+      </div>
+      <div class="tip"><b>PDF 연결:</b> vision inspection, weld defect detection, manufacturing process awareness, manufacturing LLM/RAG 사례를 하나의 공통 틀로 묶은 이해 보충.</div>
+    </div>
+
+    <div class="card">
+      <p class="big">AI 기술을 <span style="color:var(--blue)">현실의 공정·설비·제품·운영 문제</span>에 연결해 실제 성능·비용·안전·품질을 개선하는 것.</p>
+      <p>1주차 후반의 SVM Lab 사례는 “AI 알고리즘 자체”보다 <b>실제 산업 시스템에 붙이는 과정</b>을 보여주는 데 의미가 있습니다.</p>
+    </div>
+
+    <div class="grid g2" style="margin-top:18px">
+      <div class="card"><h3>① 학습 방법론</h3><p>적은 데이터에서의 semi-supervised learning <span class='ko'>(준지도 학습)</span>, domain adaptation <span class='ko'>(도메인 적응)</span> 등.</p></div>
+      <div class="card"><h3>② 경량화 / 최적화</h3><p>Quantization <span class='ko'>(양자화)</span>, pruning <span class='ko'>(가지치기)</span>, hardware-aware optimization으로 실제 장치에 배포 가능하게 만듦.</p></div>
+      <div class="card"><h3>③ 제조 비전 검사</h3><p>다중 조명 결함 탐지, 용접 결함 탐지, 생산공정 모니터링 등.</p></div>
+      <div class="card"><h3>④ 제조 지식 + LLM/RAG</h3><p>공정·설비·소재·품질 관계를 구조화하고, 근거/출처를 제공하는 제조 질의응답.</p></div>
+      <div class="card"><h3>⑤ 자율주행 / Vision System</h3><p>다중 카메라, 차선 인식, 객체 인식, LiDAR-camera fusion 등.</p></div>
+      <div class="card"><h3>⑥ 멀티모달 / 에이전트</h3><p>영상 생성, 스토리 일관성 평가, Temporal Knowledge Graph 기반 검증 등.</p></div>
+    </div>
+
+    <div class="tip" style="margin-top:18px"><b>실무 관점 연결:</b> 산업 AI는 결국 <b>Model + Data + System + Domain Knowledge <span class='ko'>(도메인 지식)</span> + Deployment <span class='ko'>(배포)</span></b>의 결합입니다. 1주차 후반 사례들은 이후 수업의 시계열, 이상탐지, MLOps, 산업용 비전으로 자연스럽게 이어집니다.</div>
+  </section>
+
+  <section class="section">
+    <h2>11. 1주차를 시험·면접·실무 수준으로 이해했는지 확인</h2>
+    <div class="card checklist">
+      <label><input type="checkbox"/> AI ⊃ ML ⊃ DL 관계를 설명할 수 있다.</label>
+      <label><input type="checkbox"/> 현대 AI 발전의 3요소(Data, Compute, Algorithms)를 설명할 수 있다.</label>
+      <label><input type="checkbox"/> Perceptron이 XOR을 못 푸는 이유를 “선형 분리 가능성”으로 설명할 수 있다.</label>
+      <label><input type="checkbox"/> MLP가 XOR 문제를 해결할 수 있는 이유를 숨은층과 비선형 표현으로 설명할 수 있다.</label>
+      <label><input type="checkbox"/> Transformer가 RNN/LSTM의 어떤 병목을 완화했는지 설명할 수 있다.</label>
+      <label><input type="checkbox"/> BERT와 GPT의 학습 관점을 대략 구분할 수 있다.</label>
+      <label><input type="checkbox"/> Zero/One/Few-shot <span class='ko'>(소수 예시로 수행)</span>을 구분할 수 있다.</label>
+      <label><input type="checkbox"/> Multimodal <span class='ko'>(멀티모달·다중양식)</span>과 Long Context <span class='ko'>(긴 문맥)</span>의 의미를 설명할 수 있다.</label>
+      <label><input type="checkbox"/> Workflow <span class='ko'>(워크플로·정해진 작업 흐름)</span>와 Agent <span class='ko'>(에이전트·자율 실행 주체)</span>의 차이를 설명할 수 있다.</label>
+      <label><input type="checkbox"/> Agentic AI <span class='ko'>(에이전트형 AI)</span>에 tracing <span class='ko'>(실행 추적)</span>/evaluation <span class='ko'>(평가)</span>/permissions <span class='ko'>(권한 관리)</span>/guardrails가 왜 필요한지 설명할 수 있다.</label>
+    </div>
+  </section>
+
+  <section class="section" id="quiz">
+    <h2>12. 셀프 퀴즈 — 눌러서 정답 확인</h2>
+    <details><summary>Q1. Deep Learning <span class='ko'>(딥러닝)</span>은 AI와 어떤 관계인가?</summary><p>Deep Learning <span class='ko'>(딥러닝)</span>은 Machine Learning <span class='ko'>(머신러닝)</span>의 하위 범주이고, Machine Learning <span class='ko'>(머신러닝)</span>은 Artificial Intelligence <span class='ko'>(인공지능)</span>의 하위 범주입니다.</p></details>
+    <details><summary>Q2. XOR이 단층 퍼셉트론으로 어려운 이유는?</summary><p>XOR의 클래스 배치가 하나의 직선(초평면)으로 분리되지 않는 비선형 분리 문제이기 때문입니다.</p></details>
+    <details><summary>Q3. Transformer의 핵심 아이디어를 한 문장으로?</summary><p>Recurrence 대신 self-attention을 중심으로 시퀀스를 모델링하여 병렬 처리와 장거리 관계 모델링을 쉽게 만든 구조입니다.</p></details>
+    <details><summary>Q4. In-context learning이 왜 역사적으로 중요한가?</summary><p>테스트 시 모델 파라미터를 다시 학습하지 않아도 프롬프트의 지시와 예시를 통해 새로운 태스크를 수행할 수 있게 되었기 때문입니다.</p></details>
+    <details><summary>Q5. Workflow <span class='ko'>(워크플로·정해진 작업 흐름)</span>와 Agent <span class='ko'>(에이전트·자율 실행 주체)</span>의 가장 중요한 차이는?</summary><p>Workflow <span class='ko'>(워크플로·정해진 작업 흐름)</span>는 다음 단계가 코드에 의해 미리 정해지는 반면, Agent <span class='ko'>(에이전트·자율 실행 주체)</span>는 중간 결과에 따라 LLM이 다음 단계를 동적으로 선택합니다.</p></details>
+    <details><summary>Q6. 산업 AI에서 모델 성능만 좋으면 충분할까?</summary><p>강의 후반 사례들의 메시지는 그렇지 않다는 것입니다. 데이터, 경량화, 하드웨어, 공정/도메인 이해, 시스템 구현, 배포와 운영까지 연결되어야 산업적 가치가 생깁니다.</p></details>
+  </section>
+
+  <section class="section">
+    <h2>13. 30초 복습 카드</h2>
+    <div class="card">
+      <p class="big">AI = <span style="color:var(--blue)">Perceive</span> → <span style="color:var(--teal)">Learn/Reason</span> → <span style="color:var(--amber)">Act/Generate</span></p>
+      <p class="big">AI 발전 = Data × Compute × Algorithms</p>
+      <p class="big">역사 = Perceptron → MLP → Deep Learning <span class='ko'>(딥러닝)</span> → Transformer → LLM → Multimodal <span class='ko'>(멀티모달·다중양식)</span> → Agentic AI <span class='ko'>(에이전트형 AI)</span></p>
+      <p class="big">산업AI = Model + Data + System + Domain + Deployment <span class='ko'>(배포)</span></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="callout">
+      <b>자료 구분 안내</b><br/>
+      <b>[PDF 원문]</b> 표시는 1주차 강의자료의 용어·표현·연도·프레임을 따릅니다.
+      <b>[💡 이해 보충]</b>은 쉬운 비유나 해설이며 PDF 원문 표현이 아닐 수 있습니다.
+      <b>[🎯 시험 포인트]</b>는 가능한 한 PDF 용어를 유지해 답안형 문장으로 재구성했습니다.
+      특히 <code>y=ax+b</code>는 XOR을 직관적으로 이해하기 위한 보충 비유이고,
+      PDF의 핵심 용어는 <b>linear classifier <span class='ko'>(선형 분류기)</span>, linearly separable <span class='ko'>(선형 분리 가능)</span>, not linearly separable <span class='ko'>(선형 분리 불가능)</span></b>입니다.
+    </div>
+  </section>
+
+  <div class="footer">산업AI의 기초 GITA407 · Week 1 Visual Study Note</div>
+</div>
+</body>
+</html>
