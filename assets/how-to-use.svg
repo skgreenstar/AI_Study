@@ -13,7 +13,7 @@
 <circle cx="90" cy="45" r="160" fill="#efe5ff"/><circle cx="1140" cy="640" r="190" fill="#ffe5ef"/>
 <rect x="48" y="42" width="1104" height="152" rx="30" fill="url(#hero)" filter="url(#shadow)"/>
 <text x="88" y="88" class="white" font-size="17" font-weight="800">AI VISUAL ENCYCLOPEDIA</text>
-<text x="88" y="139" class="white" font-size="40" font-weight="900">동생들과 함께 확장하는 방법</text>
+<text x="88" y="139" class="white" font-size="40" font-weight="900">협업하며 함께 확장하는 방법</text>
 <text x="88" y="174" class="white" font-size="18">주제만 정하면 같은 디자인의 학습 페이지가 만들어지고, 검토 후 사이트에 자동 반영됩니다.</text>
 
 <g filter="url(#shadow)">
@@ -43,7 +43,7 @@
 <text x="750" y="342" class="step">PR 검토</text>
 <text x="750" y="381" class="small muted">내용과 출처 확인</text>
 <text x="750" y="408" class="small muted">기존 문서와 연결</text>
-<text x="750" y="435" class="small muted">가족 1명 이상 검토</text>
+<text x="750" y="435" class="small muted">협업자 1명 이상 검토</text>
 
 <rect x="952" y="242" width="200" height="250" rx="24" fill="#fff"/>
 <circle cx="990" cy="280" r="22" fill="#41bda5"/><text x="984" y="288" class="num">5</text>
