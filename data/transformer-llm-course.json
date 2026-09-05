@@ -1,0 +1,22 @@
+{
+  "course": {
+    "id": "transformer-llm",
+    "title": "트랜스포머와 거대언어모델",
+    "icon": "🧠",
+    "semester": "2026년 2학기",
+    "description": "토큰과 Attention에서 Transformer 구조, LLM 학습·튜닝·추론과 Agentic LLM까지 연결합니다.",
+    "updated": "2026-09-05"
+  },
+  "weeks": [
+    {
+      "week": 0,
+      "title": "한 학기 전체 지도와 선수지식",
+      "subtitle": "16주 로드맵·Transformer 핵심 흐름·LLM 생애주기·평가 방식",
+      "icon": "🗺️",
+      "color": "#7357e8",
+      "href": "week0.html",
+      "status": "먼저 보기",
+      "topics": ["Attention", "Transformer", "LLM Training", "Agentic LLM"]
+    }
+  ]
+}
