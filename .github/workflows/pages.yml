@@ -1,37 +1,37 @@
-# Deployment refresh: 2026-09-05
-name: Deploy encyclopedia to GitHub Pages
+name: Validate AI Study content
 
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  group: validate-ai-study-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  validate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-      - name: Upload static site
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
+
+      - name: Validate required pages
+        run: |
+          test -f index.html
+          test -f graduate/index.html
+          test -f topics/diffusion-prerequisites.html
+          test -f data/knowledge-categories.json
+          test -f data/graduate-curriculum.json
+
+      - name: Validate JSON data
+        run: |
+          node -e "JSON.parse(require('fs').readFileSync('data/knowledge-categories.json', 'utf8'))"
+          node -e "JSON.parse(require('fs').readFileSync('data/graduate-curriculum.json', 'utf8'))"
+
+      - name: Validate shared JavaScript
+        run: node --check assets/category-page.js
