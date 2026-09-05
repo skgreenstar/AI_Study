@@ -37,6 +37,21 @@
         "Agentic AI",
         "산업 AI 사례"
       ]
+    },
+    {
+      "week": "부록",
+      "title": "AI의 모든 역사 · 전체 지도",
+      "subtitle": "1943년 인공 뉴런부터 딥러닝·Foundation Model·Agentic AI까지",
+      "icon": "🧭",
+      "color": "#7657e8",
+      "href": "ai-history-map.html",
+      "status": "부록 보기",
+      "topics": [
+        "AI 겨울",
+        "기호주의·연결주의",
+        "딥러닝 혁명",
+        "생성형·Agentic AI"
+      ]
     }
   ]
 }
