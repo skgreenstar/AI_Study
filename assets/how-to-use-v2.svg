@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">AI 시각 백과사전 협업 사용 방법</title>
+<desc id="desc">주제를 정하고 공통 프롬프트를 실행한 뒤 Pull Request 검토를 거쳐 자동 배포하는 다섯 단계</desc>
+<defs>
+  <linearGradient id="hero" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#382276"/><stop offset=".58" stop-color="#7657e8"/><stop offset="1" stop-color="#d85c99"/></linearGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#3c2a78" flood-opacity=".13"/></filter>
+  <style>
+    text{font-family:Pretendard,"Noto Sans KR",Arial,sans-serif;fill:#202038}
+    .white{fill:#fff}.muted{fill:#69677c}.num{font-size:20px;font-weight:900;fill:#fff}.step{font-size:23px;font-weight:900}.small{font-size:16px}.arrow{font-size:34px;font-weight:800;fill:#7357e8}
+  </style>
+</defs>
+<rect width="1200" height="675" fill="#f4f1ff"/>
+<circle cx="90" cy="45" r="160" fill="#efe5ff"/><circle cx="1140" cy="640" r="190" fill="#ffe5ef"/>
+<rect x="48" y="42" width="1104" height="152" rx="30" fill="url(#hero)" filter="url(#shadow)"/>
+<text x="88" y="88" class="white" font-size="17" font-weight="800">AI VISUAL ENCYCLOPEDIA</text>
+<text x="88" y="139" class="white" font-size="40" font-weight="900">협업하며 함께 확장하는 방법</text>
+<text x="88" y="174" class="white" font-size="18">주제만 정하면 같은 디자인의 학습 페이지가 만들어지고, 검토 후 사이트에 자동 반영됩니다.</text>
+
+<g filter="url(#shadow)">
+<rect x="48" y="242" width="198" height="250" rx="24" fill="#fff"/>
+<circle cx="86" cy="280" r="22" fill="#ef6797"/><text x="80" y="288" class="num">1</text>
+<text x="72" y="342" class="step">주제 정하기</text>
+<text x="72" y="381" class="small muted">예: 조건부확률</text>
+<text x="72" y="408" class="small muted">대상과 목표 선택</text>
+<rect x="72" y="442" width="150" height="28" rx="14" fill="#ffe6ef"/><text x="89" y="462" font-size="14" font-weight="800" fill="#a8325c">입문 · 기초 · 중급</text>
+
+<rect x="274" y="242" width="198" height="250" rx="24" fill="#fff"/>
+<circle cx="312" cy="280" r="22" fill="#7357e8"/><text x="306" y="288" class="num">2</text>
+<text x="298" y="342" class="step">프롬프트 실행</text>
+<text x="298" y="381" class="small muted">agent-template.md</text>
+<text x="298" y="408" class="small muted">내용을 복사하고</text>
+<text x="298" y="435" class="small muted">대괄호만 채우기</text>
+
+<rect x="500" y="242" width="198" height="250" rx="24" fill="#fff"/>
+<circle cx="538" cy="280" r="22" fill="#4d8df7"/><text x="532" y="288" class="num">3</text>
+<text x="524" y="342" class="step">페이지 생성</text>
+<text x="524" y="381" class="small muted">그림과 흐름도</text>
+<text x="524" y="408" class="small muted">수식 해부</text>
+<text x="524" y="435" class="small muted">실무 사례와 퀴즈</text>
+
+<rect x="726" y="242" width="198" height="250" rx="24" fill="#fff"/>
+<circle cx="764" cy="280" r="22" fill="#ffc94b"/><text x="758" y="288" class="num">4</text>
+<text x="750" y="342" class="step">PR 검토</text>
+<text x="750" y="381" class="small muted">내용과 출처 확인</text>
+<text x="750" y="408" class="small muted">기존 문서와 연결</text>
+<text x="750" y="435" class="small muted">협업자 1명 이상 검토</text>
+
+<rect x="952" y="242" width="200" height="250" rx="24" fill="#fff"/>
+<circle cx="990" cy="280" r="22" fill="#41bda5"/><text x="984" y="288" class="num">5</text>
+<text x="976" y="342" class="step">자동 배포</text>
+<text x="976" y="381" class="small muted">main에 병합</text>
+<text x="976" y="408" class="small muted">GitHub Pages 실행</text>
+<text x="976" y="435" class="small muted">백과사전 업데이트</text>
+</g>
+
+<text x="252" y="372" class="arrow">→</text><text x="478" y="372" class="arrow">→</text><text x="704" y="372" class="arrow">→</text><text x="930" y="372" class="arrow">→</text>
+
+<rect x="48" y="535" width="1104" height="92" rx="22" fill="#211640"/>
+<text x="76" y="572" font-size="17" font-weight="900" fill="#ffc94b">공통 규칙</text>
+<text x="76" y="604" font-size="17" fill="#fff">기존 내용 보존  ·  디퓨전 가이드 디자인 유지  ·  양방향 개념 연결  ·  수식 발음과 뜻 설명  ·  출처 기록</text>
+</svg>
