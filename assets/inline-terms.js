@@ -23,9 +23,7 @@
 const clean=s=>String(s).replace(/^\s*\d+[.)]?\s*/,"").replace(/\([^)]*\)/g,"").replace(/\s+/g," ").trim().toLowerCase();
 const selectors=".map-card>b,.map>b,.term .en,.concept b,.node> b,.node,.storybox>b,.mcard>b,h3";
 const items=[...document.querySelectorAll(selectors)],used=new Set;
-let count=0;
 for(const el of items){
-  if(count>=10)break;
   if(el.closest(".inline-term-panel,summary,script,style")||el.querySelector(".inline-term-icon"))continue;
   const text=clean(el.childNodes[0]?.textContent||el.textContent);
   for(const d of D){
@@ -39,7 +37,7 @@ for(const el of items){
     const p=document.createElement("div");p.className="inline-term-panel";p.hidden=true;
     p.innerHTML='<div class="inline-term-pron"><span>'+E(d[0])+'</span><span>'+E(d[1])+'</span><span>'+E(d[2])+'</span></div><strong>한글 뜻: '+E(d[3])+'</strong><div>'+E(d[4])+'</div><div class="inline-term-analogy"><b>💡 직관적 비유</b> '+E(d[5])+'</div><div class="inline-term-flow">'+d[6].split("|").map((x,i)=>(i?'<span class="inline-term-arrow">→</span>':'')+"<span>"+E(x)+"</span>").join("")+"</div>";
     b.onclick=()=>{const o=p.hidden;p.hidden=!o;b.setAttribute("aria-expanded",String(o))};
-    el.append(" ",b);el.insertAdjacentElement("afterend",p);used.add(d[0]);count++;break;
+    el.append(" ",b);el.insertAdjacentElement("afterend",p);used.add(d[0]);break;
   }
 }
 })();
