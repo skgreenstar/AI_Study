@@ -1,0 +1,79 @@
+{
+  "page": {
+    "title": "IT 지식 디렉토리",
+    "description": "카테고리와 학습 항목을 한 파일에서 관리합니다.",
+    "updated": "2026-09-05"
+  },
+  "categories": [
+    {
+      "id": "ai-ml",
+      "title": "AI · 머신러닝",
+      "icon": "🧠",
+      "color": "#7357e8",
+      "keywords": ["AI", "인공지능", "머신러닝", "딥러닝", "생성형 AI", "디퓨전"],
+      "description": "확률 기초부터 딥러닝, 생성형 AI와 에이전트까지",
+      "pageDescription": "확률과 머신러닝의 기초부터 생성형 AI와 에이전트까지 연결합니다.",
+      "topics": [
+        {
+          "id": "diffusion-prerequisites",
+          "title": "디퓨전 선수지식 전체",
+          "tag": "생성모델 · 입문→중급",
+          "description": "머신러닝 기초와 확률분포부터 디퓨전 핵심 수식, 실무 활용까지.",
+          "path": "ML 기초 → 확률과 분포 → 디퓨전 → Stable Diffusion",
+          "href": "topics/diffusion-prerequisites.html",
+          "status": "학습 시작"
+        }
+      ]
+    },
+    {
+      "id": "computer-science",
+      "title": "컴퓨터공학",
+      "icon": "⚙️",
+      "color": "#ef6797",
+      "keywords": ["컴퓨터공학", "CS", "운영체제", "알고리즘", "자료구조"],
+      "description": "자료구조, 알고리즘, 운영체제와 컴퓨터 구조",
+      "pageDescription": "자료구조, 알고리즘, 운영체제와 컴퓨터 구조를 시각적으로 연결합니다.",
+      "topics": []
+    },
+    {
+      "id": "software-development",
+      "title": "소프트웨어 개발",
+      "icon": "💻",
+      "color": "#4d8df7",
+      "keywords": ["소프트웨어", "개발", "프로그래밍", "백엔드", "프론트엔드", "API"],
+      "description": "프로그래밍 언어부터 API, 테스트와 설계 원칙까지",
+      "pageDescription": "프로그래밍, API, 테스트와 좋은 소프트웨어 설계를 탐험합니다.",
+      "topics": []
+    },
+    {
+      "id": "data-database",
+      "title": "데이터 · DB",
+      "icon": "🗄️",
+      "color": "#41bda5",
+      "keywords": ["데이터", "데이터베이스", "DB", "SQL", "NoSQL", "파이프라인"],
+      "description": "SQL, NoSQL, 데이터 모델링과 파이프라인",
+      "pageDescription": "데이터 모델링과 SQL부터 파이프라인과 분산 저장까지 연결합니다.",
+      "topics": []
+    },
+    {
+      "id": "infra-cloud",
+      "title": "인프라 · 클라우드",
+      "icon": "☁️",
+      "color": "#e9a91b",
+      "keywords": ["인프라", "클라우드", "DevOps", "Docker", "Kubernetes", "AWS", "Azure"],
+      "description": "Docker, Kubernetes, 네트워크와 클라우드 운영",
+      "pageDescription": "Docker, Kubernetes와 클라우드 서비스 운영 원리를 이해합니다.",
+      "topics": []
+    },
+    {
+      "id": "security-network",
+      "title": "보안 · 네트워크",
+      "icon": "🛡️",
+      "color": "#ef6a6a",
+      "keywords": ["보안", "네트워크", "인증", "권한", "암호화"],
+      "description": "통신 구조, 인증·인가, 보안의 핵심 원리",
+      "pageDescription": "네트워크 통신부터 인증·인가와 보안의 핵심 원리를 탐험합니다.",
+      "topics": []
+    }
+  ]
+}
