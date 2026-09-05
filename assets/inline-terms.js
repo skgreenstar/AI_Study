@@ -30,8 +30,9 @@ for(const el of items){
   const text=clean(el.childNodes[0]?.textContent||el.textContent);
   for(const d of D){
     if(used.has(d[0]))continue;
-    const names=[d[0],...(d[7]||[])].map(clean);
-    if(!names.includes(text))continue;
+    const aliases={"Artificial Intelligence":["ai","인공지능"],"Machine Learning":["ml","머신러닝"],"Deep Learning":["dl","딥러닝"],"Large Language Model":["llm","거대언어모델"],"Agentic AI":["agentic llm","에이전틱 ai"],"Gaussian":["가우시안 노이즈"],"Query Key Value":["q·k·v"]};
+    const names=[d[0],...(d[7]||[]),...(aliases[d[0]]||[])].map(clean);
+    if(!names.some(n=>text===n||text.startsWith(n+" ")||text.startsWith(n+" /")||text.startsWith(n+" ·")||text.startsWith(n+":")))continue;
     const b=document.createElement("button");
     b.type="button";b.className="inline-term-icon";b.textContent="i";b.title=d[0]+" 설명 보기";
     b.setAttribute("aria-label",d[0]+" 용어 설명 펼치기");b.setAttribute("aria-expanded","false");
