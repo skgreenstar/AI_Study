@@ -29,12 +29,6 @@ footer{display:flex;justify-content:space-between;gap:20px;color:var(--muted);fo
   <div class="intro"><div><h2>어디서부터<br>탐험할까요?</h2></div><p>카드를 누르면 분야별 지식 디렉토리로 이동합니다.</p></div>
   <input class="search" id="search" aria-label="카테고리 검색" placeholder="🔎  AI, 데이터베이스, 클라우드… 검색">
   <div class="grid" id="grid">
-    <a class="card" href="categories/ai-ml.html" data-keywords="ai 인공지능 머신러닝 딥러닝 생성형 디퓨전"><span class="icon">🧠</span><h3>AI · 머신러닝</h3><p>확률 기초부터 딥러닝, 생성형 AI와 에이전트까지</p><div class="meta"><span class="count">1개 항목</span><span class="go">→</span></div></a>
-    <a class="card pink" href="categories/computer-science.html" data-keywords="컴퓨터공학 cs 운영체제 알고리즘 자료구조"><span class="icon">⚙️</span><h3>컴퓨터공학</h3><p>자료구조, 알고리즘, 운영체제와 컴퓨터 구조</p><div class="meta"><span class="count">확장 준비</span><span class="go">→</span></div></a>
-    <a class="card blue" href="categories/software-development.html" data-keywords="소프트웨어 개발 프로그래밍 백엔드 프론트엔드 api"><span class="icon">💻</span><h3>소프트웨어 개발</h3><p>프로그래밍 언어부터 API, 테스트와 설계 원칙까지</p><div class="meta"><span class="count">확장 준비</span><span class="go">→</span></div></a>
-    <a class="card mint" href="categories/data-database.html" data-keywords="데이터 데이터베이스 db sql nosql 파이프라인"><span class="icon">🗄️</span><h3>데이터 · DB</h3><p>SQL, NoSQL, 데이터 모델링과 파이프라인</p><div class="meta"><span class="count">확장 준비</span><span class="go">→</span></div></a>
-    <a class="card yellow" href="categories/infra-cloud.html" data-keywords="인프라 클라우드 devops docker kubernetes aws azure"><span class="icon">☁️</span><h3>인프라 · 클라우드</h3><p>Docker, Kubernetes, 네트워크와 클라우드 운영</p><div class="meta"><span class="count">확장 준비</span><span class="go">→</span></div></a>
-    <a class="card red" href="categories/security-network.html" data-keywords="보안 네트워크 인증 권한 암호화"><span class="icon">🛡️</span><h3>보안 · 네트워크</h3><p>통신 구조, 인증·인가, 보안의 핵심 원리</p><div class="meta"><span class="count">확장 준비</span><span class="go">→</span></div></a>
     <a class="card graduate" href="graduate/index.html" data-keywords="대학원 학기 강의 과목 트랜스포머 거대언어모델 llm 디퓨전 거대비전모델 산업 ai"><span class="icon">🎓</span><h3>대학원</h3><p>학기별 강의와 과목별 학습 자료를 한곳에서 관리</p><div class="meta"><span class="count">2026년 2학기 · 3과목</span><span class="go">→</span></div></a>
   </div>
   <div class="empty-result" id="empty">일치하는 카테고리가 아직 없어요. 새 항목으로 함께 확장할 수 있습니다.</div>
@@ -46,7 +40,12 @@ footer{display:flex;justify-content:space-between;gap:20px;color:var(--muted);fo
 <footer><b>AI Study</b><span>시각적으로 연결되는 협업형 IT 백과사전</span></footer>
 </main>
 <script>
-const input=document.getElementById('search'),cards=[...document.querySelectorAll('.card')],empty=document.getElementById('empty');
-input.addEventListener('input',()=>{const q=input.value.trim().toLowerCase();let n=0;cards.forEach(c=>{const show=!q||(c.textContent+' '+c.dataset.keywords).toLowerCase().includes(q);c.style.display=show?'flex':'none';if(show)n++});empty.style.display=n?'none':'block'});
+const input=document.getElementById('search'),grid=document.getElementById('grid'),empty=document.getElementById('empty');
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const graduateCard=grid.querySelector('.graduate').outerHTML;
+function card(c){const count=c.topics?.length?`${c.topics.length}개 항목`:'확장 준비';return `<a class="card" style="--accent:${esc(c.color||'#7357e8')}" href="categories/${encodeURIComponent(c.id)}.html" data-keywords="${esc((c.keywords||[]).join(' '))}"><span class="icon">${esc(c.icon||'📚')}</span><h3>${esc(c.title)}</h3><p>${esc(c.description||'')}</p><div class="meta"><span class="count">${count}</span><span class="go">→</span></div></a>`}
+function filter(){const q=input.value.trim().toLowerCase();let n=0;grid.querySelectorAll('.card').forEach(c=>{const show=!q||(c.textContent+' '+(c.dataset.keywords||'')).toLowerCase().includes(q);c.style.display=show?'flex':'none';if(show)n++});empty.style.display=n?'none':'block'}
+fetch('data/knowledge-categories.json').then(r=>{if(!r.ok)throw Error(r.status);return r.json()}).then(data=>{grid.innerHTML=(data.categories||[]).map(card).join('')+graduateCard;filter()}).catch(()=>{grid.insertAdjacentHTML('afterbegin','<div class="error">카테고리 데이터를 불러오지 못했습니다.</div>')});
+input.addEventListener('input',filter);
 </script>
 </body></html>
