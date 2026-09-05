@@ -10,10 +10,11 @@
 
 1. 저장소를 clone 또는 fork합니다.
 2. `topic/<주제명>` 브랜치를 만듭니다.
-3. `topics/_template.html`을 복사해 새 항목을 작성합니다.
-4. `prompts/create-topic.md`의 공통 프롬프트로 초안을 만듭니다.
-5. Pull Request를 열고 다른 구성원의 검토를 받습니다.
-6. `main`에 병합되면 GitHub Pages가 자동 배포합니다.
+3. [`AGENTS.md`](AGENTS.md)의 공통 규칙을 에이전트가 먼저 읽게 합니다.
+4. [`prompts/agent-template.md`](prompts/agent-template.md)를 복사해 주제만 채웁니다.
+5. `topics/_template.html`을 기반으로 새 항목을 작성합니다.
+6. Pull Request를 열고 다른 구성원의 검토를 받습니다.
+7. `main`에 병합되면 GitHub Pages가 자동 배포합니다.
 
 ## 문서 원칙
 
@@ -23,4 +24,4 @@
 - 수식은 기호의 발음·뜻·역할·문장으로 읽기를 포함합니다.
 - 사실과 수치에는 출처와 확인일을 남깁니다.
 
-자세한 규칙은 [CONTRIBUTING.md](CONTRIBUTING.md)를 확인하세요.
+에이전트 공통 규칙은 [AGENTS.md](AGENTS.md), 사람의 협업 규칙은 [CONTRIBUTING.md](CONTRIBUTING.md)를 확인하세요.
