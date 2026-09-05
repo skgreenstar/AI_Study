@@ -36,6 +36,9 @@ topics/diffusion-prerequisites.html은 최초의 diffusion_prerequisites_visual_
 - index.html과 README.md에 새 항목을 추가한다.
 - 공식 문서 또는 원 논문 중심으로 출처와 확인일을 기록한다.
 - 모바일 360px와 데스크톱 화면을 고려하고 가로 넘침이 없도록 한다.
+- 본문에서 전문용어가 처음 등장하는 위치 옆에 작은 `i` 아이콘을 배치하고, 누르면 같은 자리에서 설명이 펼쳐지게 한다. 별도의 용어사전 섹션으로 분리하지 않는다.
+- 펼침 설명에는 영문 표기, IPA 실제 영어 발음, 한글 발음, 한글 뜻, 쉬운 개념, 직관적 비유와 미니 흐름도를 포함한다.
+- 모든 학습 페이지에 `assets/inline-terms.css`와 `assets/inline-terms.js`를 연결하고, 없는 용어는 공통 정의에 추가하여 다른 페이지에서도 재사용한다.
 - 빈 대괄호와 placeholder를 남기지 않는다.
 - topic/[주제] 브랜치에 커밋하고 Pull Request 설명을 작성한다.
 
