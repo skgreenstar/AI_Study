@@ -52,6 +52,21 @@
         "KV Cache",
         "PagedAttention"
       ]
+    },
+    {
+      "week": 4,
+      "title": "LLM 학습과 효율적 파인튜닝",
+      "subtitle": "Pretraining·Scaling Law·분산 학습·FlashAttention·SFT·LoRA·QLoRA",
+      "icon": "🎓",
+      "color": "#31b99d",
+      "href": "week4.html",
+      "status": "학습 가능",
+      "topics": [
+        "Pretraining",
+        "FlashAttention",
+        "SFT",
+        "LoRA·QLoRA"
+      ]
     }
   ]
 }
