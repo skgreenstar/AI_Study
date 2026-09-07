@@ -6,7 +6,7 @@
     "semester": "2026년 2학기",
     "description": "디퓨전·Score Matching·Flow Matching에서 잠재공간, 가이던스, 이미지 생성 구조와 모델 학습까지 연결합니다.",
     "prerequisiteHref": "../../topics/diffusion-prerequisites.html",
-    "updated": "2026-09-05"
+    "updated": "2026-09-07"
   },
   "weeks": [
     {
@@ -17,7 +17,27 @@
       "color": "#7657e8",
       "href": "week0.html",
       "status": "먼저 보기",
-      "topics": ["Diffusion", "Score Matching", "Flow Matching", "Latent·Guidance"]
+      "topics": [
+        "Diffusion",
+        "Score Matching",
+        "Flow Matching",
+        "Latent·Guidance"
+      ]
+    },
+    {
+      "week": 2,
+      "title": "Score Matching·SDE·Probability Flow",
+      "subtitle": "Score Function·DSM·NCSN·Langevin Dynamics·Reverse SDE·PF-ODE·DPM-Solver",
+      "icon": "🧭",
+      "color": "#126d62",
+      "href": "week2.html",
+      "status": "학습 가능",
+      "topics": [
+        "Score Matching",
+        "NCSN",
+        "SDE",
+        "PF-ODE"
+      ]
     }
   ]
 }
