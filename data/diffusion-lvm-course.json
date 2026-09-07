@@ -53,6 +53,21 @@
         "SDE",
         "PF-ODE"
       ]
+    },
+    {
+      "week": 3,
+      "title": "Flow Matching·Rectified Flow",
+      "subtitle": "Trajectory·Vector Field·Probability Path·Continuity Equation·Conditional Flow Matching·Reflow",
+      "icon": "🌊",
+      "color": "#35a3b5",
+      "href": "week3.html",
+      "status": "학습 가능",
+      "topics": [
+        "Flow Matching",
+        "Vector Field",
+        "CFM",
+        "Rectified Flow"
+      ]
     }
   ]
 }
