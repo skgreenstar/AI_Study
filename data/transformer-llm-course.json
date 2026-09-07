@@ -82,6 +82,21 @@
         "Reward Model",
         "DPO"
       ]
+    },
+    {
+      "week": 6,
+      "title": "Reasoning Models·Test-time Scaling·GRPO",
+      "subtitle": "검증 가능한 보상·Pass@k·Group Relative Policy Optimization·DeepSeek R1·추론 증류",
+      "icon": "🧩",
+      "color": "#f1aa3b",
+      "href": "week6.html",
+      "status": "학습 가능",
+      "topics": [
+        "Reasoning Models",
+        "Test-time Scaling",
+        "GRPO",
+        "DeepSeek R1"
+      ]
     }
   ]
 }
