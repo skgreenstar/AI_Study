@@ -37,6 +37,21 @@
         "GQA·MQA",
         "BERT"
       ]
+    },
+    {
+      "week": 3,
+      "title": "LLM의 생성·프롬프팅·추론 최적화",
+      "subtitle": "MoE Routing·Decoding·Prompting·KV Cache·PagedAttention·Speculative Decoding",
+      "icon": "⚡",
+      "color": "#e45d9d",
+      "href": "week3.html",
+      "status": "학습 가능",
+      "topics": [
+        "MoE",
+        "Top-k·Top-p",
+        "KV Cache",
+        "PagedAttention"
+      ]
     }
   ]
 }
