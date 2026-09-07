@@ -2,7 +2,7 @@
   "page": {
     "title": "대학교",
     "description": "학기별 과목과 시간표, 학습 자료를 중복 없이 관리합니다.",
-    "updated": "2026-09-05"
+    "updated": "2026-09-07"
   },
   "semesters": [
     {
@@ -29,8 +29,8 @@
               "place": "융합교육관 405호 강의실"
             }
           ],
-          "href": null,
-          "status": "자료 준비 중"
+          "href": "analysis/index.html",
+          "status": "9월 7일 수업 기록"
         },
         {
           "id": "deep-learning-foundations-applications",
