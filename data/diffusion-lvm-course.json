@@ -113,6 +113,21 @@
         "DreamBooth·LoRA",
         "Distillation"
       ]
+    },
+    {
+      "week": 7,
+      "title": "Evaluation·Metrics·MLLM Judge",
+      "subtitle": "Human Rating·Elo·FID·CLIPScore·MSE/SSIM/LPIPS·TIFA·VQAScore·Generation Benchmarks",
+      "icon": "⚖️",
+      "color": "#276f8b",
+      "href": "week7.html",
+      "status": "학습 가능",
+      "topics": [
+        "Human·Elo",
+        "FID·CLIPScore",
+        "SSIM·LPIPS",
+        "MLLM Judge"
+      ]
     }
   ]
 }
