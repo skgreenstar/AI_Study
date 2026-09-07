@@ -83,6 +83,21 @@
         "CLIP",
         "CFG"
       ]
+    },
+    {
+      "week": 5,
+      "title": "U-Net·DiT·Multimodal Architecture",
+      "subtitle": "Receptive Field·Skip Connection·Patchify·adaLN-Zero·Joint Attention·2D/Multimodal RoPE",
+      "icon": "🏗️",
+      "color": "#6b55e7",
+      "href": "week5.html",
+      "status": "학습 가능",
+      "topics": [
+        "U-Net",
+        "DiT",
+        "adaLN-Zero",
+        "MM-DiT·RoPE"
+      ]
     }
   ]
 }
