@@ -97,6 +97,21 @@
         "GRPO",
         "DeepSeek R1"
       ]
+    },
+    {
+      "week": 7,
+      "title": "RAG·Tool Calling·Agents",
+      "subtitle": "검색 파이프라인·Hybrid Retrieval·Re-ranking·MCP·ReAct·A2A·Agent Safety",
+      "icon": "🛠️",
+      "color": "#4786f2",
+      "href": "week7.html",
+      "status": "학습 가능",
+      "topics": [
+        "RAG",
+        "Tool Calling",
+        "MCP",
+        "ReAct Agent"
+      ]
     }
   ]
 }
