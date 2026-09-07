@@ -98,6 +98,21 @@
         "adaLN-Zero",
         "MM-DiT·RoPE"
       ]
+    },
+    {
+      "week": 6,
+      "title": "Training Lifecycle·Tuning·Distillation",
+      "subtitle": "Loss Parameterization·Timestep Sampling·REPA·Pre/Post-training·DreamBooth·LoRA·Few-step Generation",
+      "icon": "🚀",
+      "color": "#28a97d",
+      "href": "week6.html",
+      "status": "학습 가능",
+      "topics": [
+        "Training Lifecycle",
+        "REPA",
+        "DreamBooth·LoRA",
+        "Distillation"
+      ]
     }
   ]
 }
