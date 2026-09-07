@@ -68,6 +68,21 @@
         "CFM",
         "Rectified Flow"
       ]
+    },
+    {
+      "week": 4,
+      "title": "Latent Diffusion·CLIP·CFG",
+      "subtitle": "VAE 잠재공간·Perceptual Loss·ViT·Contrastive Learning·Multimodal Conditioning·Classifier-Free Guidance",
+      "icon": "🎛️",
+      "color": "#df5d91",
+      "href": "week4.html",
+      "status": "학습 가능",
+      "topics": [
+        "Latent Diffusion",
+        "VAE",
+        "CLIP",
+        "CFG"
+      ]
     }
   ]
 }
