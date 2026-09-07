@@ -5,7 +5,7 @@
     "icon": "🧠",
     "semester": "2026년 2학기",
     "description": "토큰과 Attention에서 Transformer 구조, LLM 학습·튜닝·추론과 Agentic LLM까지 연결합니다.",
-    "updated": "2026-09-05"
+    "updated": "2026-09-07"
   },
   "weeks": [
     {
@@ -16,7 +16,27 @@
       "color": "#7357e8",
       "href": "week0.html",
       "status": "먼저 보기",
-      "topics": ["Attention", "Transformer", "LLM Training", "Agentic LLM"]
+      "topics": [
+        "Attention",
+        "Transformer",
+        "LLM Training",
+        "Agentic LLM"
+      ]
+    },
+    {
+      "week": 2,
+      "title": "Transformer 기반 모델과 핵심 기법",
+      "subtitle": "위치정보·LayerNorm·효율적 Attention·모델 3계열·BERT 심층 해부",
+      "icon": "🧭",
+      "color": "#4786f2",
+      "href": "week2.html",
+      "status": "학습 가능",
+      "topics": [
+        "RoPE",
+        "LayerNorm",
+        "GQA·MQA",
+        "BERT"
+      ]
     }
   ]
 }
