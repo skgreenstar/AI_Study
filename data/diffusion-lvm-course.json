@@ -25,6 +25,21 @@
       ]
     },
     {
+      "week": 1,
+      "title": "Diffusion·DDPM·DDIM",
+      "subtitle": "이미지 확률분포·Forward/Reverse Process·ELBO·KL Divergence·Noise Prediction·빠른 Sampling",
+      "icon": "🌫️",
+      "color": "#7657e8",
+      "href": "week1.html",
+      "status": "학습 가능",
+      "topics": [
+        "Diffusion",
+        "DDPM",
+        "ELBO·KL",
+        "DDIM"
+      ]
+    },
+    {
       "week": 2,
       "title": "Score Matching·SDE·Probability Flow",
       "subtitle": "Score Function·DSM·NCSN·Langevin Dynamics·Reverse SDE·PF-ODE·DPM-Solver",
