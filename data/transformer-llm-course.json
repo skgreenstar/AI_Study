@@ -67,6 +67,21 @@
         "SFT",
         "LoRA·QLoRA"
       ]
+    },
+    {
+      "week": 5,
+      "title": "Preference Tuning·RLHF·DPO",
+      "subtitle": "선호 데이터·Reward Model·PPO·KL 제약·Best-of-N·Direct Preference Optimization",
+      "icon": "⚖️",
+      "color": "#7357e8",
+      "href": "week5.html",
+      "status": "학습 가능",
+      "topics": [
+        "Preference Data",
+        "RLHF·PPO",
+        "Reward Model",
+        "DPO"
+      ]
     }
   ]
 }
