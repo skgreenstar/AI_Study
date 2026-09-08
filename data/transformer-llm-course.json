@@ -5,7 +5,7 @@
     "icon": "🧠",
     "semester": "2026년 2학기",
     "description": "토큰과 Attention에서 Transformer 구조, LLM 학습·튜닝·추론과 Agentic LLM까지 연결합니다.",
-    "updated": "2026-09-07"
+    "updated": "2026-09-08"
   },
   "weeks": [
     {
@@ -21,6 +21,21 @@
         "Transformer",
         "LLM Training",
         "Agentic LLM"
+      ]
+    },
+    {
+      "week": 1,
+      "title": "NLP·Tokenization·Word2Vec·Attention의 탄생",
+      "subtitle": "AI 계층 지도·NLP 과제와 평가·토큰화·임베딩·RNN/LSTM 한계·Seq2Seq Attention",
+      "icon": "🔦",
+      "color": "#7357e8",
+      "href": "week1.html",
+      "status": "학습 가능",
+      "topics": [
+        "Tokenization",
+        "Word2Vec",
+        "RNN·LSTM",
+        "Attention"
       ]
     },
     {
