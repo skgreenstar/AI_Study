@@ -1,29 +1,655 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>1차시 · Diffusion, DDPM과 DDIM | AI Study</title><meta name="description" content="Diffusion의 정방향·역방향 과정, ELBO, DDPM 학습과 DDIM 가속을 그림과 수식으로 배우는 시각 학습자료"><link rel="stylesheet" href="../../assets/inline-terms.css"><style>
-:root{--bg:#f6fbfa;--ink:#17322f;--muted:#667b78;--green:#126d62;--mint:#31b99d;--blue:#4786e8;--violet:#7657e8;--pink:#df5d91;--amber:#eda63c;--red:#dc5362;--line:#d9ebe7;--shadow:0 15px 38px rgba(18,92,83,.1)}*{box-sizing:border-box}html{scroll-behavior:smooth}body{word-break:keep-all;overflow-wrap:break-word;margin:0;background:radial-gradient(circle at 6% 0,#d9f4eb,transparent 28%),radial-gradient(circle at 100% 90%,#e8e4ff,transparent 27%),var(--bg);color:var(--ink);font-family:Inter,Pretendard,"Noto Sans KR",system-ui,sans-serif;line-height:1.68}.wrap{max-width:1180px;margin:auto;padding:24px 20px 85px}.back{display:inline-flex;color:var(--muted);text-decoration:none;font-weight:850;margin-bottom:18px}.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#073d39,#126d62 55%,#7657e8);color:#fff;border-radius:30px;padding:48px;box-shadow:0 20px 48px rgba(7,74,66,.2)}.hero:after{content:"1";position:absolute;right:18px;bottom:-98px;font-size:320px;font-weight:950;line-height:1;color:#ffffff12}.kicker{font-size:13px;font-weight:950;letter-spacing:1.5px;color:#bff3e5}.hero h1{font-size:clamp(34px,6vw,61px);line-height:1.08;letter-spacing:-2px;margin:10px 0 18px}.hero p{max-width:850px;font-size:18px;color:#eafff9;margin:0}.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}.badge{padding:7px 11px;border:1px solid #ffffff3b;background:#ffffff17;border-radius:99px;font-size:13px;font-weight:850}.nav{position:sticky;top:9px;z-index:8;display:flex;gap:7px;overflow:auto;margin:17px 0;padding:9px;background:#f6fbfae8;backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:16px}.nav a{white-space:nowrap;text-decoration:none;color:#345e59;background:#fff;border:1px solid var(--line);border-radius:99px;padding:6px 10px;font-size:13px;font-weight:850}.section{margin-top:50px}.section h2{font-size:clamp(27px,4vw,40px);line-height:1.18;margin:0 0 7px;letter-spacing:-1px}.lead{margin:0 0 17px;color:var(--muted)}.card{background:#fff;border:1px solid var(--line);border-radius:21px;padding:21px;box-shadow:var(--shadow)}.grid{display:grid;gap:14px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}.flow{display:grid;grid-template-columns:repeat(9,1fr);gap:7px;align-items:center}.node{min-height:138px;padding:14px 8px;border-radius:17px;color:#fff;text-align:center;display:grid;align-content:center}.node i{font-style:normal;font-size:30px}.arrow{text-align:center;color:var(--violet);font-size:23px;font-weight:950}.callout{margin-top:14px;padding:17px;border-left:6px solid var(--amber);border-radius:16px;background:#fff8e8}.formula{padding:16px;border-radius:14px;background:#173b3c;color:#fff;font:700 15px/1.82 ui-monospace,SFMono-Regular,Menlo,monospace;overflow:auto}.formula .hi{color:#78f0cd}.compare{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid var(--line);border-radius:17px;overflow:hidden}.compare th,.compare td{padding:12px 13px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}.compare th{background:#e2f5ef}.compare tr:last-child td{border-bottom:0}.gallery{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}.frame{min-height:135px;border-radius:17px;display:grid;place-content:center;text-align:center;color:#fff;position:relative;overflow:hidden}.frame:after{content:"";position:absolute;inset:0;background-image:radial-gradient(#fff8 1px,transparent 1px);background-size:8px 8px;opacity:var(--grain,.1)}.frame b,.frame small{position:relative;z-index:2}.pixel{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;max-width:250px;margin:auto}.channel{padding:30px 10px;border-radius:13px;color:#fff;text-align:center;font-weight:900}.dist{display:flex;align-items:flex-end;justify-content:center;gap:5px;height:150px;border-bottom:2px solid var(--line)}.bar{width:9%;border-radius:9px 9px 0 0;background:linear-gradient(var(--mint),var(--green))}.process{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:center}.step{min-height:125px;padding:14px 8px;border-radius:16px;color:#fff;text-align:center;display:grid;align-content:center}.ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.rung{padding:18px;border-radius:17px;background:#fff;border-top:6px solid var(--violet);box-shadow:var(--shadow)}.rung .num{font-size:29px;font-weight:950;color:var(--violet)}.joint{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}.tile{padding:21px;border-radius:17px;text-align:center;color:#fff}.train{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:center}.speed{display:grid;grid-template-columns:1fr 1fr;gap:14px}.track{display:flex;gap:4px;align-items:center;overflow:hidden}.tick{height:42px;min-width:7px;background:var(--blue);border-radius:4px}.tick.skip{min-width:30px;background:var(--violet)}.trade{height:21px;border-radius:99px;background:#e7eee9;overflow:hidden}.trade span{display:block;height:100%;background:linear-gradient(90deg,var(--mint),var(--amber),var(--pink))}.accordion details,.quiz details{background:#fff;border:1px solid var(--line);border-radius:15px;padding:15px;margin:9px 0}.accordion summary,.quiz summary{cursor:pointer;font-weight:900}.source{font-size:13px;color:var(--muted)}@media(max-width:900px){.g4,.ladder{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}.flow,.process,.train{grid-template-columns:1fr}.flow .arrow,.process .arrow,.train .arrow{transform:rotate(90deg)}.gallery{grid-template-columns:repeat(3,1fr)}}@media(max-width:620px){.wrap{padding:14px 14px 60px}.hero{padding:35px 25px}.hero:after{font-size:230px}.g2,.g3,.g4,.ladder,.speed{grid-template-columns:1fr}.gallery{grid-template-columns:1fr 1fr}.joint{grid-template-columns:1fr}.joint .arrow{transform:rotate(90deg)}.compare{font-size:13px}}
-</style></head><body><main class="wrap"><a class="back" href="index.html">← 디퓨전과 거대비전모델 · 주차 목록</a><header class="hero"><div class="kicker">CME 296 · LECTURE 1 · VISUAL STUDY</div><h1>노이즈에서 이미지를<br>조각해내는 Diffusion</h1><p>이미지 분포의 의미부터 정방향 노이즈 과정과 역방향 복원, ELBO가 단순한 노이즈 예측 손실로 바뀌는 이유, DDPM의 느린 생성 과정을 DDIM으로 가속하는 원리까지 연결합니다.</p><div class="badges"><span class="badge">Forward Process</span><span class="badge">Reverse Process</span><span class="badge">ELBO·KL</span><span class="badge">DDPM</span><span class="badge">Noise Prediction</span><span class="badge">DDIM</span></div></header>
-<nav class="nav"><a href="#map">전체 지도</a><a href="#distribution">이미지 분포</a><a href="#forward">정방향</a><a href="#reverse">역방향</a><a href="#elbo">ELBO</a><a href="#training">학습</a><a href="#inference">생성</a><a href="#ddim">DDIM</a><a href="#practice">활용</a><a href="#quiz">복습</a></nav>
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1차시 · Diffusion, DDPM과 DDIM | AI Study</title>
+<meta name="description" content="Diffusion의 정방향·역방향 과정, ELBO, DDPM 학습과 DDIM 가속을 그림과 수식으로 배우는 시각 학습자료">
+<link rel="stylesheet" href="../../assets/inline-terms.css">
+<style>
+:root{--bg:#f6fbfa;--ink:#17322f;--muted:#667b78;--green:#126d62;--mint:#31b99d;--blue:#4786e8;--violet:#7657e8;--pink:#df5d91;--amber:#eda63c;--red:#dc5362;--line:#d9ebe7;--shadow:0 15px 38px rgba(18,92,83,.1)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{word-break:keep-all;overflow-wrap:break-word;margin:0;background:radial-gradient(circle at 6% 0,#d9f4eb,transparent 28%),radial-gradient(circle at 100% 90%,#e8e4ff,transparent 27%),var(--bg);color:var(--ink);font-family:Inter,Pretendard,"Noto Sans KR",system-ui,sans-serif;line-height:1.68}
+.wrap{max-width:1180px;margin:auto;padding:24px 20px 85px}
+.back{display:inline-flex;color:var(--muted);text-decoration:none;font-weight:850;margin-bottom:18px}
+.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#073d39,#126d62 55%,#7657e8);color:#fff;border-radius:30px;padding:48px;box-shadow:0 20px 48px rgba(7,74,66,.2)}
+.hero:after{content:"1";position:absolute;right:18px;bottom:-98px;font-size:320px;font-weight:950;line-height:1;color:#ffffff12}
+.kicker{font-size:13px;font-weight:950;letter-spacing:1.5px;color:#bff3e5}
+.hero h1{font-size:clamp(34px,6vw,61px);line-height:1.08;letter-spacing:-2px;margin:10px 0 18px}
+.hero p{max-width:850px;font-size:18px;color:#eafff9;margin:0}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+.badge{padding:7px 11px;border:1px solid #ffffff3b;background:#ffffff17;border-radius:99px;font-size:13px;font-weight:850}
+.nav{position:sticky;top:9px;z-index:8;display:flex;gap:7px;overflow:auto;margin:17px 0;padding:9px;background:#f6fbfae8;backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:16px}
+.nav a{white-space:nowrap;text-decoration:none;color:#345e59;background:#fff;border:1px solid var(--line);border-radius:99px;padding:6px 10px;font-size:13px;font-weight:850}
+.section{margin-top:50px}
+.section h2{font-size:clamp(27px,4vw,40px);line-height:1.18;margin:0 0 7px;letter-spacing:-1px}
+.lead{margin:0 0 17px;color:var(--muted)}
+.card{background:#fff;border:1px solid var(--line);border-radius:21px;padding:21px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.flow{display:grid;grid-template-columns:repeat(9,1fr);gap:7px;align-items:center}
+.node{min-height:138px;padding:14px 8px;border-radius:17px;color:#fff;text-align:center;display:grid;align-content:center}
+.node i{font-style:normal;font-size:30px}
+.arrow{text-align:center;color:var(--violet);font-size:23px;font-weight:950}
+.callout{margin-top:14px;padding:17px;border-left:6px solid var(--amber);border-radius:16px;background:#fff8e8}
+.formula{padding:16px;border-radius:14px;background:#173b3c;color:#fff;font:700 15px/1.82 ui-monospace,SFMono-Regular,Menlo,monospace;overflow:auto}
+.formula .hi{color:#78f0cd}
+.compare{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid var(--line);border-radius:17px;overflow:hidden}
+.compare th,.compare td{padding:12px 13px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+.compare th{background:#e2f5ef}
+.compare tr:last-child td{border-bottom:0}
+.gallery{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.frame{min-height:135px;border-radius:17px;display:grid;place-content:center;text-align:center;color:#fff;position:relative;overflow:hidden}
+.frame:after{content:"";position:absolute;inset:0;background-image:radial-gradient(#fff8 1px,transparent 1px);background-size:8px 8px;opacity:var(--grain,.1)}
+.frame b,.frame small{position:relative;z-index:2}
+.pixel{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;max-width:250px;margin:auto}
+.channel{padding:30px 10px;border-radius:13px;color:#fff;text-align:center;font-weight:900}
+.dist{display:flex;align-items:flex-end;justify-content:center;gap:5px;height:150px;border-bottom:2px solid var(--line)}
+.bar{width:9%;border-radius:9px 9px 0 0;background:linear-gradient(var(--mint),var(--green))}
+.process{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:center}
+.step{min-height:125px;padding:14px 8px;border-radius:16px;color:#fff;text-align:center;display:grid;align-content:center}
+.ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.rung{padding:18px;border-radius:17px;background:#fff;border-top:6px solid var(--violet);box-shadow:var(--shadow)}
+.rung .num{font-size:29px;font-weight:950;color:var(--violet)}
+.joint{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
+.tile{padding:21px;border-radius:17px;text-align:center;color:#fff}
+.train{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:center}
+.speed{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.track{display:flex;gap:4px;align-items:center;overflow:hidden}
+.tick{height:42px;min-width:7px;background:var(--blue);border-radius:4px}
+.tick.skip{min-width:30px;background:var(--violet)}
+.trade{height:21px;border-radius:99px;background:#e7eee9;overflow:hidden}
+.trade span{display:block;height:100%;background:linear-gradient(90deg,var(--mint),var(--amber),var(--pink))}
+.accordion details,.quiz details{background:#fff;border:1px solid var(--line);border-radius:15px;padding:15px;margin:9px 0}
+.accordion summary,.quiz summary{cursor:pointer;font-weight:900}
+.source{font-size:13px;color:var(--muted)}
+@media(max-width:900px){.g4,.ladder{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:1fr 1fr}
+.flow,.process,.train{grid-template-columns:1fr}
+.flow .arrow,.process .arrow,.train .arrow{transform:rotate(90deg)}
+.gallery{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:620px){.wrap{padding:14px 14px 60px}
+.hero{padding:35px 25px}
+.hero:after{font-size:230px}
+.g2,.g3,.g4,.ladder,.speed{grid-template-columns:1fr}
+.gallery{grid-template-columns:1fr 1fr}
+.joint{grid-template-columns:1fr}
+.joint .arrow{transform:rotate(90deg)}
+.compare{font-size:13px}
+}
 
-<section class="section" id="map"><h2>🗺️ 1차시 전체 지도</h2><p class="lead">Diffusion은 복잡한 이미지를 한 번에 만드는 대신, 아주 쉬운 작은 복원 문제를 여러 번 풉니다.</p><div class="flow"><div class="node" style="background:var(--mint)"><i>🖼️</i><b>진짜 이미지</b><small>x₀</small></div><div class="arrow">→</div><div class="node" style="background:var(--blue)"><i>🌫️</i><b>Forward</b><small>조금씩 노이즈</small></div><div class="arrow">→</div><div class="node" style="background:#4156a5"><i>📺</i><b>Gaussian</b><small>xT≈N(0,I)</small></div><div class="arrow">⇢</div><div class="node" style="background:var(--violet)"><i>🧠</i><b>Reverse</b><small>노이즈 예측·제거</small></div><div class="arrow">→</div><div class="node" style="background:var(--pink)"><i>✨</i><b>새 이미지</b><small>훈련에 없던 샘플</small></div></div><div class="callout"><b>미켈란젤로 비유:</b> 대리석 안의 조각을 꺼내듯, Diffusion은 무작위 노이즈 안에서 데이터 분포에 맞지 않는 성분을 단계적으로 깎아냅니다. 단, 실제로 이미지가 미리 숨어 있는 것은 아니며 매번 새로운 샘플을 생성합니다.</div></section>
+.lecture-course-map{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.lecture-shell{border:2px solid #bfe9df;background:linear-gradient(145deg,#fff,#effbf7);border-radius:26px;padding:clamp(18px,3vw,30px);box-shadow:var(--shadow)}
+.lecture-tag{display:inline-flex;padding:6px 11px;border-radius:99px;background:#d9f6ed;color:#07594f;font-size:13px;font-weight:950}
+.lecture-map{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin:18px 0}
+.lecture-stop{position:relative;min-height:120px;padding:15px 12px;border-radius:17px;background:#fff;border:1px solid var(--line);text-align:center}
+.lecture-stop:not(:last-child):after{content:"→";position:absolute;right:-15px;top:42%;z-index:2;color:var(--violet);font-size:22px;font-weight:950}
+.lecture-stop .icon{display:block;font-size:27px}
+.lecture-stop b{display:block;color:var(--green)}
+.signal-mix{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.signal-part{min-height:90px;padding:13px;border-radius:15px;color:#fff;display:grid;place-content:center;text-align:center}
+.prob-canvas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.prob-card{padding:16px;border-radius:17px;background:#fff;border:1px solid var(--line)}
+.prob-sketch{height:90px;border-radius:13px;background:linear-gradient(145deg,#eef9f6,#eeeaff);position:relative;overflow:hidden;margin:10px 0}
+.prob-sketch.joint:before{content:"";position:absolute;inset:12px 18px;border-radius:50%;background:radial-gradient(ellipse,#7457e8 0 14%,#8e7ce0 15% 28%,#b8acec 29% 43%,transparent 44%);transform:rotate(-25deg)}
+.prob-sketch.conditional:before{content:"";position:absolute;left:49%;top:8px;width:12px;height:74px;border-radius:8px;background:linear-gradient(#d8d2fa,#7657e8,#d8d2fa)}
+.prob-sketch.marginal:before{content:"";position:absolute;left:10%;right:10%;bottom:13px;height:58px;background:linear-gradient(135deg,transparent 0 25%,#31b99d 26% 33%,#126d62 34% 52%,#31b99d 53% 62%,transparent 63%);clip-path:polygon(0 100%,15% 88%,32% 48%,48% 4%,63% 42%,80% 85%,100% 100%)}
+.truth-note{padding:14px 16px;border-radius:15px;background:#fff5df;border:1px solid #f3d797}
+.lecture-quote{margin:12px 0 0;padding:14px 16px;border-left:5px solid var(--mint);background:#f2fbf8;border-radius:0 13px 13px 0}
+.path-cloud{display:grid;grid-template-columns:130px 1fr 130px;gap:12px;align-items:center}
+.path-end{padding:18px 10px;border-radius:16px;text-align:center;color:#fff;font-weight:900}
+.paths{height:135px;position:relative;background:repeating-radial-gradient(ellipse at center,transparent 0 10px,#7657e81f 11px 12px,transparent 13px 20px);border-radius:18px}
+.paths:after{content:"가능한 중간 노이즈 경로가 무한히 많음";position:absolute;inset:0;display:grid;place-content:center;text-align:center;font-weight:900;color:var(--violet);padding:12px}
+.lecture-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media(max-width:900px){.lecture-course-map,.lecture-map{grid-template-columns:1fr}
+.lecture-stop:not(:last-child):after{content:"↓";right:50%;top:auto;bottom:-22px}
+.prob-canvas{grid-template-columns:1fr}
+.path-cloud{grid-template-columns:1fr}
+.paths{height:100px}
+}
+@media(max-width:620px){.lecture-grid,.signal-mix{grid-template-columns:1fr}
+.lecture-shell{padding:16px}
+.formula{font-size:13px}
+.compare{display:block;overflow-x:auto}
+}
 
-<section class="section" id="distribution"><h2>1. 이미지 한 장은 고차원 공간의 점 하나</h2><p class="lead">컴퓨터에게 H×W 컬러 이미지는 H×W×3개의 숫자로 이루어진 벡터입니다. 자연스러운 이미지들은 이 거대한 공간 전체가 아니라 특정 영역에 몰려 있습니다.</p><div class="grid g2"><article class="card"><h3>RGB 픽셀</h3><div class="pixel"><div class="channel" style="background:#dd4c5e">R</div><div class="channel" style="background:#2aa977">G</div><div class="channel" style="background:#397cda">B</div></div><div class="formula" style="margin-top:12px">x ∈ R<sup>H×W×3</sup><br>64×64 RGB → 12,288차원</div></article><article class="card"><h3>확률분포 p<sub>data</sub>(x)</h3><div class="dist"><div class="bar" style="height:10%"></div><div class="bar" style="height:22%"></div><div class="bar" style="height:48%"></div><div class="bar" style="height:85%"></div><div class="bar" style="height:100%"></div><div class="bar" style="height:76%"></div><div class="bar" style="height:38%"></div><div class="bar" style="height:15%"></div></div><p>봉우리가 높은 곳일수록 자연 이미지다운 조합이 많습니다.</p></article></div><div class="grid g3" style="margin-top:14px"><article class="card"><h3>평균 μ</h3><p>분포가 중심을 두는 위치</p></article><article class="card"><h3>공분산 Σ</h3><p>각 방향으로 얼마나 퍼지고 함께 변하는지</p></article><article class="card"><h3>등방 Gaussian</h3><div class="formula">N(0, I)</div><p>모든 축이 독립이고 분산이 같아 쉽게 샘플링합니다.</p></article></div></section>
+</style>
+</head>
+<body>
+<main class="wrap">
+<a class="back" href="index.html">← 디퓨전과 거대비전모델 · 주차 목록</a>
+<header class="hero">
+<div class="kicker">CME 296 · LECTURE 1 · VISUAL STUDY</div>
+<h1>노이즈에서 이미지를<br>조각해내는 Diffusion</h1>
+<p>이미지 분포의 의미부터 정방향 노이즈 과정과 역방향 복원, ELBO가 단순한 노이즈 예측 손실로 바뀌는 이유, DDPM의 느린 생성 과정을 DDIM으로 가속하는 원리까지 연결합니다.</p>
+<div class="badges">
+<span class="badge">Forward Process</span>
+<span class="badge">Reverse Process</span>
+<span class="badge">ELBO·KL</span>
+<span class="badge">DDPM</span>
+<span class="badge">Noise Prediction</span>
+<span class="badge">DDIM</span>
+</div>
+</header>
+<nav class="nav">
+<a href="#map">전체 지도</a>
+<a href="#professor-replay">교수님 강의 재구성</a>
+<a href="#distribution">이미지 분포</a>
+<a href="#forward">정방향</a>
+<a href="#reverse">역방향</a>
+<a href="#elbo">ELBO</a>
+<a href="#training">학습</a>
+<a href="#inference">생성</a>
+<a href="#ddim">DDIM</a>
+<a href="#practice">활용</a>
+<a href="#quiz">복습</a>
+</nav>
 
-<section class="section" id="forward"><h2>2. Forward Process: 우리가 정한 규칙으로 이미지를 지운다</h2><p class="lead">각 단계에서 이전 이미지 일부를 남기고 새로운 Gaussian noise를 섞습니다. βₜ는 t단계에서 얼마나 망가뜨릴지를 정하는 Noise Schedule입니다.</p><div class="gallery"><div class="frame" style="background:#31b99d;--grain:.02"><b>x₀</b><small>깨끗함</small></div><div class="frame" style="background:#50aeaa;--grain:.12"><b>x₁</b><small>약한 노이즈</small></div><div class="frame" style="background:#5799ac;--grain:.24"><b>x₂</b></div><div class="frame" style="background:#577fa7;--grain:.4"><b>xₜ</b><small>형태가 흐림</small></div><div class="frame" style="background:#526593;--grain:.65"><b>xT-1</b></div><div class="frame" style="background:#43496d;--grain:.9"><b>xT</b><small>거의 순수 노이즈</small></div></div><div class="formula" style="margin-top:14px"><span class="hi">한 단계</span><br>q(x<sub>t</sub>|x<sub>t-1</sub>) = N(√(1-β<sub>t</sub>)x<sub>t-1</sub>, β<sub>t</sub>I)<br>x<sub>t</sub> = √α<sub>t</sub>x<sub>t-1</sub> + √(1-α<sub>t</sub>)ε, &nbsp; α<sub>t</sub>=1-β<sub>t</sub></div><div class="callout"><b>가장 중요한 지름길:</b> x₁부터 순서대로 만들지 않아도, 누적 신호량 ᾱₜ를 쓰면 x₀에서 임의의 xₜ를 한 번에 만들 수 있습니다.</div><div class="formula">ᾱ<sub>t</sub> = ∏<sub>s=1</sub><sup>t</sup> α<sub>s</sub><br><span class="hi">q(x<sub>t</sub>|x₀)</span> = N(√ᾱ<sub>t</sub>x₀, (1-ᾱ<sub>t</sub>)I)<br>x<sub>t</sub> = √ᾱ<sub>t</sub>x₀ + √(1-ᾱ<sub>t</sub>)ε</div><p>√ᾱₜ는 남아 있는 원본 신호, √(1-ᾱₜ)는 섞인 노이즈의 양입니다.</p></section>
+<section class="section" id="map">
+<h2>🗺️ 1차시 전체 지도</h2>
+<p class="lead">Diffusion은 복잡한 이미지를 한 번에 만드는 대신, 아주 쉬운 작은 복원 문제를 여러 번 풉니다.</p>
+<div class="flow">
+<div class="node" style="background:var(--mint)">
+<i>🖼️</i>
+<b>진짜 이미지</b>
+<small>x₀</small>
+</div>
+<div class="arrow">→</div>
+<div class="node" style="background:var(--blue)">
+<i>🌫️</i>
+<b>Forward</b>
+<small>조금씩 노이즈</small>
+</div>
+<div class="arrow">→</div>
+<div class="node" style="background:#4156a5">
+<i>📺</i>
+<b>Gaussian</b>
+<small>xT≈N(0,I)</small>
+</div>
+<div class="arrow">⇢</div>
+<div class="node" style="background:var(--violet)">
+<i>🧠</i>
+<b>Reverse</b>
+<small>노이즈 예측·제거</small>
+</div>
+<div class="arrow">→</div>
+<div class="node" style="background:var(--pink)">
+<i>✨</i>
+<b>새 이미지</b>
+<small>훈련에 없던 샘플</small>
+</div>
+</div>
+<div class="callout">
+<b>미켈란젤로 비유:</b> 대리석 안의 조각을 꺼내듯, Diffusion은 무작위 노이즈 안에서 데이터 분포에 맞지 않는 성분을 단계적으로 깎아냅니다. 단, 실제로 이미지가 미리 숨어 있는 것은 아니며 매번 새로운 샘플을 생성합니다.</div>
+</section>
 
-<section class="section" id="reverse"><h2>3. Reverse Process: 알 수 없는 복원 규칙을 학습한다</h2><p class="lead">Forward q는 우리가 만들었지만, xₜ에서 xₜ₋₁로 돌아가는 진짜 역조건부 분포는 직접 알 수 없습니다. 신경망이 평균 또는 노이즈를 예측해 pθ를 근사합니다.</p><div class="joint"><div class="tile" style="background:var(--blue)"><b>q(xₜ|xₜ₋₁)</b><br>정방향<br><small>알려진 Gaussian</small></div><div class="arrow">⇄</div><div class="tile" style="background:var(--violet)"><b>pθ(xₜ₋₁|xₜ)</b><br>역방향<br><small>신경망으로 학습</small></div></div><div class="formula" style="margin-top:14px">p<sub>θ</sub>(x<sub>t-1</sub>|x<sub>t</sub>) = N( μ<sub>θ</sub>(x<sub>t</sub>,t), σ<sub>t</sub>²I )<br><br>실전 재매개화: μ<sub>θ</sub>를 직접 맞히는 대신 ε<sub>θ</sub>(x<sub>t</sub>,t)로 <span class="hi">섞였던 노이즈</span>를 예측</div><div class="callout"><b>왜 Gaussian으로 가정할 수 있나?</b> Forward step을 매우 작게 만들면 연속된 두 시점의 역조건부 분포도 근사적으로 Gaussian이 됩니다. 복잡한 전체 생성 문제를 작은 Gaussian 복원들의 연쇄로 바꾸는 핵심입니다.</div></section>
+<section class="section" id="professor-replay">
+<div class="lecture-shell">
+<span class="lecture-tag">🎙️ 강의 녹취 기반 · 기존 내용에 추가</span>
+<h2>교수님 강의를 한 장의 지도로 다시 보기</h2>
+<p class="lead">수업에서 실제로 진행된 순서를 보존했습니다. 먼저 큰 그림을 잡고, 아래에서 교수님의 비유와 확률 수식을 정확한 표기로 연결하세요.</p>
+<div class="lecture-map" aria-label="1차시 강의 흐름">
+<div class="lecture-stop"><span class="icon">🏛️</span><b>생성모델 역사</b><small>VAE · GAN · Diffusion</small></div>
+<div class="lecture-stop"><span class="icon">🎯</span><b>무엇을 배우나</b><small>조건 → 구조 → 학습 → 생성 → 평가</small></div>
+<div class="lecture-stop"><span class="icon">🗺️</span><b>데이터 분포</b><small>관측 샘플 뒤의 p<sub>data</sub></small></div>
+<div class="lecture-stop"><span class="icon">🌫️</span><b>정방향 과정</b><small>x₀를 Gaussian noise로</small></div>
+<div class="lecture-stop"><span class="icon">🔒</span><b>학습의 벽</b><small>우도 적분은 intractable</small></div>
+</div>
+<div class="lecture-grid">
+<article class="card"><h3>① 세 생성모델의 자리</h3><table class="compare"><thead><tr><th>모델</th><th>강의에서 잡은 의미</th></tr></thead><tbody><tr><td><b>VAE</b><br><small>Variational Autoencoder</small></td><td>잠재 확률분포를 배우는 생성모델의 중요한 뿌리</td></tr><tr><td><b>GAN</b><br><small>Generative Adversarial Network</small></td><td>2014년 등장. 초기 결과는 거칠었지만 생성 품질 경쟁을 크게 바꾼 전환점</td></tr><tr><td><b>Diffusion</b></td><td>노이즈를 단계적으로 제거해 이미지를 만드는 현재 수업의 중심</td></tr></tbody></table><p class="truth-note"><b>표기 보완:</b> VAE는 Kingma와 Welling의 2013년 사전 공개·2014년 ICLR 논문, GAN은 Goodfellow 등이 2014년에 발표했습니다. 확산 확률모델의 계보에는 2015년 연구가 있고, DDPM은 2020년에 대중화의 전환점이 됐습니다.</p></article>
+<article class="card"><h3>② 이 수업의 목적</h3><div class="lecture-course-map"><div class="step" style="background:var(--mint)"><b>조건</b><small>텍스트·이미지 등</small></div><div class="step" style="background:var(--blue)"><b>구조</b><small>무슨 모델인가</small></div><div class="step" style="background:var(--violet)"><b>학습</b><small>어떻게 배우나</small></div><div class="step" style="background:var(--pink)"><b>생성</b><small>어떻게 뽑나</small></div><div class="step" style="background:var(--amber)"><b>평가</b><small>좋음을 어떻게 재나</small></div></div><p>교수님은 취업·개인 프로젝트·논문뿐 아니라, 생성 AI를 올바르게 사용하는 기본 소양까지 목표로 제시했습니다. 특히 생성 결과에는 유일한 정답이 없어서 평가는 여전히 어려운 문제라는 점을 강조했습니다.</p></article>
+</div>
+<h3>선수지식은 ‘네 개의 렌즈’</h3>
+<div class="grid g4"><article class="card"><h3>📐 선형대수</h3><p>벡터·행렬·gradient·divergence</p></article><article class="card"><h3>🎲 확률</h3><p>Bayes·조건부·주변확률·기댓값·공분산·Gaussian</p></article><article class="card"><h3>〰️ 미분방정식</h3><p>ODE·SDE와 수치해석 solver</p></article><article class="card"><h3>🧠 머신러닝</h3><p>모델·parameter θ·maximum likelihood·최적화</p></article></div>
+<p class="lecture-quote"><b>강의의 학습 조언을 쉽게 번역하면:</b> 처음 보는 수식은 외우지 말고, “무엇이 주어졌고 무엇을 학습하는가”를 먼저 색으로 구분하세요. q는 우리가 정한 정방향 규칙, p<sub>θ</sub>는 데이터로 배우는 역방향 모델입니다.</p>
+<h3>③ 생성모델이 풀려는 문제</h3>
+<div class="joint"><div class="tile" style="background:var(--mint)"><b>관측한 고양이 이미지</b><br><small>p<sub>data</sub>에서 나온 유한한 샘플</small></div><div class="arrow">→</div><div class="tile" style="background:var(--violet)"><b>학습한 생성모델</b><br><small>보지 못한 새 샘플 생성</small></div></div>
+<div class="formula" style="margin-top:14px">관측: x<sup>(1)</sup>, …, x<sup>(N)</sup> ~ p<sub>data</sub>(x)<br>목표: p<sub>θ</sub>(x) ≈ p<sub>data</sub>(x) &nbsp;→&nbsp; x<sub>new</sub> ~ p<sub>θ</sub>(x)</div>
+<p><b>핵심:</b> 세상의 모든 고양이 이미지를 직접 모으는 것이 아니라, 우리가 본 이미지들이 나온 <em>보이지 않는 분포</em>를 모델이 근사하게 합니다. 조건이 없는 생성을 먼저 이해한 뒤 텍스트·이미지 같은 조건을 붙입니다.</p>
+<h3>④ 노이즈에서 조각하는 이유</h3>
+<div class="signal-mix"><div class="signal-part" style="background:linear-gradient(135deg,var(--mint),var(--green))"><b>남은 원본 신호</b><span>√ᾱ<sub>t</sub> x₀</span></div><div class="signal-part" style="background:linear-gradient(135deg,var(--blue),var(--violet))"><b>새로 섞인 노이즈</b><span>√(1-ᾱ<sub>t</sub>) ε</span></div></div>
+<div class="formula">x<sub>t</sub> = √ᾱ<sub>t</sub>x₀ + √(1-ᾱ<sub>t</sub>)ε, &nbsp; ε ~ N(0,I)<br>α<sub>t</sub>=1-β<sub>t</sub>, &nbsp; ᾱ<sub>t</sub>=∏<sub>s=1</sub><sup>t</sup>α<sub>s</sub></div>
+<p>Gaussian noise는 만들기 쉽고 매번 다른 값을 뽑을 수 있습니다. 정방향에서는 깨끗한 이미지 x₀를 조금씩 지우고, 역방향에서는 p<sub>θ</sub>(x<sub>t-1</sub>|x<sub>t</sub>)가 그 한 단계를 되돌리도록 학습합니다. DDPM의 대표 설정은 T=1000입니다.</p>
+<p class="truth-note"><b>교수님의 조각 비유를 정확히 읽기:</b> 노이즈 안에 완성 이미지가 미리 들어 있는 것은 아닙니다. 모델이 학습한 데이터 분포의 방향을 따라 불가능해 보이는 픽셀 조합을 단계적으로 자연스러운 샘플로 옮깁니다.</p>
+<h3>⑤ ᾱ<sub>t</sub>가 만드는 ‘한 번에 점프’</h3>
+<div class="grid g3"><article class="card"><h3>x₀ → x₁</h3><p>√α₁만큼 신호 유지</p></article><article class="card"><h3>x₁ → x₂</h3><p>다시 √α₂만큼 유지</p></article><article class="card"><h3>x₀ → x<sub>t</sub></h3><p>누적하면 √(α₁···α<sub>t</sub>) = √ᾱ<sub>t</sub></p></article></div>
+<p>독립 Gaussian들의 선형결합도 Gaussian이고, 분산은 계수의 제곱에 따라 합쳐집니다. 그래서 모든 중간 이미지를 실제로 만들지 않아도 임의 시점 x<sub>t</sub>를 x₀에서 직접 샘플링할 수 있습니다. 이것이 학습 때 무작위 t를 효율적으로 고르는 기반입니다.</p>
+<h3>⑥ 교수님이 멈춰 설명한 확률 3종 세트</h3>
+<div class="prob-canvas"><article class="prob-card"><b>결합확률 · Joint</b><div class="prob-sketch joint"></div><div class="formula">p(x₁,x₂)</div><p>두 변수를 동시에 보는 전체 지형</p></article><article class="prob-card"><b>조건부확률 · Conditional</b><div class="prob-sketch conditional"></div><div class="formula">p(x₂|x₁)</div><p>x₁을 고정하고 잘라 본 한 단면</p></article><article class="prob-card"><b>주변확률 · Marginal</b><div class="prob-sketch marginal"></div><div class="formula">p(x₁)=∫p(x₁,x₂)dx₂</div><p>x₂ 방향을 모두 더해 접은 그림자</p></article></div>
+<div class="formula" style="margin-top:14px">연쇄법칙: p(x₁,…,x<sub>T</sub>) = p(x₁)∏<sub>t=2</sub><sup>T</sup>p(x<sub>t</sub>|x<sub>1:t-1</sub>)<br>Markov 성질을 쓰면: q(x<sub>1:T</sub>|x₀)=∏<sub>t=1</sub><sup>T</sup>q(x<sub>t</sub>|x<sub>t-1</sub>)</div>
+<p class="truth-note"><b>중요한 정확성 보완:</b> “분류의 변수들은 모두 독립”이라고 일반화할 수는 없습니다. 강의의 핵심은 여기서 x₀→x₁→…→x<sub>T</sub>가 서로 연결된 Markov chain이므로, 조건부 항을 함부로 없앨 수 없다는 점입니다.</p>
+<h3>⑦ 왜 log-likelihood를 바로 계산하지 못하나</h3>
+<div class="path-cloud"><div class="path-end" style="background:var(--mint)">x₀<br><small>관측 이미지</small></div><div class="paths"></div><div class="path-end" style="background:var(--violet)">x<sub>T</sub><br><small>노이즈</small></div></div>
+<div class="formula" style="margin-top:14px">p<sub>θ</sub>(x₀) = ∫ p<sub>θ</sub>(x<sub>0:T</sub>) dx<sub>1:T</sub><br>θ* = arg max<sub>θ</sub> E<sub>x₀~p_data</sub>[ log p<sub>θ</sub>(x₀) ]</div>
+<p>로그는 매우 작은 확률의 수치 계산을 안정시키고 곱을 합으로 바꿉니다. 하지만 중간 잠재상태 x₁,…,x<sub>T</sub>의 가능한 경로를 모두 적분해야 하므로 p<sub>θ</sub>(x₀)는 직접 계산하기 어렵습니다. 이것이 <b>intractable</b>하다는 뜻입니다.</p>
+<div class="joint"><div class="tile" style="background:var(--red)"><b>직접 우도</b><br><small>계산 불가능</small></div><div class="arrow">→</div><div class="tile" style="background:var(--amber)"><b>계산 가능한 하한</b><br><small>ELBO로 우회</small></div></div>
+<p class="lecture-quote"><b>1차시의 도착점:</b> “정답 우도를 직접 풀 수 없으니, 계산 가능한 lower bound를 찾아 최대화하자.” 아래 기존 ELBO·DDPM·DDIM 구역은 이 문제 설정을 이어서 더 깊게 확장한 학습자료입니다.</p>
+</div>
+</section>
 
-<section class="section" id="elbo"><h2>4. ELBO 계단: 최대우도가 노이즈 MSE가 되기까지</h2><p class="lead">목표는 훈련 이미지 x₀의 log pθ(x₀)를 크게 만드는 것입니다. 하지만 모든 중간 상태를 적분해야 해서 직접 계산할 수 없습니다.</p><div class="ladder"><article class="rung"><div class="num">①</div><h3>Lower Bound</h3><p>Jensen 부등식으로 계산 불가능한 log-likelihood 아래에 계산 가능한 ELBO를 놓습니다.</p></article><article class="rung"><div class="num">②</div><h3>KL로 분해</h3><p>ELBO를 각 단계의 진짜 역분포와 모델 역분포 사이 차이로 펼칩니다.</p></article><article class="rung"><div class="num">③</div><h3>Gaussian 계산</h3><p>Bayes 법칙·Markov 성질·Gaussian 성질로 각 KL 항을 닫힌 형태로 계산합니다.</p></article><article class="rung"><div class="num">④</div><h3>Noise MSE</h3><p>상수와 가중치를 단순화하면 실제 학습은 예측 노이즈와 실제 노이즈의 제곱오차가 됩니다.</p></article></div><div class="formula" style="margin-top:14px">log p<sub>θ</sub>(x₀) ≥ <span class="hi">ELBO</span><br><br>-ELBO ≈ Σ<sub>t</sub> KL(q(x<sub>t-1</sub>|x<sub>t</sub>,x₀) || p<sub>θ</sub>(x<sub>t-1</sub>|x<sub>t</sub>)) + other terms<br><br><span class="hi">L<sub>simple</sub></span> = E<sub>x₀,t,ε</sub> || ε - ε<sub>θ</sub>(x<sub>t</sub>,t) ||²</div><div class="grid g2" style="margin-top:14px"><article class="card"><h3>KL Divergence</h3><p>두 확률분포가 얼마나 다른지 측정합니다. 대칭 거리가 아니며 KL(q||p)와 KL(p||q)는 다릅니다.</p></article><article class="card"><h3>ELBO</h3><p>Evidence Lower Bound. 직접 최대화하기 어려운 log evidence의 계산 가능한 하한입니다.</p></article></div></section>
+<section class="section" id="distribution">
+<h2>1. 이미지 한 장은 고차원 공간의 점 하나</h2>
+<p class="lead">컴퓨터에게 H×W 컬러 이미지는 H×W×3개의 숫자로 이루어진 벡터입니다. 자연스러운 이미지들은 이 거대한 공간 전체가 아니라 특정 영역에 몰려 있습니다.</p>
+<div class="grid g2">
+<article class="card">
+<h3>RGB 픽셀</h3>
+<div class="pixel">
+<div class="channel" style="background:#dd4c5e">R</div>
+<div class="channel" style="background:#2aa977">G</div>
+<div class="channel" style="background:#397cda">B</div>
+</div>
+<div class="formula" style="margin-top:12px">x ∈ R<sup>H×W×3</sup>
+<br>64×64 RGB → 12,288차원</div>
+</article>
+<article class="card">
+<h3>확률분포 p<sub>data</sub>(x)</h3>
+<div class="dist">
+<div class="bar" style="height:10%">
+</div>
+<div class="bar" style="height:22%">
+</div>
+<div class="bar" style="height:48%">
+</div>
+<div class="bar" style="height:85%">
+</div>
+<div class="bar" style="height:100%">
+</div>
+<div class="bar" style="height:76%">
+</div>
+<div class="bar" style="height:38%">
+</div>
+<div class="bar" style="height:15%">
+</div>
+</div>
+<p>봉우리가 높은 곳일수록 자연 이미지다운 조합이 많습니다.</p>
+</article>
+</div>
+<div class="grid g3" style="margin-top:14px">
+<article class="card">
+<h3>평균 μ</h3>
+<p>분포가 중심을 두는 위치</p>
+</article>
+<article class="card">
+<h3>공분산 Σ</h3>
+<p>각 방향으로 얼마나 퍼지고 함께 변하는지</p>
+</article>
+<article class="card">
+<h3>등방 Gaussian</h3>
+<div class="formula">N(0, I)</div>
+<p>모든 축이 독립이고 분산이 같아 쉽게 샘플링합니다.</p>
+</article>
+</div>
+</section>
 
-<section class="section" id="training"><h2>5. DDPM 학습: 긴 영화를 한 장면씩 무작위로 연습</h2><div class="train"><div class="step" style="background:var(--mint)"><b>① x₀</b><small>이미지 선택</small></div><div class="arrow">+</div><div class="step" style="background:var(--amber)"><b>② t, ε</b><small>시간·노이즈 선택</small></div><div class="arrow">→</div><div class="step" style="background:var(--blue)"><b>③ xₜ</b><small>한 번에 오염</small></div><div class="arrow">→</div><div class="step" style="background:var(--violet)"><b>④ εθ</b><small>노이즈 예측</small></div></div><div class="formula" style="margin-top:14px">1. x₀~p<sub>data</sub>, t~Uniform{1,…,T}, ε~N(0,I)<br>2. xₜ = √ᾱₜx₀ + √(1-ᾱₜ)ε<br>3. ε̂ = ε<sub>θ</sub>(xₜ,t)<br>4. loss = ||ε - ε̂||² → backpropagation</div><div class="callout"><b>왜 T단계를 모두 돌지 않나?</b> t를 매번 무작위로 뽑으면 각 미니배치가 서로 다른 난이도의 노이즈 제거 문제를 담당합니다. 충분히 반복하면 신경망은 전 시간대를 학습합니다.</div></section>
+<section class="section" id="forward">
+<h2>2. Forward Process: 우리가 정한 규칙으로 이미지를 지운다</h2>
+<p class="lead">각 단계에서 이전 이미지 일부를 남기고 새로운 Gaussian noise를 섞습니다. βₜ는 t단계에서 얼마나 망가뜨릴지를 정하는 Noise Schedule입니다.</p>
+<div class="gallery">
+<div class="frame" style="background:#31b99d;--grain:.02">
+<b>x₀</b>
+<small>깨끗함</small>
+</div>
+<div class="frame" style="background:#50aeaa;--grain:.12">
+<b>x₁</b>
+<small>약한 노이즈</small>
+</div>
+<div class="frame" style="background:#5799ac;--grain:.24">
+<b>x₂</b>
+</div>
+<div class="frame" style="background:#577fa7;--grain:.4">
+<b>xₜ</b>
+<small>형태가 흐림</small>
+</div>
+<div class="frame" style="background:#526593;--grain:.65">
+<b>xT-1</b>
+</div>
+<div class="frame" style="background:#43496d;--grain:.9">
+<b>xT</b>
+<small>거의 순수 노이즈</small>
+</div>
+</div>
+<div class="formula" style="margin-top:14px">
+<span class="hi">한 단계</span>
+<br>q(x<sub>t</sub>|x<sub>t-1</sub>) = N(√(1-β<sub>t</sub>)x<sub>t-1</sub>, β<sub>t</sub>I)<br>x<sub>t</sub> = √α<sub>t</sub>x<sub>t-1</sub> + √(1-α<sub>t</sub>)ε, &nbsp; α<sub>t</sub>=1-β<sub>t</sub>
+</div>
+<div class="callout">
+<b>가장 중요한 지름길:</b> x₁부터 순서대로 만들지 않아도, 누적 신호량 ᾱₜ를 쓰면 x₀에서 임의의 xₜ를 한 번에 만들 수 있습니다.</div>
+<div class="formula">ᾱ<sub>t</sub> = ∏<sub>s=1</sub>
+<sup>t</sup> α<sub>s</sub>
+<br>
+<span class="hi">q(x<sub>t</sub>|x₀)</span> = N(√ᾱ<sub>t</sub>x₀, (1-ᾱ<sub>t</sub>)I)<br>x<sub>t</sub> = √ᾱ<sub>t</sub>x₀ + √(1-ᾱ<sub>t</sub>)ε</div>
+<p>√ᾱₜ는 남아 있는 원본 신호, √(1-ᾱₜ)는 섞인 노이즈의 양입니다.</p>
+</section>
 
-<section class="section" id="inference"><h2>6. DDPM 생성: 순수 노이즈에서 T번 복원</h2><div class="process"><div class="step" style="background:#444d75"><b>xT</b><small>N(0,I)</small></div><div class="arrow">→</div><div class="step" style="background:var(--violet)"><b>εθ 예측</b><small>제거할 노이즈</small></div><div class="arrow">→</div><div class="step" style="background:var(--blue)"><b>xₜ₋₁</b><small>조금 더 선명</small></div><div class="arrow">↻</div><div class="step" style="background:var(--mint)"><b>x₀</b><small>최종 이미지</small></div></div><div class="formula" style="margin-top:14px">x<sub>t-1</sub> = 1/√α<sub>t</sub> · [x<sub>t</sub> - (1-α<sub>t</sub>)/√(1-ᾱ<sub>t</sub>) · ε<sub>θ</sub>(x<sub>t</sub>,t)] + σ<sub>t</sub>z</div><p>대괄호는 예측한 노이즈를 제거하는 평균 방향, σₜz는 샘플 다양성을 만드는 새로운 랜덤성입니다. 이 과정을 T→1까지 반복합니다.</p><div class="callout"><b>DDPM의 약점:</b> 매 단계마다 신경망을 한 번 호출하므로 수백~수천 단계는 VAE·GAN보다 생성이 훨씬 느립니다. 이 병목이 DDIM의 출발점입니다.</div></section>
+<section class="section" id="reverse">
+<h2>3. Reverse Process: 알 수 없는 복원 규칙을 학습한다</h2>
+<p class="lead">Forward q는 우리가 만들었지만, xₜ에서 xₜ₋₁로 돌아가는 진짜 역조건부 분포는 직접 알 수 없습니다. 신경망이 평균 또는 노이즈를 예측해 pθ를 근사합니다.</p>
+<div class="joint">
+<div class="tile" style="background:var(--blue)">
+<b>q(xₜ|xₜ₋₁)</b>
+<br>정방향<br>
+<small>알려진 Gaussian</small>
+</div>
+<div class="arrow">⇄</div>
+<div class="tile" style="background:var(--violet)">
+<b>pθ(xₜ₋₁|xₜ)</b>
+<br>역방향<br>
+<small>신경망으로 학습</small>
+</div>
+</div>
+<div class="formula" style="margin-top:14px">p<sub>θ</sub>(x<sub>t-1</sub>|x<sub>t</sub>) = N( μ<sub>θ</sub>(x<sub>t</sub>,t), σ<sub>t</sub>²I )<br>
+<br>실전 재매개화: μ<sub>θ</sub>를 직접 맞히는 대신 ε<sub>θ</sub>(x<sub>t</sub>,t)로 <span class="hi">섞였던 노이즈</span>를 예측</div>
+<div class="callout">
+<b>왜 Gaussian으로 가정할 수 있나?</b> Forward step을 매우 작게 만들면 연속된 두 시점의 역조건부 분포도 근사적으로 Gaussian이 됩니다. 복잡한 전체 생성 문제를 작은 Gaussian 복원들의 연쇄로 바꾸는 핵심입니다.</div>
+</section>
 
-<section class="section" id="ddim"><h2>7. DDIM: 같은 학습 모델로 계단을 건너뛴다</h2><p class="lead">DDPM 학습 손실은 각 시점의 marginal q(xₜ|x₀)에 의존합니다. DDIM은 이 marginal은 유지하면서 단계 사이의 확률성을 조절할 수 있는 다른 생성 경로를 구성합니다.</p><div class="speed"><article class="card"><h3>DDPM: 모든 계단</h3><div class="track"><span class="tick"></span><span class="tick"></span><span class="tick"></span><span class="tick"></span><span class="tick"></span><span class="tick"></span><span class="tick"></span><span class="tick"></span><span class="tick"></span><span class="tick"></span><span class="tick"></span><span class="tick"></span><span class="tick"></span><span class="tick"></span><span class="tick"></span><span class="tick"></span><span class="tick"></span><span class="tick"></span><span class="tick"></span><span class="tick"></span></div><p>확률적 Markov chain · 다양성 높음 · 느림</p></article><article class="card"><h3>DDIM: 큰 보폭</h3><div class="track"><span class="tick skip"></span><span class="tick skip"></span><span class="tick skip"></span><span class="tick skip"></span><span class="tick skip"></span><span class="tick skip"></span></div><p>η=0이면 결정론적 · step skipping 가능 · 빠름</p></article></div><div class="formula" style="margin-top:14px"><span class="hi">x̂₀ 예측</span> = (xₜ - √(1-ᾱₜ) ε<sub>θ</sub>(xₜ,t)) / √ᾱₜ<br><br>x<sub>t-1</sub> = √ᾱ<sub>t-1</sub>x̂₀ + √(1-ᾱ<sub>t-1</sub>-σₜ²) ε<sub>θ</sub> + σₜz<br>η=0 → σₜ=0 → 결정론적 DDIM</div><h3>속도와 품질의 교환</h3><div class="card"><div class="trade"><span style="width:75%"></span></div><p><b>적당한 step 감소:</b> 큰 속도 향상에 비해 품질 저하가 작을 수 있습니다.<br><b>과도한 step 감소:</b> 한 번에 너무 멀리 뛰어 복원 오차가 커집니다.</p></div><table class="compare" style="margin-top:14px"><thead><tr><th></th><th>DDPM</th><th>DDIM</th></tr></thead><tbody><tr><td><b>경로</b></td><td>Markov, 확률적</td><td>비-Markov 구성 가능, η=0 결정론적</td></tr><tr><td><b>Step</b></td><td>보통 많음</td><td>부분 timestep 선택 가능</td></tr><tr><td><b>같은 학습 모델?</b></td><td colspan="2">예. DDPM 방식으로 학습한 εθ 재사용 가능</td></tr><tr><td><b>장점</b></td><td>다양성·안정적 품질</td><td>속도·재현 가능한 경로·편집 활용</td></tr></tbody></table></section>
+<section class="section" id="elbo">
+<h2>4. ELBO 계단: 최대우도가 노이즈 MSE가 되기까지</h2>
+<p class="lead">목표는 훈련 이미지 x₀의 log pθ(x₀)를 크게 만드는 것입니다. 하지만 모든 중간 상태를 적분해야 해서 직접 계산할 수 없습니다.</p>
+<div class="ladder">
+<article class="rung">
+<div class="num">①</div>
+<h3>Lower Bound</h3>
+<p>Jensen 부등식으로 계산 불가능한 log-likelihood 아래에 계산 가능한 ELBO를 놓습니다.</p>
+</article>
+<article class="rung">
+<div class="num">②</div>
+<h3>KL로 분해</h3>
+<p>ELBO를 각 단계의 진짜 역분포와 모델 역분포 사이 차이로 펼칩니다.</p>
+</article>
+<article class="rung">
+<div class="num">③</div>
+<h3>Gaussian 계산</h3>
+<p>Bayes 법칙·Markov 성질·Gaussian 성질로 각 KL 항을 닫힌 형태로 계산합니다.</p>
+</article>
+<article class="rung">
+<div class="num">④</div>
+<h3>Noise MSE</h3>
+<p>상수와 가중치를 단순화하면 실제 학습은 예측 노이즈와 실제 노이즈의 제곱오차가 됩니다.</p>
+</article>
+</div>
+<div class="formula" style="margin-top:14px">log p<sub>θ</sub>(x₀) ≥ <span class="hi">ELBO</span>
+<br>
+<br>-ELBO ≈ Σ<sub>t</sub> KL(q(x<sub>t-1</sub>|x<sub>t</sub>,x₀) || p<sub>θ</sub>(x<sub>t-1</sub>|x<sub>t</sub>)) + other terms<br>
+<br>
+<span class="hi">L<sub>simple</sub>
+</span> = E<sub>x₀,t,ε</sub> || ε - ε<sub>θ</sub>(x<sub>t</sub>,t) ||²</div>
+<div class="grid g2" style="margin-top:14px">
+<article class="card">
+<h3>KL Divergence</h3>
+<p>두 확률분포가 얼마나 다른지 측정합니다. 대칭 거리가 아니며 KL(q||p)와 KL(p||q)는 다릅니다.</p>
+</article>
+<article class="card">
+<h3>ELBO</h3>
+<p>Evidence Lower Bound. 직접 최대화하기 어려운 log evidence의 계산 가능한 하한입니다.</p>
+</article>
+</div>
+</section>
 
-<section class="section" id="practice"><h2>8. 실제로 연결되는 활용</h2><div class="grid g3"><article class="card"><h3>🎨 생성</h3><p>텍스트 조건을 추가하면 노이즈에서 설명에 맞는 이미지를 복원합니다.</p></article><article class="card"><h3>🩹 복원</h3><p>손상·결측·저해상도 이미지를 관측 조건과 데이터 분포에 맞게 복원합니다.</p></article><article class="card"><h3>🔄 편집</h3><p>이미지를 중간 노이즈 시점으로 보내고 다른 조건으로 역과정을 실행해 속성을 바꿉니다.</p></article></div><div class="callout"><b>2차시로 연결:</b> 1차시는 “제거할 노이즈 ε”를 예측했습니다. 2차시는 같은 복원 방향을 “확률밀도의 기울기 Score”로 다시 표현하고, 이를 연속시간 SDE와 PF-ODE로 일반화합니다.</div></section>
+<section class="section" id="training">
+<h2>5. DDPM 학습: 긴 영화를 한 장면씩 무작위로 연습</h2>
+<div class="train">
+<div class="step" style="background:var(--mint)">
+<b>① x₀</b>
+<small>이미지 선택</small>
+</div>
+<div class="arrow">+</div>
+<div class="step" style="background:var(--amber)">
+<b>② t, ε</b>
+<small>시간·노이즈 선택</small>
+</div>
+<div class="arrow">→</div>
+<div class="step" style="background:var(--blue)">
+<b>③ xₜ</b>
+<small>한 번에 오염</small>
+</div>
+<div class="arrow">→</div>
+<div class="step" style="background:var(--violet)">
+<b>④ εθ</b>
+<small>노이즈 예측</small>
+</div>
+</div>
+<div class="formula" style="margin-top:14px">1. x₀~p<sub>data</sub>, t~Uniform{1,…,T}
+, ε~N(0,I)<br>2. xₜ = √ᾱₜx₀ + √(1-ᾱₜ)ε<br>3. ε̂ = ε<sub>θ</sub>(xₜ,t)<br>4. loss = ||ε - ε̂||² → backpropagation</div>
+<div class="callout">
+<b>왜 T단계를 모두 돌지 않나?</b> t를 매번 무작위로 뽑으면 각 미니배치가 서로 다른 난이도의 노이즈 제거 문제를 담당합니다. 충분히 반복하면 신경망은 전 시간대를 학습합니다.</div>
+</section>
 
-<section class="section accordion"><h2>헷갈리는 개념 바로잡기</h2><details><summary>🧩 Forward Process도 학습하나요?</summary><p>아닙니다. βₜ schedule과 Gaussian noise로 우리가 미리 정한 과정입니다. 학습 대상은 이를 되돌리는 εθ 또는 pθ입니다.</p></details><details><summary>🧩 모델이 최종 이미지를 한 번에 예측하나요?</summary><p>기본 DDPM은 각 시점에서 섞인 노이즈를 예측하고 한 단계씩 복원합니다. 이 작은 결정을 반복해 최종 이미지를 얻습니다.</p></details><details><summary>🧩 ELBO가 곧 최종 MSE인가요?</summary><p>엄밀히는 ELBO를 분해하고 Gaussian KL을 계산한 뒤 가중치와 상수항을 단순화해 실용적인 noise prediction MSE를 사용합니다.</p></details><details><summary>🧩 DDIM은 별도로 다시 학습해야 하나요?</summary><p>아닙니다. DDPM 목적함수로 학습한 모델을 재사용하며, 생성 경로와 timestep schedule을 바꿉니다.</p></details><details><summary>🧩 결정론적이면 결과가 항상 하나뿐인가요?</summary><p>같은 초기 노이즈에서는 같은 결과가 나오지만 초기 노이즈를 다르게 뽑으면 다른 이미지를 생성할 수 있습니다.</p></details></section>
+<section class="section" id="inference">
+<h2>6. DDPM 생성: 순수 노이즈에서 T번 복원</h2>
+<div class="process">
+<div class="step" style="background:#444d75">
+<b>xT</b>
+<small>N(0,I)</small>
+</div>
+<div class="arrow">→</div>
+<div class="step" style="background:var(--violet)">
+<b>εθ 예측</b>
+<small>제거할 노이즈</small>
+</div>
+<div class="arrow">→</div>
+<div class="step" style="background:var(--blue)">
+<b>xₜ₋₁</b>
+<small>조금 더 선명</small>
+</div>
+<div class="arrow">↻</div>
+<div class="step" style="background:var(--mint)">
+<b>x₀</b>
+<small>최종 이미지</small>
+</div>
+</div>
+<div class="formula" style="margin-top:14px">x<sub>t-1</sub> = 1/√α<sub>t</sub> · [x<sub>t</sub> - (1-α<sub>t</sub>)/√(1-ᾱ<sub>t</sub>) · ε<sub>θ</sub>(x<sub>t</sub>,t)] + σ<sub>t</sub>z</div>
+<p>대괄호는 예측한 노이즈를 제거하는 평균 방향, σₜz는 샘플 다양성을 만드는 새로운 랜덤성입니다. 이 과정을 T→1까지 반복합니다.</p>
+<div class="callout">
+<b>DDPM의 약점:</b> 매 단계마다 신경망을 한 번 호출하므로 수백~수천 단계는 VAE·GAN보다 생성이 훨씬 느립니다. 이 병목이 DDIM의 출발점입니다.</div>
+</section>
 
-<section class="section quiz" id="quiz"><h2>🧠 30초 복습</h2><details><summary>Q1. xₜ에서 원본 신호와 노이즈의 비중을 정하는 누적값은?</summary><p><b>ᾱₜ = ∏αₛ</b>입니다.</p></details><details><summary>Q2. DDPM의 실용적인 학습 목표는?</summary><p><b>실제 Gaussian noise ε와 예측 noise εθ(xₜ,t)의 MSE</b>입니다.</p></details><details><summary>Q3. DDPM 생성이 느린 직접적인 이유는?</summary><p><b>많은 timestep마다 신경망을 반복 호출하기 때문</b>입니다.</p></details><details><summary>Q4. DDIM에서 η=0은 무엇을 의미하나요?</summary><p><b>단계 사이 랜덤 항이 사라져 생성 경로가 결정론적</b>이 된다는 뜻입니다.</p></details></section>
+<section class="section" id="ddim">
+<h2>7. DDIM: 같은 학습 모델로 계단을 건너뛴다</h2>
+<p class="lead">DDPM 학습 손실은 각 시점의 marginal q(xₜ|x₀)에 의존합니다. DDIM은 이 marginal은 유지하면서 단계 사이의 확률성을 조절할 수 있는 다른 생성 경로를 구성합니다.</p>
+<div class="speed">
+<article class="card">
+<h3>DDPM: 모든 계단</h3>
+<div class="track">
+<span class="tick">
+</span>
+<span class="tick">
+</span>
+<span class="tick">
+</span>
+<span class="tick">
+</span>
+<span class="tick">
+</span>
+<span class="tick">
+</span>
+<span class="tick">
+</span>
+<span class="tick">
+</span>
+<span class="tick">
+</span>
+<span class="tick">
+</span>
+<span class="tick">
+</span>
+<span class="tick">
+</span>
+<span class="tick">
+</span>
+<span class="tick">
+</span>
+<span class="tick">
+</span>
+<span class="tick">
+</span>
+<span class="tick">
+</span>
+<span class="tick">
+</span>
+<span class="tick">
+</span>
+<span class="tick">
+</span>
+</div>
+<p>확률적 Markov chain · 다양성 높음 · 느림</p>
+</article>
+<article class="card">
+<h3>DDIM: 큰 보폭</h3>
+<div class="track">
+<span class="tick skip">
+</span>
+<span class="tick skip">
+</span>
+<span class="tick skip">
+</span>
+<span class="tick skip">
+</span>
+<span class="tick skip">
+</span>
+<span class="tick skip">
+</span>
+</div>
+<p>η=0이면 결정론적 · step skipping 가능 · 빠름</p>
+</article>
+</div>
+<div class="formula" style="margin-top:14px">
+<span class="hi">x̂₀ 예측</span> = (xₜ - √(1-ᾱₜ) ε<sub>θ</sub>(xₜ,t)) / √ᾱₜ<br>
+<br>x<sub>t-1</sub> = √ᾱ<sub>t-1</sub>x̂₀ + √(1-ᾱ<sub>t-1</sub>-σₜ²) ε<sub>θ</sub> + σₜz<br>η=0 → σₜ=0 → 결정론적 DDIM</div>
+<h3>속도와 품질의 교환</h3>
+<div class="card">
+<div class="trade">
+<span style="width:75%">
+</span>
+</div>
+<p>
+<b>적당한 step 감소:</b> 큰 속도 향상에 비해 품질 저하가 작을 수 있습니다.<br>
+<b>과도한 step 감소:</b> 한 번에 너무 멀리 뛰어 복원 오차가 커집니다.</p>
+</div>
+<table class="compare" style="margin-top:14px">
+<thead>
+<tr>
+<th>
+</th>
+<th>DDPM</th>
+<th>DDIM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<b>경로</b>
+</td>
+<td>Markov, 확률적</td>
+<td>비-Markov 구성 가능, η=0 결정론적</td>
+</tr>
+<tr>
+<td>
+<b>Step</b>
+</td>
+<td>보통 많음</td>
+<td>부분 timestep 선택 가능</td>
+</tr>
+<tr>
+<td>
+<b>같은 학습 모델?</b>
+</td>
+<td colspan="2">예. DDPM 방식으로 학습한 εθ 재사용 가능</td>
+</tr>
+<tr>
+<td>
+<b>장점</b>
+</td>
+<td>다양성·안정적 품질</td>
+<td>속도·재현 가능한 경로·편집 활용</td>
+</tr>
+</tbody>
+</table>
+</section>
 
-<section class="section"><h2>원문과 더 깊이 보기</h2><div class="card source"><p>수업 자료: Stanford CME 296 Lecture 1, Diffusion.</p><p><a href="https://arxiv.org/abs/2006.11239">Denoising Diffusion Probabilistic Models</a> · <a href="https://arxiv.org/abs/2010.02502">Denoising Diffusion Implicit Models</a> · <a href="https://github.com/hojonathanho/diffusion">DDPM Official Code</a> · <a href="https://github.com/ermongroup/ddim">DDIM Official Code</a></p></div></section>
-</main><script src="../../assets/inline-terms.js"></script></body></html>
+<section class="section" id="practice">
+<h2>8. 실제로 연결되는 활용</h2>
+<div class="grid g3">
+<article class="card">
+<h3>🎨 생성</h3>
+<p>텍스트 조건을 추가하면 노이즈에서 설명에 맞는 이미지를 복원합니다.</p>
+</article>
+<article class="card">
+<h3>🩹 복원</h3>
+<p>손상·결측·저해상도 이미지를 관측 조건과 데이터 분포에 맞게 복원합니다.</p>
+</article>
+<article class="card">
+<h3>🔄 편집</h3>
+<p>이미지를 중간 노이즈 시점으로 보내고 다른 조건으로 역과정을 실행해 속성을 바꿉니다.</p>
+</article>
+</div>
+<div class="callout">
+<b>2차시로 연결:</b> 1차시는 “제거할 노이즈 ε”를 예측했습니다. 2차시는 같은 복원 방향을 “확률밀도의 기울기 Score”로 다시 표현하고, 이를 연속시간 SDE와 PF-ODE로 일반화합니다.</div>
+</section>
+
+<section class="section accordion">
+<h2>헷갈리는 개념 바로잡기</h2>
+<details>
+<summary>🧩 Forward Process도 학습하나요?</summary>
+<p>아닙니다. βₜ schedule과 Gaussian noise로 우리가 미리 정한 과정입니다. 학습 대상은 이를 되돌리는 εθ 또는 pθ입니다.</p>
+</details>
+<details>
+<summary>🧩 모델이 최종 이미지를 한 번에 예측하나요?</summary>
+<p>기본 DDPM은 각 시점에서 섞인 노이즈를 예측하고 한 단계씩 복원합니다. 이 작은 결정을 반복해 최종 이미지를 얻습니다.</p>
+</details>
+<details>
+<summary>🧩 ELBO가 곧 최종 MSE인가요?</summary>
+<p>엄밀히는 ELBO를 분해하고 Gaussian KL을 계산한 뒤 가중치와 상수항을 단순화해 실용적인 noise prediction MSE를 사용합니다.</p>
+</details>
+<details>
+<summary>🧩 DDIM은 별도로 다시 학습해야 하나요?</summary>
+<p>아닙니다. DDPM 목적함수로 학습한 모델을 재사용하며, 생성 경로와 timestep schedule을 바꿉니다.</p>
+</details>
+<details>
+<summary>🧩 결정론적이면 결과가 항상 하나뿐인가요?</summary>
+<p>같은 초기 노이즈에서는 같은 결과가 나오지만 초기 노이즈를 다르게 뽑으면 다른 이미지를 생성할 수 있습니다.</p>
+</details>
+</section>
+
+<section class="section quiz" id="quiz">
+<h2>🧠 30초 복습</h2>
+<details>
+<summary>Q1. xₜ에서 원본 신호와 노이즈의 비중을 정하는 누적값은?</summary>
+<p>
+<b>ᾱₜ = ∏αₛ</b>입니다.</p>
+</details>
+<details>
+<summary>Q2. DDPM의 실용적인 학습 목표는?</summary>
+<p>
+<b>실제 Gaussian noise ε와 예측 noise εθ(xₜ,t)의 MSE</b>입니다.</p>
+</details>
+<details>
+<summary>Q3. DDPM 생성이 느린 직접적인 이유는?</summary>
+<p>
+<b>많은 timestep마다 신경망을 반복 호출하기 때문</b>입니다.</p>
+</details>
+<details>
+<summary>Q4. DDIM에서 η=0은 무엇을 의미하나요?</summary>
+<p>
+<b>단계 사이 랜덤 항이 사라져 생성 경로가 결정론적</b>이 된다는 뜻입니다.</p>
+</details>
+</section>
+
+<section class="section">
+<h2>원문과 더 깊이 보기</h2>
+<div class="card source">
+<p>수업 자료: Stanford CME 296 Lecture 1, Diffusion.</p>
+<p>
+<a href="https://arxiv.org/abs/2006.11239">Denoising Diffusion Probabilistic Models</a> · <a href="https://arxiv.org/abs/2010.02502">Denoising Diffusion Implicit Models</a> · <a href="https://github.com/hojonathanho/diffusion">DDPM Official Code</a> · <a href="https://github.com/ermongroup/ddim">DDIM Official Code</a>
+</p>
+</div>
+</section>
+</main>
+<script src="../../assets/inline-terms.js">
+</script>
+</body>
+</html>
