@@ -244,6 +244,12 @@ body{word-break:keep-all;overflow-wrap:break-word;margin:0;background:radial-gra
 .level-guide span{padding:7px 11px;border-radius:99px;font-size:13px;font-weight:900}
 .level-easy{background:#dff7ee;color:#07594f}
 .level-deep{background:#eeeaff;color:#4a339b}
+.likelihood-card{margin:14px 0;padding:20px;border:2px solid #bfe9df;border-radius:20px;background:linear-gradient(135deg,#fff,#effaf7)}
+.likelihood-title{font-size:20px;font-weight:950;color:var(--green)}
+.likelihood-pron{display:inline-block;margin-left:6px;padding:3px 8px;border-radius:99px;background:#eeeaff;color:#4a339b;font-size:13px;font-weight:900}
+.likelihood-view{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;margin:14px 0}
+.likelihood-fixed,.likelihood-score{padding:16px;border-radius:16px;text-align:center}.likelihood-fixed{background:#173b3c;color:#fff}.likelihood-score{background:#fff;border:1px solid var(--line)}
+.likelihood-arrow{font-size:24px;font-weight:950;color:var(--violet)}
 
 @media(max-width:900px){.lecture-course-map,.lecture-map{grid-template-columns:1fr}
 
@@ -261,6 +267,7 @@ body{word-break:keep-all;overflow-wrap:break-word;margin:0;background:radial-gra
 }
 
 @media(max-width:620px){.lecture-grid,.signal-mix{grid-template-columns:1fr}
+.likelihood-view{grid-template-columns:1fr}.likelihood-arrow{transform:rotate(90deg);text-align:center}
 
 .derivation-road,.attempts,.loss-stack{grid-template-columns:1fr}
 .loss-stack>.equals{min-height:34px}
@@ -357,14 +364,14 @@ body{word-break:keep-all;overflow-wrap:break-word;margin:0;background:radial-gra
 <div class="lecture-stop"><span class="icon">🎯</span><b>무엇을 배우나</b><small>조건 → 구조 → 학습 → 생성 → 평가</small></div>
 <div class="lecture-stop"><span class="icon">🗺️</span><b>데이터 분포</b><small>관측 샘플 뒤의 p<sub>data</sub></small></div>
 <div class="lecture-stop"><span class="icon">🌫️</span><b>정방향 과정</b><small>x₀를 Gaussian noise로</small></div>
-<div class="lecture-stop"><span class="icon">🔒</span><b>학습의 벽</b><small>우도 적분은 intractable</small></div>
+<div class="lecture-stop"><span class="icon">🔒</span><b>학습의 벽</b><small>모델의 데이터 설명 점수를 직접 계산하기 어려움</small></div>
 </div>
 <div class="lecture-grid">
 <article class="card"><h3>① 세 생성모델의 자리</h3><table class="compare"><thead><tr><th>모델</th><th>강의에서 잡은 의미</th></tr></thead><tbody><tr><td><b>VAE</b><br><small>Variational Autoencoder</small></td><td>잠재 확률분포를 배우는 생성모델의 중요한 뿌리</td></tr><tr><td><b>GAN</b><br><small>Generative Adversarial Network</small></td><td>2014년 등장. 초기 결과는 거칠었지만 생성 품질 경쟁을 크게 바꾼 전환점</td></tr><tr><td><b>Diffusion</b></td><td>노이즈를 단계적으로 제거해 이미지를 만드는 현재 수업의 중심</td></tr></tbody></table><p class="truth-note"><b>표기 보완:</b> VAE는 Kingma와 Welling의 2013년 사전 공개·2014년 ICLR 논문, GAN은 Goodfellow 등이 2014년에 발표했습니다. 확산 확률모델의 계보에는 2015년 연구가 있고, DDPM은 2020년에 대중화의 전환점이 됐습니다.</p></article>
 <article class="card"><h3>② 이 수업의 목적</h3><div class="lecture-course-map"><div class="step" style="background:var(--mint)"><b>조건</b><small>텍스트·이미지 등</small></div><div class="step" style="background:var(--blue)"><b>구조</b><small>무슨 모델인가</small></div><div class="step" style="background:var(--violet)"><b>학습</b><small>어떻게 배우나</small></div><div class="step" style="background:var(--pink)"><b>생성</b><small>어떻게 뽑나</small></div><div class="step" style="background:var(--amber)"><b>평가</b><small>좋음을 어떻게 재나</small></div></div><p>교수님은 취업·개인 프로젝트·논문뿐 아니라, 생성 AI를 올바르게 사용하는 기본 소양까지 목표로 제시했습니다. 특히 생성 결과에는 유일한 정답이 없어서 평가는 여전히 어려운 문제라는 점을 강조했습니다.</p></article>
 </div>
 <h3>선수지식은 ‘네 개의 렌즈’</h3>
-<div class="grid g4"><article class="card"><h3>📐 선형대수</h3><p>벡터·행렬·gradient·divergence</p></article><article class="card"><h3>🎲 확률</h3><p>Bayes·조건부·주변확률·기댓값·공분산·Gaussian</p></article><article class="card"><h3>〰️ 미분방정식</h3><p>ODE·SDE와 수치해석 solver</p></article><article class="card"><h3>🧠 머신러닝</h3><p>모델·parameter θ·maximum likelihood·최적화</p></article></div>
+<div class="grid g4"><article class="card"><h3>📐 선형대수</h3><p>벡터·행렬·gradient·divergence</p></article><article class="card"><h3>🎲 확률</h3><p>Bayes·조건부·주변확률·기댓값·공분산·Gaussian</p></article><article class="card"><h3>〰️ 미분방정식</h3><p>ODE·SDE와 수치해석 solver</p></article><article class="card"><h3>🧠 머신러닝</h3><p>모델·parameter θ·최대우도(Maximum Likelihood: 실제 데이터를 가장 그럴듯하게 설명하는 모델 찾기)·최적화</p></article></div>
 <p class="lecture-quote"><b>강의의 학습 조언을 쉽게 번역하면:</b> 처음 보는 수식은 외우지 말고, “무엇이 주어졌고 무엇을 학습하는가”를 먼저 색으로 구분하세요. q는 우리가 정한 정방향 규칙, p<sub>θ</sub>는 데이터로 배우는 역방향 모델입니다.</p>
 <h3>③ 생성모델이 풀려는 문제</h3>
 <div class="joint"><div class="tile" style="background:var(--mint)"><b>관측한 고양이 이미지</b><br><small>p<sub>data</sub>에서 나온 유한한 샘플</small></div><div class="arrow">→</div><div class="tile" style="background:var(--violet)"><b>학습한 생성모델</b><br><small>보지 못한 새 샘플 생성</small></div></div>
@@ -382,12 +389,13 @@ body{word-break:keep-all;overflow-wrap:break-word;margin:0;background:radial-gra
 <div class="prob-canvas"><article class="prob-card"><b>결합확률 · Joint</b><div class="prob-sketch joint"></div><div class="formula">p(x₁,x₂)</div><p>두 변수를 동시에 보는 전체 지형</p></article><article class="prob-card"><b>조건부확률 · Conditional</b><div class="prob-sketch conditional"></div><div class="formula">p(x₂|x₁)</div><p>x₁을 고정하고 잘라 본 한 단면</p></article><article class="prob-card"><b>주변확률 · Marginal</b><div class="prob-sketch marginal"></div><div class="formula">p(x₁)=∫p(x₁,x₂)dx₂</div><p>x₂ 방향을 모두 더해 접은 그림자</p></article></div>
 <div class="formula" style="margin-top:14px">연쇄법칙: p(x₁,…,x<sub>T</sub>) = p(x₁)∏<sub>t=2</sub><sup>T</sup>p(x<sub>t</sub>|x<sub>1:t-1</sub>)<br>Markov 성질을 쓰면: q(x<sub>1:T</sub>|x₀)=∏<sub>t=1</sub><sup>T</sup>q(x<sub>t</sub>|x<sub>t-1</sub>)</div>
 <p class="truth-note"><b>중요한 정확성 보완:</b> “분류의 변수들은 모두 독립”이라고 일반화할 수는 없습니다. 강의의 핵심은 여기서 x₀→x₁→…→x<sub>T</sub>가 서로 연결된 Markov chain이므로, 조건부 항을 함부로 없앨 수 없다는 점입니다.</p>
-<h3>⑦ 왜 log-likelihood를 바로 계산하지 못하나</h3>
+<h3>⑦ 우도(Likelihood)는 무엇이고, 왜 바로 계산하지 못하나</h3>
+<div class="likelihood-card"><div class="likelihood-title">우도 · Likelihood <span class="likelihood-pron">라이클리후드 · /ˈlaɪklihʊd/</span></div><p><b>한글 뜻:</b> 현재 모델이 우리가 실제로 관측한 데이터를 얼마나 그럴듯하게 설명하는지를 나타내는 값입니다.</p><div class="likelihood-view"><div class="likelihood-fixed"><b>실제 데이터 x₀는 고정</b><br><small>예: 실제 고양이 사진</small></div><div class="likelihood-arrow">→</div><div class="likelihood-score"><b>모델 θ를 바꿔 비교</b><br><small>어떤 모델이 이 사진에 더 높은 p<sub>θ</sub>(x₀)를 주는가?</small></div></div><p><b>확률과 차이:</b> 확률은 모델을 고정하고 “어떤 데이터가 나올까?”를 묻습니다. 우도는 관측 데이터를 고정하고 “어떤 모델이 이 데이터를 가장 잘 설명할까?”를 묻습니다.</p><div class="formula">Likelihood: L(θ;x₀)=p<sub>θ</sub>(x₀)<br>Maximum Likelihood: θ*=arg max<sub>θ</sub> p<sub>θ</sub>(x₀)</div></div>
 <div class="path-cloud"><div class="path-end" style="background:var(--mint)">x₀<br><small>관측 이미지</small></div><div class="paths"></div><div class="path-end" style="background:var(--violet)">x<sub>T</sub><br><small>노이즈</small></div></div>
 <div class="formula" style="margin-top:14px">p<sub>θ</sub>(x₀) = ∫ p<sub>θ</sub>(x<sub>0:T</sub>) dx<sub>1:T</sub><br>θ* = arg max<sub>θ</sub> E<sub>x₀~p_data</sub>[ log p<sub>θ</sub>(x₀) ]</div>
-<p>로그는 매우 작은 확률의 수치 계산을 안정시키고 곱을 합으로 바꿉니다. 하지만 중간 잠재상태 x₁,…,x<sub>T</sub>의 가능한 경로를 모두 적분해야 하므로 p<sub>θ</sub>(x₀)는 직접 계산하기 어렵습니다. 이것이 <b>intractable</b>하다는 뜻입니다.</p>
-<div class="joint"><div class="tile" style="background:var(--red)"><b>직접 우도</b><br><small>계산 불가능</small></div><div class="arrow">→</div><div class="tile" style="background:var(--amber)"><b>계산 가능한 하한</b><br><small>ELBO로 우회</small></div></div>
-<p class="lecture-quote"><b>1차시의 도착점:</b> “정답 우도를 직접 풀 수 없으니, 계산 가능한 lower bound를 찾아 최대화하자.” 아래 기존 ELBO·DDPM·DDIM 구역은 이 문제 설정을 이어서 더 깊게 확장한 학습자료입니다.</p>
+<p><b>로그우도(Log-likelihood, 로그 라이클리후드)</b>는 우도에 로그를 취한 값입니다. 로그는 매우 작은 값의 계산을 안정시키고 여러 데이터의 확률 곱을 덧셈으로 바꿉니다. 하지만 중간 잠재상태 x₁,…,x<sub>T</sub>의 가능한 경로를 모두 적분해야 하므로 p<sub>θ</sub>(x₀)는 직접 계산하기 어렵습니다. 이것이 <b>intractable(계산이 사실상 불가능한)</b>하다는 뜻입니다.</p>
+<div class="joint"><div class="tile" style="background:var(--red)"><b>실제 이미지의 우도</b><br><small>모델의 데이터 설명 점수 · 직접 계산 어려움</small></div><div class="arrow">→</div><div class="tile" style="background:var(--amber)"><b>계산 가능한 하한</b><br><small>ELBO로 우회</small></div></div>
+<p class="lecture-quote"><b>1차시의 도착점:</b> “실제 이미지에 모델이 부여하는 설명 점수 p<sub>θ</sub>(x₀)를 직접 계산하기 어려우니, 계산 가능한 lower bound를 찾아 최대화하자.” 아래 기존 ELBO·DDPM·DDIM 구역은 이 문제 설정을 이어서 더 깊게 확장한 학습자료입니다.</p>
 </div>
 </section>
 
@@ -397,7 +405,7 @@ body{word-break:keep-all;overflow-wrap:break-word;margin:0;background:radial-gra
 <h2>수식이 결론으로 점프하지 않도록: 강의자료 전체 논리</h2>
 <p class="lead">강의자료의 순서인 Motivation → Forward/Backward → Variational formulation → Training → Inference → Faster sampling을 따라, 각 식이 왜 다음 식으로 이어지는지 해부합니다.</p>
 
-<h3>1. 계산 불가능한 우도를 학습 가능한 손실로 바꾸는 4단계</h3>
+<h3>1. 직접 계산하기 어려운 우도(모델의 데이터 설명 점수)를 학습 가능한 손실로 바꾸는 4단계</h3>
 <div class="derivation-road">
 <div class="derive-step"><strong>1</strong><b>Lower bound 만들기</b><small>Jensen 부등식과 정방향 분포 q를 이용해 log p<sub>θ</sub>(x₀) 아래에 ELBO를 둔다.</small></div>
 <div class="derive-step"><strong>2</strong><b>시간별 KL로 펼치기</b><small>전체 경로 문제를 각 t의 역방향 한 걸음 비교로 분해한다.</small></div>
@@ -406,7 +414,7 @@ body{word-break:keep-all;overflow-wrap:break-word;margin:0;background:radial-gra
 </div>
 <div class="formula">E<sub>x₀~q(x₀)</sub>[log p<sub>θ</sub>(x₀)]<br>≥ E<sub>x₀:T~q(x₀:T)</sub>[ log { p<sub>θ</sub>(x₀:T) / q(x<sub>1:T</sub>|x₀) }
  ] = <span class="hi">ELBO</span></div>
-<p><b>왜 하한이면 충분할까?</b> 직접 계산할 수 없는 log-likelihood의 아래쪽 값을 끌어올립니다. q가 모델의 posterior와 잘 맞을수록 이 하한은 실제 log-likelihood에 가까워집니다.</p>
+<p><b>왜 하한이면 충분할까?</b> 직접 계산하기 어려운 로그우도(Log-likelihood: 우도에 로그를 취한 값)의 아래쪽 값을 끌어올립니다. q가 모델의 posterior와 잘 맞을수록 이 하한은 실제 로그우도에 가까워집니다.</p>
 
 <h3>2. ELBO 안에서 실제로 비교하는 두 분포</h3>
 <div class="loss-stack"><div><b>계산 가능한 정답 역할</b><div class="formula">q(x<sub>t-1</sub>|x<sub>t</sub>,x₀)</div><p>x₀와 xₜ를 모두 알고 있을 때 이전 상태가 어디였는지 계산한 posterior</p></div><div class="equals">VS</div><div><b>학습해야 하는 모델</b><div class="formula">p<sub>θ</sub>(x<sub>t-1</sub>|x<sub>t</sub>)</div><p>실제 생성 때 x₀ 없이 xₜ만 보고 이전 상태를 예측하는 reverse model</p></div></div>
@@ -562,13 +570,13 @@ body{word-break:keep-all;overflow-wrap:break-word;margin:0;background:radial-gra
 </section>
 
 <section class="section" id="elbo">
-<h2>4. ELBO 계단: 최대우도가 노이즈 MSE가 되기까지</h2>
+<h2>4. ELBO 계단: 최대우도(실제 데이터를 가장 잘 설명하는 모델 찾기)가 노이즈 MSE가 되기까지</h2>
 <p class="lead">목표는 훈련 이미지 x₀의 log pθ(x₀)를 크게 만드는 것입니다. 하지만 모든 중간 상태를 적분해야 해서 직접 계산할 수 없습니다.</p>
 <div class="ladder">
 <article class="rung">
 <div class="num">①</div>
 <h3>Lower Bound</h3>
-<p>Jensen 부등식으로 계산 불가능한 log-likelihood 아래에 계산 가능한 ELBO를 놓습니다.</p>
+<p>Jensen 부등식으로 직접 계산하기 어려운 로그우도(Log-likelihood: 모델의 데이터 설명 점수에 로그를 취한 값) 아래에 계산 가능한 ELBO를 놓습니다.</p>
 </article>
 <article class="rung">
 <div class="num">②</div>
@@ -892,7 +900,7 @@ body{word-break:keep-all;overflow-wrap:break-word;margin:0;background:radial-gra
       ['④','#forward','왜 노이즈에서 시작할까'],
       ['⑤','#forward','여러 단계를 한 번에 건너가는 ᾱₜ'],
       ['⑥','#elbo','수식 전에 보는 확률 3종 세트'],
-      ['⑦','#elbo','왜 우도를 바로 계산할 수 없을까']
+      ['⑦','#elbo','우도(Likelihood: 모델의 데이터 설명 점수)란 무엇이고, 왜 바로 계산할 수 없을까']
     ];
     easyMap.forEach(([prefix,targetSelector,title])=>{
       const heading=[...foundation.children].find(el=>el.tagName==='H3' && el.textContent.trim().startsWith(prefix));
