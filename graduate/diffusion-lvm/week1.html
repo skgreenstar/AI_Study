@@ -105,13 +105,17 @@ body{word-break:keep-all;overflow-wrap:break-word;margin:0;background:radial-gra
 .paths{height:135px;position:relative;background:repeating-radial-gradient(ellipse at center,transparent 0 10px,#7657e81f 11px 12px,transparent 13px 20px);border-radius:18px}
 .paths:after{content:"가능한 중간 노이즈 경로가 무한히 많음";position:absolute;inset:0;display:grid;place-content:center;text-align:center;font-weight:900;color:var(--violet);padding:12px}
 .lecture-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.pdf-deep{border-radius:26px;padding:clamp(18px,3vw,30px);background:linear-gradient(155deg,#0c3f3a,#163c51 58%,#3e326f);color:#fff;box-shadow:0 22px 50px rgba(12,63,58,.2)}
+.pdf-deep h2,.pdf-deep h3{color:#fff}.pdf-deep .lead{color:#d9f7ef}.pdf-deep .card{color:var(--ink);box-shadow:none}.derivation-road{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0}.derive-step{min-height:170px;padding:17px;border-radius:18px;background:#ffffff12;border:1px solid #ffffff2b}.derive-step strong{display:grid;place-content:center;width:34px;height:34px;border-radius:50%;background:#7cf1d2;color:#073d39;margin-bottom:10px}.derive-step b{display:block;font-size:17px}.derive-step small{color:#d9f7ef}.equation-anatomy{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:12px 0}.equation-piece{padding:15px;border-radius:15px;background:#fff;color:var(--ink);border-top:5px solid var(--mint)}.equation-piece:nth-child(2){border-color:var(--violet)}.equation-piece:nth-child(3){border-color:var(--amber)}.attempts{display:grid;grid-template-columns:1fr 1fr;gap:12px}.attempt{padding:18px;border-radius:18px;background:#fff;color:var(--ink);position:relative;overflow:hidden}.attempt:before{content:attr(data-result);position:absolute;right:-28px;top:18px;transform:rotate(35deg);padding:5px 34px;background:var(--red);color:#fff;font-weight:950;font-size:12px}.attempt.success:before{background:var(--mint);color:#073d39}.mini-chain{display:flex;gap:6px;align-items:center;overflow-x:auto;padding:12px 0}.mini-chain span{flex:0 0 auto;min-width:62px;padding:12px 8px;border-radius:13px;text-align:center;background:#eaf7f3;color:var(--green);font-weight:900}.mini-chain i{font-style:normal;color:var(--violet);font-weight:950}.loss-stack{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:stretch}.loss-stack>div{padding:17px;border-radius:16px;background:#fff;color:var(--ink)}.loss-stack>.equals{display:grid;place-content:center;background:transparent;color:#fff;font-size:28px;font-weight:950}.pdf-deep .formula{background:#061f24;border:1px solid #ffffff20}.metric-bars{display:grid;gap:9px}.metric-row{display:grid;grid-template-columns:70px 1fr 70px;gap:9px;align-items:center;color:var(--ink)}.metric-row .rail{height:18px;background:#e9efed;border-radius:99px;overflow:hidden}.metric-row .rail span{display:block;height:100%;background:linear-gradient(90deg,var(--mint),var(--amber),var(--red));border-radius:inherit}
 @media(max-width:900px){.lecture-course-map,.lecture-map{grid-template-columns:1fr}
+.derivation-road{grid-template-columns:1fr 1fr}.equation-anatomy{grid-template-columns:1fr}
 .lecture-stop:not(:last-child):after{content:"↓";right:50%;top:auto;bottom:-22px}
 .prob-canvas{grid-template-columns:1fr}
 .path-cloud{grid-template-columns:1fr}
 .paths{height:100px}
 }
 @media(max-width:620px){.lecture-grid,.signal-mix{grid-template-columns:1fr}
+.derivation-road,.attempts,.loss-stack{grid-template-columns:1fr}.loss-stack>.equals{min-height:34px}.metric-row{grid-template-columns:58px 1fr 55px}.pdf-deep{padding:16px}
 .lecture-shell{padding:16px}
 .formula{font-size:13px}
 .compare{display:block;overflow-x:auto}
@@ -138,6 +142,7 @@ body{word-break:keep-all;overflow-wrap:break-word;margin:0;background:radial-gra
 <nav class="nav">
 <a href="#map">전체 지도</a>
 <a href="#professor-replay">교수님 강의 재구성</a>
+<a href="#pdf-deep-dive">PDF 정밀 해설</a>
 <a href="#distribution">이미지 분포</a>
 <a href="#forward">정방향</a>
 <a href="#reverse">역방향</a>
@@ -228,6 +233,58 @@ body{word-break:keep-all;overflow-wrap:break-word;margin:0;background:radial-gra
 <p>로그는 매우 작은 확률의 수치 계산을 안정시키고 곱을 합으로 바꿉니다. 하지만 중간 잠재상태 x₁,…,x<sub>T</sub>의 가능한 경로를 모두 적분해야 하므로 p<sub>θ</sub>(x₀)는 직접 계산하기 어렵습니다. 이것이 <b>intractable</b>하다는 뜻입니다.</p>
 <div class="joint"><div class="tile" style="background:var(--red)"><b>직접 우도</b><br><small>계산 불가능</small></div><div class="arrow">→</div><div class="tile" style="background:var(--amber)"><b>계산 가능한 하한</b><br><small>ELBO로 우회</small></div></div>
 <p class="lecture-quote"><b>1차시의 도착점:</b> “정답 우도를 직접 풀 수 없으니, 계산 가능한 lower bound를 찾아 최대화하자.” 아래 기존 ELBO·DDPM·DDIM 구역은 이 문제 설정을 이어서 더 깊게 확장한 학습자료입니다.</p>
+</div>
+</section>
+
+<section class="section" id="pdf-deep-dive">
+<div class="pdf-deep">
+<span class="lecture-tag">📚 원본 강의 PDF 정밀 대조</span>
+<h2>수식이 결론으로 점프하지 않도록: 강의자료 전체 논리</h2>
+<p class="lead">강의자료의 순서인 Motivation → Forward/Backward → Variational formulation → Training → Inference → Faster sampling을 따라, 각 식이 왜 다음 식으로 이어지는지 해부합니다.</p>
+
+<h3>1. 계산 불가능한 우도를 학습 가능한 손실로 바꾸는 4단계</h3>
+<div class="derivation-road">
+<div class="derive-step"><strong>1</strong><b>Lower bound 만들기</b><small>Jensen 부등식과 정방향 분포 q를 이용해 log p<sub>θ</sub>(x₀) 아래에 ELBO를 둔다.</small></div>
+<div class="derive-step"><strong>2</strong><b>시간별 KL로 펼치기</b><small>전체 경로 문제를 각 t의 역방향 한 걸음 비교로 분해한다.</small></div>
+<div class="derive-step"><strong>3</strong><b>두 분포를 계산 가능하게</b><small>Bayes·Markov·Gaussian 성질로 q posterior와 p<sub>θ</sub>를 다룬다.</small></div>
+<div class="derive-step"><strong>4</strong><b>Noise MSE 도출</b><small>두 Gaussian의 KL을 계산하면 실제 노이즈와 예측 노이즈의 오차가 된다.</small></div>
+</div>
+<div class="formula">E<sub>x₀~q(x₀)</sub>[log p<sub>θ</sub>(x₀)]<br>≥ E<sub>x₀:T~q(x₀:T)</sub>[ log { p<sub>θ</sub>(x₀:T) / q(x<sub>1:T</sub>|x₀) } ] = <span class="hi">ELBO</span></div>
+<p><b>왜 하한이면 충분할까?</b> 직접 계산할 수 없는 log-likelihood의 아래쪽 값을 끌어올립니다. q가 모델의 posterior와 잘 맞을수록 이 하한은 실제 log-likelihood에 가까워집니다.</p>
+
+<h3>2. ELBO 안에서 실제로 비교하는 두 분포</h3>
+<div class="loss-stack"><div><b>계산 가능한 정답 역할</b><div class="formula">q(x<sub>t-1</sub>|x<sub>t</sub>,x₀)</div><p>x₀와 xₜ를 모두 알고 있을 때 이전 상태가 어디였는지 계산한 posterior</p></div><div class="equals">VS</div><div><b>학습해야 하는 모델</b><div class="formula">p<sub>θ</sub>(x<sub>t-1</sub>|x<sub>t</sub>)</div><p>실제 생성 때 x₀ 없이 xₜ만 보고 이전 상태를 예측하는 reverse model</p></div></div>
+<div class="formula" style="margin-top:12px">ELBO = -Σ<sub>t=2</sub><sup>T</sup> KL( q(x<sub>t-1</sub>|x<sub>t</sub>,x₀) || p<sub>θ</sub>(x<sub>t-1</sub>|x<sub>t</sub>) ) + 경계항들</div>
+<p>강의 슬라이드의 “Can we compute this?”는 왼쪽 q를 뜻하고, “We want to learn θ”는 오른쪽 p<sub>θ</sub>를 뜻합니다. 모델은 계산 가능한 q의 한 걸음 복원을 따라가도록 배웁니다.</p>
+
+<h3>3. Bayes를 쓰면 ‘정답 역방향 한 걸음’이 Gaussian이 된다</h3>
+<div class="formula">q(x<sub>t-1</sub>|x<sub>t</sub>,x₀)<br>= q(x<sub>t</sub>|x<sub>t-1</sub>)q(x<sub>t-1</sub>|x₀) / q(x<sub>t</sub>|x₀)<br>= N(x<sub>t-1</sub>; μ̃<sub>t</sub>(x<sub>t</sub>,x₀), β̃<sub>t</sub>I)</div>
+<div class="equation-anatomy"><div class="equation-piece"><b>현재 관측</b><p>x<sub>t</sub>: 지금 보고 있는 noisy image</p></div><div class="equation-piece"><b>원본 단서</b><p>x₀: 학습 때만 알고 있는 clean image</p></div><div class="equation-piece"><b>정답 노이즈</b><p>ε: x₀에서 xₜ를 만들 때 실제로 섞은 noise</p></div></div>
+<div class="formula">μ̃<sub>t</sub> = 1/√α<sub>t</sub> · [x<sub>t</sub> - (1-α<sub>t</sub>)/√(1-ᾱ<sub>t</sub>) · ε]<br>β̃<sub>t</sub> = (1-ᾱ<sub>t-1</sub>)/(1-ᾱ<sub>t</sub>) · β<sub>t</sub></div>
+<p>학습 중에는 x₀와 ε를 알고 있으므로 μ̃<sub>t</sub>를 계산할 수 있습니다. 생성할 때는 둘을 모르므로 신경망 ε<sub>θ</sub>(x<sub>t</sub>,t)가 ε를 대신 예측합니다.</p>
+
+<h3>4. 그래서 최종 학습 레시피가 이렇게 짧아진다</h3>
+<div class="mini-chain"><span>x₀~q(x₀)</span><i>+</i><span>ε~N(0,I)</span><i>+</i><span>t~U{1,T}</span><i>→</i><span>xₜ 만들기</span><i>→</i><span>ε<sub>θ</sub> 예측</span><i>→</i><span>MSE</span></div>
+<div class="formula">x<sub>t</sub>=√ᾱ<sub>t</sub>x₀+√(1-ᾱ<sub>t</sub>)ε<br>L<sub>DDPM</sub>=E<sub>t,x₀,ε</sub>[ || ε<sub>θ</sub>(x<sub>t</sub>,t)-ε ||² ]</div>
+<p><b>직관:</b> 모델에게 “이 사진을 복원해”라고 직접 시키는 대신, “내가 방금 섞은 노이즈가 무엇이었는지 맞혀봐”라고 시킵니다. t를 균등하게 뽑으므로 약한 오염부터 거의 순수 노이즈까지 한 모델이 모두 연습합니다.</p>
+
+<h3>5. 생성에서는 같은 신경망을 T번 호출한다</h3>
+<div class="formula">x<sub>T</sub>~N(0,I)<br>x<sub>t-1</sub>=1/√α<sub>t</sub>[x<sub>t</sub>-(1-α<sub>t</sub>)/√(1-ᾱ<sub>t</sub>) ε<sub>θ</sub>(x<sub>t</sub>,t)] + σ<sub>t</sub>z</div>
+<div class="equation-anatomy"><div class="equation-piece"><b>① 현재 xₜ</b><p>아직 노이즈가 섞인 상태</p></div><div class="equation-piece"><b>② ε<sub>θ</sub> 제거</b><p>모델이 예측한 불필요한 성분을 뺌</p></div><div class="equation-piece"><b>③ σₜz 추가</b><p>다음 샘플의 확률성을 유지하는 새 Gaussian</p></div></div>
+<p>좋은 품질의 대가로 신경망 평가를 반복해야 합니다. 강의자료는 DDPM이 VAE/GAN보다 생성 비용이 훨씬 크고, 대표 설정에서는 샘플 하나에 긴 시간이 들 수 있다는 한계를 짚습니다.</p>
+
+<h3>6. 빠르게 만들려다 왜 두 번 막히는가</h3>
+<div class="attempts"><div class="attempt" data-result="실패"><h3>시도 A · 여러 식을 대입해 한 번에 계산</h3><p>x<sub>t-1</sub> 식 안에 x<sub>t-2</sub> 식을 계속 대입합니다.</p><div class="formula">x<sub>τᵢ₋₁</sub>=A<sub>i</sub>x<sub>τᵢ</sub>+Σ B<sub>s</sub>ε<sub>θ</sub>(x<sub>s</sub>,s)+C<sub>i</sub>z</div><p><b>막힌 이유:</b> 중간 시점마다 ε<sub>θ</sub>를 여전히 평가해야 해서 신경망 호출 수가 줄지 않습니다.</p></div><div class="attempt" data-result="실패"><h3>시도 B · DDPM 식에서 timestep을 바로 건너뛰기</h3><p>τ₀&lt;τ₁&lt;…&lt;τ<sub>S</sub>=T만 선택해 큰 점프를 합니다.</p><div class="formula">큰 점프 + 단계별 확률성 σ<sub>τᵢ</sub>z</div><p><b>막힌 이유:</b> 한 번의 근사 오차가 커진 상황에서 새 랜덤성까지 섞여 품질이 크게 무너질 수 있습니다.</p></div></div>
+
+<h3>7. DDIM의 핵심은 ‘같은 주변분포, 다른 경로’</h3>
+<div class="attempts"><div class="attempt success" data-result="해결"><h3>유지할 것</h3><p>학습 손실이 보는 각 시점의 주변분포를 DDPM과 같게 둡니다.</p><div class="formula">q<sub>σ</sub>(x<sub>t</sub>|x₀)=q(x<sub>t</sub>|x₀)</div></div><div class="attempt success" data-result="해결"><h3>바꿀 것</h3><p>시점 사이의 조건부 경로는 결정론적으로 만들 수 있게 새로 정의합니다.</p><div class="formula">σ<sub>t</sub>=0 → inter-step randomness 제거</div></div></div>
+<div class="formula" style="margin-top:12px">x̂₀=(x<sub>t</sub>-√(1-ᾱ<sub>t</sub>)ε<sub>θ</sub>(x<sub>t</sub>,t))/√ᾱ<sub>t</sub><br><br>x<sub>τᵢ₋₁</sub>=√ᾱ<sub>τᵢ₋₁</sub>x̂₀+√(1-ᾱ<sub>τᵢ₋₁</sub>)ε<sub>θ</sub>(x<sub>τᵢ</sub>,τᵢ) &nbsp; (σ=0)</div>
+<p><b>Implicit의 뜻:</b> DDIM은 DDPM처럼 모든 역전이 확률을 명시적으로 따르는 Markov chain을 쓰지 않아도, 위 update가 암묵적으로 생성분포를 정합니다. 같은 학습 모델을 재사용하면서 S≪T개의 시점만 고를 수 있습니다.</p>
+
+<h3>8. 속도는 공짜가 아니다: 강의자료의 CIFAR-10 예시</h3>
+<div class="card"><div class="metric-bars"><div class="metric-row"><b>1×</b><div class="rail"><span style="width:1%"></span></div><span>기준</span></div><div class="metric-row"><b>10×</b><div class="rail"><span style="width:3%"></span></div><span>FID +3%</span></div><div class="metric-row"><b>20×</b><div class="rail"><span style="width:16%"></span></div><span>+16%</span></div><div class="metric-row"><b>50×</b><div class="rail"><span style="width:70%"></span></div><span>+70%</span></div><div class="metric-row"><b>100×</b><div class="rail"><span style="width:100%"></span></div><span>+330%</span></div></div><p><b>읽는 법:</b> FID는 낮을수록 좋습니다. 강의자료가 인용한 DDIM의 CIFAR-10 실험에서는 적당한 가속은 손실이 작지만, 지나친 step skipping은 품질 저하가 급격해집니다. 이 수치는 모든 데이터셋·모델에 그대로 적용되는 보편 법칙이 아니라 해당 실험의 예시입니다.</p></div>
+
+<div class="callout"><b>PDF 한 줄 결론:</b> DDPM 최적화와 호환되는 편리한 분포 가정을 유지하고 → 단계 사이 확률성을 제거해 DDIM 경로를 만들고 → 필요한 시점만 골라 건너뛴다.</div>
 </div>
 </section>
 
