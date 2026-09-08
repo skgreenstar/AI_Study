@@ -7,27 +7,293 @@
 <meta name="description" content="AI와 LLM의 관계, NLP 과제와 평가, 토큰화, Word2Vec, RNN과 Attention의 탄생을 시각적으로 배우는 트랜스포머 1차시">
 <link rel="stylesheet" href="../../assets/inline-terms.css">
 <style>
-:root{--bg:#f7f6ff;--ink:#211d3b;--muted:#716c83;--violet:#7357e8;--blue:#4786f2;--cyan:#36a9ba;--mint:#31b99d;--pink:#e45d9d;--amber:#efa83f;--red:#dc5967;--line:#e4dff3;--shadow:0 15px 38px #4a328c16}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;word-break:keep-all;overflow-wrap:break-word;background:radial-gradient(circle at 5% 0,#e7e1ff,transparent 28%),radial-gradient(circle at 100% 88%,#ddf5ff,transparent 27%),var(--bg);color:var(--ink);font-family:Inter,Pretendard,"Noto Sans KR",system-ui,sans-serif;line-height:1.68}.wrap{max-width:1180px;margin:auto;padding:24px 20px 85px}.back{display:inline-flex;color:var(--muted);text-decoration:none;font-weight:850;margin-bottom:18px}.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#291464,#6545d6 53%,#4786f2);color:#fff;border-radius:30px;padding:48px;box-shadow:0 20px 48px #41279b38}.hero:after{content:"1";position:absolute;right:18px;bottom:-100px;font-size:320px;font-weight:950;line-height:1;color:#ffffff12}.kicker{font-size:13px;font-weight:950;letter-spacing:1.5px;color:#d9d2ff}.hero h1{font-size:clamp(34px,6vw,61px);line-height:1.08;letter-spacing:-2px;margin:10px 0 18px}.hero p{max-width:850px;font-size:18px;color:#f4f1ff;margin:0}.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}.badge{padding:7px 11px;border:1px solid #ffffff3b;background:#ffffff17;border-radius:99px;font-size:13px;font-weight:850}.nav{position:sticky;top:9px;z-index:8;display:flex;gap:7px;overflow:auto;margin:17px 0;padding:9px;background:#f7f6ffe8;backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:16px}.nav a{white-space:nowrap;text-decoration:none;color:#554a86;background:#fff;border:1px solid var(--line);border-radius:99px;padding:6px 10px;font-size:13px;font-weight:850}.section{margin-top:50px}.section h2{font-size:clamp(27px,4vw,40px);line-height:1.18;margin:0 0 7px;letter-spacing:-1px}.lead{margin:0 0 17px;color:var(--muted)}.card{background:#fff;border:1px solid var(--line);border-radius:21px;padding:21px;box-shadow:var(--shadow)}.grid{display:grid;gap:14px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}.nested{display:grid;place-items:center;min-height:360px;position:relative}.ring{position:absolute;border-radius:50%;display:grid;place-items:start center;padding-top:18px;color:#fff;font-weight:900}.r1{width:350px;height:350px;background:#4d3bb8}.r2{width:278px;height:278px;top:66px;background:#5372d8}.r3{width:206px;height:206px;top:102px;background:#29a4b5}.r4{width:136px;height:136px;top:138px;background:#e45d9d;padding-top:48px}.route{display:grid;grid-template-columns:repeat(9,1fr);gap:7px;align-items:center}.node{min-height:130px;padding:14px 8px;border-radius:17px;color:#fff;text-align:center;display:grid;align-content:center}.node i{font-size:29px;font-style:normal}.arrow{text-align:center;color:var(--violet);font-size:24px;font-weight:950}.callout{margin-top:14px;padding:17px;border-left:6px solid var(--amber);border-radius:16px;background:#fff8e7}.formula{padding:16px;border-radius:14px;background:#282247;color:#fff;font:700 15px/1.85 ui-monospace,SFMono-Regular,Menlo,monospace;overflow:auto}.formula .hi{color:#7be7cb}.compare{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid var(--line);border-radius:17px;overflow:hidden}.compare th,.compare td{padding:12px 13px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}.compare th{background:#ede9ff}.compare tr:last-child td{border-bottom:0}.tasks{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.task{border-top:7px solid var(--blue)}.metric{display:inline-block;padding:5px 9px;border-radius:99px;background:#ece8ff;color:#5841b0;font-size:12px;font-weight:900}.tokens{display:flex;gap:6px;flex-wrap:wrap}.token{padding:8px 11px;border-radius:10px;background:#e8ecff;color:#4057a8;font-weight:850}.spectrum{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.sample{padding:16px;border-radius:17px;background:#fff;border:1px solid var(--line)}.pieces{display:flex;gap:4px;flex-wrap:wrap;margin-top:12px}.piece{padding:6px 8px;border-radius:8px;background:#eeeaff;font:800 13px ui-monospace,monospace}.vector{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}.v{padding:10px 4px;border-radius:7px;background:#e6e2ff;text-align:center;font-family:ui-monospace,monospace}.v.hot{background:#b9f0dc}.proxy{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}.blank{padding:18px;border:2px dashed var(--violet);border-radius:15px;text-align:center;background:#f4f1ff}.timeline{display:flex;gap:8px;align-items:stretch}.era{flex:1;padding:15px 9px;border-radius:17px;color:#fff;text-align:center;position:relative}.era:not(:last-child):after{content:"→";position:absolute;right:-18px;top:38%;z-index:2;color:var(--violet);font-size:24px;font-weight:950}.rnn{display:flex;gap:8px;align-items:center;overflow:auto;padding:10px}.cell{min-width:115px;padding:18px 10px;border-radius:15px;background:var(--blue);color:#fff;text-align:center}.faded{opacity:.25}.attention{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}.att{padding:13px 6px;border-radius:12px;text-align:center;background:#eeeaff}.att.hot{background:#ffd9e9;color:#9b2c5d;font-weight:950;box-shadow:0 0 0 3px #e45d9d33}.accordion details,.quiz details{background:#fff;border:1px solid var(--line);border-radius:15px;padding:15px;margin:9px 0}.accordion summary,.quiz summary{cursor:pointer;font-weight:900}.source{font-size:13px;color:var(--muted)}@media(max-width:900px){.g4,.g3,.tasks,.spectrum{grid-template-columns:1fr 1fr}.route{grid-template-columns:1fr}.route .arrow{transform:rotate(90deg)}.timeline{display:grid;grid-template-columns:1fr 1fr}.era:after{display:none}}@media(max-width:620px){.wrap{padding:14px 14px 60px}.hero{padding:35px 25px}.hero:after{font-size:230px}.g2,.g3,.g4,.tasks,.spectrum,.proxy,.timeline{grid-template-columns:1fr}.proxy .arrow{transform:rotate(90deg)}.compare{font-size:13px}.ring.r1{width:310px;height:310px}.ring.r2{width:244px;height:244px}.ring.r3{width:180px;height:180px}.ring.r4{width:115px;height:115px;padding-top:40px}}
+:root{--bg:#f7f6ff;--ink:#211d3b;--muted:#716c83;--violet:#7357e8;--blue:#4786f2;--cyan:#36a9ba;--mint:#31b99d;--pink:#e45d9d;--amber:#efa83f;--red:#dc5967;--line:#e4dff3;--shadow:0 15px 38px #4a328c16}
+
+*{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{margin:0;word-break:keep-all;overflow-wrap:break-word;background:radial-gradient(circle at 5% 0,#e7e1ff,transparent 28%),radial-gradient(circle at 100% 88%,#ddf5ff,transparent 27%),var(--bg);color:var(--ink);font-family:Inter,Pretendard,"Noto Sans KR",system-ui,sans-serif;line-height:1.68}
+
+.wrap{max-width:1180px;margin:auto;padding:24px 20px 85px}
+
+.back{display:inline-flex;color:var(--muted);text-decoration:none;font-weight:850;margin-bottom:18px}
+
+.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#291464,#6545d6 53%,#4786f2);color:#fff;border-radius:30px;padding:48px;box-shadow:0 20px 48px #41279b38}
+
+.hero:after{content:"1";position:absolute;right:18px;bottom:-100px;font-size:320px;font-weight:950;line-height:1;color:#ffffff12}
+
+.kicker{font-size:13px;font-weight:950;letter-spacing:1.5px;color:#d9d2ff}
+
+.hero h1{font-size:clamp(34px,6vw,61px);line-height:1.08;letter-spacing:-2px;margin:10px 0 18px}
+
+.hero p{max-width:850px;font-size:18px;color:#f4f1ff;margin:0}
+
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+
+.badge{padding:7px 11px;border:1px solid #ffffff3b;background:#ffffff17;border-radius:99px;font-size:13px;font-weight:850}
+
+.nav{position:sticky;top:9px;z-index:8;display:flex;gap:7px;overflow:auto;margin:17px 0;padding:9px;background:#f7f6ffe8;backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:16px}
+
+.nav a{white-space:nowrap;text-decoration:none;color:#554a86;background:#fff;border:1px solid var(--line);border-radius:99px;padding:6px 10px;font-size:13px;font-weight:850}
+
+.section{margin-top:50px}
+
+.section h2{font-size:clamp(27px,4vw,40px);line-height:1.18;margin:0 0 7px;letter-spacing:-1px}
+
+.lead{margin:0 0 17px;color:var(--muted)}
+
+.card{background:#fff;border:1px solid var(--line);border-radius:21px;padding:21px;box-shadow:var(--shadow)}
+
+.grid{display:grid;gap:14px}
+
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+
+.nested{display:grid;place-items:center;min-height:360px;position:relative}
+
+.ring{position:absolute;border-radius:50%;display:grid;place-items:start center;padding-top:18px;color:#fff;font-weight:900}
+
+.r1{width:350px;height:350px;background:#4d3bb8}
+
+.r2{width:278px;height:278px;top:66px;background:#5372d8}
+
+.r3{width:206px;height:206px;top:102px;background:#29a4b5}
+
+.r4{width:136px;height:136px;top:138px;background:#e45d9d;padding-top:48px}
+
+.route{display:grid;grid-template-columns:repeat(9,1fr);gap:7px;align-items:center}
+
+.node{min-height:130px;padding:14px 8px;border-radius:17px;color:#fff;text-align:center;display:grid;align-content:center}
+
+.node i{font-size:29px;font-style:normal}
+
+.arrow{text-align:center;color:var(--violet);font-size:24px;font-weight:950}
+
+.callout{margin-top:14px;padding:17px;border-left:6px solid var(--amber);border-radius:16px;background:#fff8e7}
+
+.formula{padding:16px;border-radius:14px;background:#282247;color:#fff;font:700 15px/1.85 ui-monospace,SFMono-Regular,Menlo,monospace;overflow:auto}
+
+.formula .hi{color:#7be7cb}
+
+.compare{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid var(--line);border-radius:17px;overflow:hidden}
+
+.compare th,.compare td{padding:12px 13px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+
+.compare th{background:#ede9ff}
+
+.compare tr:last-child td{border-bottom:0}
+
+.tasks{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+
+.task{border-top:7px solid var(--blue)}
+
+.metric{display:inline-block;padding:5px 9px;border-radius:99px;background:#ece8ff;color:#5841b0;font-size:12px;font-weight:900}
+
+.tokens{display:flex;gap:6px;flex-wrap:wrap}
+
+.token{padding:8px 11px;border-radius:10px;background:#e8ecff;color:#4057a8;font-weight:850}
+
+.spectrum{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+
+.sample{padding:16px;border-radius:17px;background:#fff;border:1px solid var(--line)}
+
+.pieces{display:flex;gap:4px;flex-wrap:wrap;margin-top:12px}
+
+.piece{padding:6px 8px;border-radius:8px;background:#eeeaff;font:800 13px ui-monospace,monospace}
+
+.vector{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+
+.v{padding:10px 4px;border-radius:7px;background:#e6e2ff;text-align:center;font-family:ui-monospace,monospace}
+
+.v.hot{background:#b9f0dc}
+
+.proxy{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
+
+.blank{padding:18px;border:2px dashed var(--violet);border-radius:15px;text-align:center;background:#f4f1ff}
+
+.timeline{display:flex;gap:8px;align-items:stretch}
+
+.era{flex:1;padding:15px 9px;border-radius:17px;color:#fff;text-align:center;position:relative}
+
+.era:not(:last-child):after{content:"→";position:absolute;right:-18px;top:38%;z-index:2;color:var(--violet);font-size:24px;font-weight:950}
+
+.rnn{display:flex;gap:8px;align-items:center;overflow:auto;padding:10px}
+
+.cell{min-width:115px;padding:18px 10px;border-radius:15px;background:var(--blue);color:#fff;text-align:center}
+
+.faded{opacity:.25}
+
+.attention{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
+
+.att{padding:13px 6px;border-radius:12px;text-align:center;background:#eeeaff}
+
+.att.hot{background:#ffd9e9;color:#9b2c5d;font-weight:950;box-shadow:0 0 0 3px #e45d9d33}
+
+.accordion details,.quiz details{background:#fff;border:1px solid var(--line);border-radius:15px;padding:15px;margin:9px 0}
+
+.accordion summary,.quiz summary{cursor:pointer;font-weight:900}
+
+.source{font-size:13px;color:var(--muted)}
+
+@media(max-width:900px){.g4,.g3,.tasks,.spectrum{grid-template-columns:1fr 1fr}
+
+.route{grid-template-columns:1fr}
+
+.route .arrow{transform:rotate(90deg)}
+
+.timeline{display:grid;grid-template-columns:1fr 1fr}
+
+.era:after{display:none}
+
+}
+
+@media(max-width:620px){.wrap{padding:14px 14px 60px}
+
+.hero{padding:35px 25px}
+
+.hero:after{font-size:230px}
+
+.g2,.g3,.g4,.tasks,.spectrum,.proxy,.timeline{grid-template-columns:1fr}
+
+.proxy .arrow{transform:rotate(90deg)}
+
+.compare{font-size:13px}
+
+.ring.r1{width:310px;height:310px}
+
+.ring.r2{width:244px;height:244px}
+
+.ring.r3{width:180px;height:180px}
+
+.ring.r4{width:115px;height:115px;padding-top:40px}
+
+}
+
+
 /* overlap fix: keep all nested concept rings on one shared center */
 .nested{min-height:390px;overflow:hidden;isolation:isolate;border-radius:24px}
+
+
 .nested .ring{left:50%;top:50%;transform:translate(-50%,-50%);padding-top:18px;display:flex;align-items:flex-start;justify-content:center;text-align:center;line-height:1.35}
+
+
 .nested .r4{align-items:center;padding:0 10px}
+
+
 .card,.node,.era,.sample{min-width:0}
+
+
 .lecture-note{background:linear-gradient(135deg,#fff,#f6f2ff);border:1px solid #dcd3f5;border-radius:22px;padding:22px;box-shadow:var(--shadow)}
+
+.integrated-note{margin:18px 0}
+.integrated-note .lecture-note{margin-top:0!important}
+.learning-guide{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.learning-guide span{padding:7px 11px;border-radius:99px;font-size:13px;font-weight:900}
+.learning-easy{background:#e4f8f2;color:#14675c}
+.learning-deep{background:#eeeaff;color:#5137a5}
+
+.formula-help{margin:7px 0 16px;border:1px solid #d8d1ef;border-radius:14px;background:#fff;overflow:hidden}
+.formula-help>summary{cursor:pointer;list-style:none;padding:12px 44px 12px 15px;font-weight:950;color:#5541a6;position:relative;background:#f6f3ff}
+.formula-help>summary::-webkit-details-marker{display:none}
+.formula-help>summary:after{content:"▼";position:absolute;right:16px;color:var(--violet);font-size:13px}
+.formula-help[open]>summary:after{content:"▲"}
+.formula-explain{padding:15px}
+.formula-say{padding:13px 15px;border-radius:13px;background:linear-gradient(90deg,#e8f8f4,#eeeaff);font-weight:900;color:var(--ink)}
+.formula-visual{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;margin:12px 0}
+.formula-visual .emoji{width:42px;height:42px;display:grid;place-content:center;border-radius:13px;background:#2b2352;font-size:21px}
+.formula-visual p{margin:0}
+.symbol-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+.symbol-chip{padding:6px 9px;border-radius:10px;background:#f4f3f9;border:1px solid #e5e1f0;font-size:13px;color:#504a62}
+.symbol-chip b{color:var(--violet)}
+.formula-bottom{margin:11px 0 0;padding-top:10px;border-top:1px dashed var(--line);font-weight:850;color:#5541a6}
+
+.term-primer{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0}
+.term-primer>div{padding:15px;border-radius:16px;background:#fff;border:1px solid var(--line)}
+.term-primer b{display:block;color:var(--violet)}
+.term-primer small{display:block;color:var(--muted);margin:2px 0 7px}
+.flow-bridge{margin:16px 0;padding:14px 17px;border-radius:15px;background:linear-gradient(90deg,#e4f8f2,#eeeaff);font-weight:850}
+.lecture-fold{margin:18px 0 0;border:1px solid #d8d1ef;border-radius:18px;background:#fff;box-shadow:var(--shadow);overflow:hidden}
+.lecture-fold>summary{cursor:pointer;list-style:none;padding:15px 48px 15px 18px;color:#5541a6;font-weight:950;position:relative}
+.lecture-fold>summary::-webkit-details-marker{display:none}
+.lecture-fold>summary:after{content:"＋";position:absolute;right:18px;font-size:20px}
+.lecture-fold[open]>summary:after{content:"−"}
+.lecture-fold[open]>summary{background:#f6f3ff;border-bottom:1px solid var(--line)}
+.lecture-fold-body{padding:16px}
+.lecture-fold-body>.lecture-note{box-shadow:none;border:0;padding:4px;background:#fff}
+
+
 .lecture-label{display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border-radius:99px;background:#2b2055;color:#fff;font-size:13px;font-weight:900}
+
+
 .walk{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+
+
 .walk-step{padding:16px;border-radius:16px;background:#fff;border:1px solid var(--line);position:relative}
+
+
 .walk-step b{display:block;color:var(--violet);margin-bottom:6px}
+
+
 .confusion{display:grid;grid-template-columns:70px repeat(2,1fr);gap:6px;align-items:center}
+
+
 .confusion span{padding:11px 6px;border-radius:8px;background:#eeeaff;text-align:center}
+
+
 .confusion .good{background:#c9f3e4;color:#096549;font-weight:900}
+
+
 .confusion .bad{background:#ffe0e8;color:#9b3150;font-weight:900}
+
+
 .memory-fade{display:flex;align-items:center;gap:5px;overflow:auto;padding:8px 0}
+
+
 .memory-fade span{min-width:78px;padding:13px 7px;border-radius:12px;background:var(--blue);color:#fff;text-align:center;font-weight:850}
-.memory-fade span:nth-child(2){opacity:.82}.memory-fade span:nth-child(3){opacity:.64}.memory-fade span:nth-child(4){opacity:.46}.memory-fade span:nth-child(5){opacity:.28}
-@media(max-width:620px){.nested{min-height:335px}.nested .r1{width:300px;height:300px}.nested .r2{width:238px;height:238px}.nested .r3{width:176px;height:176px}.nested .r4{width:112px;height:112px;padding:0 7px;font-size:13px}}
-@media(max-width:800px){.walk{grid-template-columns:1fr 1fr}}
-@media(max-width:520px){.walk{grid-template-columns:1fr}.confusion{font-size:13px}}
+
+
+.memory-fade span:nth-child(2){opacity:.82}
+
+.memory-fade span:nth-child(3){opacity:.64}
+
+.memory-fade span:nth-child(4){opacity:.46}
+
+.memory-fade span:nth-child(5){opacity:.28}
+
+
+@media(max-width:620px){.nested{min-height:335px}
+
+.term-primer{grid-template-columns:1fr}
+.formula-visual{grid-template-columns:1fr}
+.formula-visual .emoji{margin:auto}
+
+.nested .r1{width:300px;height:300px}
+
+.nested .r2{width:238px;height:238px}
+
+.nested .r3{width:176px;height:176px}
+
+.nested .r4{width:112px;height:112px;padding:0 7px;font-size:13px}
+
+}
+
+
+@media(max-width:800px){.walk{grid-template-columns:1fr 1fr}
+
+}
+
+
+@media(max-width:520px){.walk{grid-template-columns:1fr}
+
+.confusion{font-size:13px}
+
+}
+
+
 </style>
 </head>
 <body>
@@ -57,11 +323,11 @@
 <a href="#history">발전사</a>
 <a href="#rnn">RNN 한계</a>
 <a href="#attention">Attention</a>
-<a href="#lecture-detail">교수님 상세 복습</a>
 <a href="#quiz">복습</a>
 </nav>
 <section class="section" id="map">
 <h2>🗺️ 1차시 전체 흐름</h2>
+<div class="learning-guide"><span class="learning-easy">● 기본: 그림과 직관부터</span><span class="learning-deep">▼ 수식: 필요할 때 펼쳐보기</span></div>
 <div class="route">
 <div class="node" style="background:var(--pink)">
 <i>🗣️</i>
@@ -122,6 +388,7 @@
 <section class="section" id="nlp">
 <h2>2. NLP: 인간의 모호한 언어를 기계가 다루는 분야</h2>
 <p class="lead">Natural Language Processing(자연어 처리)은 Python 같은 형식언어가 아니라 사람이 일상에서 쓰는 언어를 이해·변환·생성합니다.</p>
+<div class="term-primer"><div><b>NLP · Natural Language Processing</b><small>엔엘피 · 내추럴 랭귀지 프로세싱</small>사람이 사용하는 자연어를 컴퓨터가 분석·변환·생성하는 분야</div><div><b>Classification</b><small>클래시피케이션 · 분류</small>입력을 미리 정한 범주 중 하나로 판단하는 문제</div><div><b>Generation</b><small>제너레이션 · 생성</small>정답 문장 하나를 고르는 대신 새로운 문장을 만들어내는 문제</div></div>
 <div class="tasks">
 <article class="card task">
 <h3>Classification</h3>
@@ -209,6 +476,7 @@
 <section class="section" id="token">
 <h2>4. Tokenization: 문장을 모델의 처리 단위로 자른다</h2>
 <p class="lead">Token은 단어와 항상 같지 않습니다. tokenizer가 정한 vocabulary 항목이며, 문맥에 따라 한 글자·subword·단어·기호가 될 수 있습니다.</p>
+<div class="term-primer"><div><b>Token · 토큰</b><small>토큰 · 모델의 처리 조각</small>문장을 모델이 다룰 수 있도록 나눈 최소 처리 단위</div><div><b>Vocabulary · 어휘집</b><small>보캐뷸러리</small>tokenizer가 알고 있는 모든 토큰과 번호의 목록</div><div><b>OOV · Out-of-Vocabulary</b><small>오오브이 · 어휘집 밖</small>현재 vocabulary에 등록되지 않아 그대로 처리할 수 없는 입력</div></div>
 <div class="spectrum">
 <article class="sample">
 <h3>Word level</h3>
@@ -285,6 +553,7 @@
 </section>
 <section class="section" id="embed">
 <h2>5. One-hot은 신분증, Embedding은 의미 지도</h2>
+<div class="term-primer"><div><b>One-hot Encoding</b><small>원 핫 인코딩 · 하나만 1인 표현</small>토큰의 신분만 표시하고 의미 관계는 표현하지 못하는 벡터</div><div><b>Embedding</b><small>임베딩 · 의미를 담은 숫자 좌표</small>토큰을 의미 비교와 계산이 가능한 조밀한 벡터로 바꾼 것</div><div><b>Cosine Similarity</b><small>코사인 시밀래리티 · 코사인 유사도</small>두 벡터가 얼마나 같은 방향을 보는지 비교하는 값</div></div>
 <div class="grid g2">
 <article class="card">
 <h3>One-hot encoding</h3>
@@ -414,6 +683,7 @@
 <section class="section" id="attention">
 <h2>9. Attention: 기억을 끝까지 운반하지 말고 필요한 곳을 직접 본다</h2>
 <p class="lead">번역할 단어를 만들 때 encoder의 마지막 state 하나만 쓰지 않고, 원문 모든 위치 중 현재 필요한 정보를 가중합합니다.</p>
+<div class="term-primer"><div><b>Query</b><small>쿼리 · 지금 찾는 정보</small>현재 위치가 다른 토큰들에게 던지는 질문</div><div><b>Key</b><small>키 · 각 정보의 검색표</small>각 토큰이 자신을 찾을 수 있도록 내놓는 비교용 정보</div><div><b>Value</b><small>밸류 · 실제 가져올 내용</small>Query와 Key가 잘 맞을 때 가중합에 담아오는 정보</div></div>
 <div class="attention">
 <div class="att">The<br>.05</div>
 <div class="att hot">teddy<br>.55</div>
@@ -599,13 +869,99 @@
 <section class="section">
 <h2>원문과 더 깊이 보기</h2>
 <div class="card source">
-<p>수업 보완 자료: 트랜스포머와 거대언어모델 1차시 강의 녹취.</p>
+<p>수업 보완 자료: 트랜스포머와 거대언어모델 1차시 강의 녹취 및 Stanford CME 295 Lecture 1 공식 강의자료.</p>
 <p>
-<a href="https://arxiv.org/abs/1301.3781">Word2Vec</a> · <a href="https://www.bioinf.jku.at/publications/older/2604.pdf">LSTM</a> · <a href="https://arxiv.org/abs/1409.3215">Seq2Seq</a> · <a href="https://arxiv.org/abs/1409.0473">Neural Machine Translation with Attention</a> · <a href="https://arxiv.org/abs/1706.03762">Attention Is All You Need</a>
+<a href="https://cme295.stanford.edu/slides/fall25-cme295-lecture1.pdf">CME 295 Lecture 1 Slides</a> · <a href="https://arxiv.org/abs/1301.3781">Word2Vec</a> · <a href="https://www.bioinf.jku.at/publications/older/2604.pdf">LSTM</a> · <a href="https://arxiv.org/abs/1409.3215">Seq2Seq</a> · <a href="https://arxiv.org/abs/1409.0473">Neural Machine Translation with Attention</a> · <a href="https://arxiv.org/abs/1706.03762">Attention Is All You Need</a>
 </p>
 </div>
 </section>
 </main>
+<script>
+(function(){
+  const detail=document.getElementById('lecture-detail');
+  if(detail){
+    const partMap={
+      'PART 1':['#family','교수님 설명 · 왜 Transformer·LLM이 한 학기 과목이 되었나'],
+      'PART 2':['#eval','교수님 설명 · Benchmark와 실제 사용 품질'],
+      'PART 3':['#nlp','교수님 설명 · NLP 과제와 데이터셋'],
+      'PART 4':['#eval','교수님 설명 · Accuracy 90%의 함정'],
+      'PART 5':['#eval','교수님 설명 · BLEU·ROUGE·Perplexity의 한계'],
+      'PART 6':['#token','교수님 설명 · Tokenization의 선택 기준'],
+      'PART 7':['#word2vec','교수님 설명 · Word2Vec에 의미가 생기는 과정'],
+      'PART 8':['#rnn','교수님 설명 · RNN의 기억과 Gradient가 흐려지는 과정']
+    };
+    detail.querySelectorAll(':scope > article.lecture-note').forEach(article=>{
+      const label=article.querySelector('.lecture-label')?.textContent.trim()||'';
+      const key=Object.keys(partMap).find(k=>label.startsWith(k));
+      if(!key) return;
+      const [targetSelector,title]=partMap[key];
+      const target=document.querySelector(targetSelector);
+      if(!target) return;
+      const fold=document.createElement('details');
+      fold.className='lecture-fold';
+      const summary=document.createElement('summary');
+      summary.textContent=title;
+      const body=document.createElement('div');
+      body.className='lecture-fold-body';
+      body.appendChild(article);
+      fold.append(summary,body);
+      target.appendChild(fold);
+    });
+    const bridge=document.createElement('div');
+    bridge.className='flow-bridge';
+    bridge.textContent='교수님이 강의에서 덧붙인 사례와 주의점은 이제 각 개념 바로 아래의 “교수님 설명”에서 이어집니다.';
+    document.querySelector('#map')?.appendChild(bridge);
+    detail.remove();
+  }
+
+  function formulaMeaning(text){
+    const t=text.replace(/\s+/g,' ').trim();
+    if(t.includes('LLM ⊂')) return ['“LLM은 Transformer 계열 안에 있고, Transformer는 딥러닝 안에 있으며, 딥러닝은 머신러닝과 AI 안에 있다.”','🪆','큰 인형 안에 작은 인형이 차례로 들어 있는 러시아 인형처럼 포함 범위를 나타냅니다. ⊂는 “왼쪽이 오른쪽에 포함된다”는 기호입니다.','LLM과 AI는 같은 말이 아니라 AI라는 큰 영역 안의 한 갈래입니다.'];
+    if(t.includes('Accuracy =') && t.includes('Precision')) return ['“전체 정답률, 양성이라고 한 것의 정확성, 실제 양성을 찾아낸 비율을 각각 계산하고 둘의 균형을 F1으로 묶는다.”','🎯','Accuracy는 전체 성적표, Precision은 내가 잡았다고 한 것의 신뢰도, Recall은 놓치지 않고 찾아낸 정도입니다. F1은 Precision과 Recall 중 한쪽만 높아서는 커지기 어렵습니다.','데이터가 불균형하면 Accuracy 하나가 아니라 Precision·Recall·F1을 함께 봐야 합니다.'];
+    if(t.includes('PPL =')) return ['“모델이 실제 다음 토큰을 얼마나 예상 밖으로 느꼈는지를 확률로 계산한다.”','😲','정답 토큰에 높은 확률을 주면 덜 놀라므로 Perplexity가 낮아집니다. log 확률을 평균내고 음수를 붙인 뒤 exp로 원래 척도로 되돌립니다.','PPL은 낮을수록 언어 패턴을 잘 예측하지만 답변의 사실성·유용성을 보장하지 않습니다.'];
+    if(t.includes('one_hot') || t.includes('cosine(')) return ['“토큰의 신분증인 one-hot 벡터로 embedding 표 E에서 의미 좌표를 꺼내고, 두 좌표의 방향이 얼마나 비슷한지 cosine으로 비교한다.”','🗺️','one-hot에서 1인 칸이 embedding table의 한 행을 선택합니다. u·v는 두 벡터의 내적이고 ‖u‖‖v‖로 나누면 크기 영향을 제거해 방향만 비교합니다.','Embedding은 토큰을 계산 가능한 의미 지도 위의 좌표로 바꿉니다.'];
+    if(t.includes('Corpus →')) return ['“레이블 없는 문장에서 문맥-정답 쌍을 자동으로 만들고, 작은 신경망으로 주변 단어를 맞힌 뒤 그 과정에서 생긴 embedding을 사용한다.”','🏭','Corpus는 원문 창고입니다. 사람이 정답을 붙이지 않아도 문장 자체에서 빈칸이나 주변 단어 정답을 자동 생성할 수 있습니다.','Word2Vec의 핵심은 의미를 직접 가르치는 것이 아니라 문맥 예측을 통해 의미가 생기게 하는 것입니다.'];
+    if(t.includes('h') && t.includes('tanh') && t.includes('W')) return ['“현재 단어 xₜ와 직전 기억 hₜ₋₁을 같은 RNN 가중치로 섞어 새로운 기억 hₜ를 만든다.”','🔁','Wₓ는 현재 입력을 읽는 규칙, Wₕ는 이전 기억을 가져오는 규칙, b는 보정값입니다. tanh는 결과가 지나치게 커지지 않도록 눌러줍니다.','RNN은 현재 입력과 이전 기억을 합쳐 문장을 순서대로 읽습니다.'];
+    if(t.includes('∂L/∂h')) return ['“마지막 손실의 신호가 앞 시점까지 돌아가려면 중간 변화율을 계속 곱해야 한다.”','📉','Π는 여러 값을 모두 곱한다는 뜻입니다. 작은 수를 반복해서 곱하면 0에 가까워지고, 큰 수를 반복해서 곱하면 폭주합니다.','긴 RNN에서 앞부분 학습 신호가 사라지거나 폭발하는 이유가 반복 곱입니다.'];
+    if(t.includes('score(q') || (t.includes('softmax') && t.includes('context'))) return ['“현재 질문 q와 각 단어의 검색표 k를 비교해 중요도 α를 만들고, 그 중요도만큼 정보 v를 섞어 문맥을 만든다.”','🔦','softmax는 여러 점수를 합이 1인 비율로 바꿉니다. Σ는 모든 위치를 더한다는 뜻이며, αᵢ가 클수록 그 위치의 vᵢ가 결과에 많이 들어갑니다.','Attention은 모든 단어를 똑같이 보지 않고 지금 필요한 위치에 더 큰 비중을 줍니다.'];
+    if(t.includes('좋은 평가 =')) return ['“좋은 LLM 평가는 시험 점수 하나가 아니라 자동 평가·사람 평가·실제 업무 성공·운영 조건을 함께 본다.”','⚖️','이 식의 +는 숫자 덧셈이 아니라 여러 관점을 조합해야 한다는 개념적 표현입니다.','Benchmark 1등이 실제로 가장 유용한 모델이라는 보장은 없습니다.'];
+    if(t.includes('큰 vocabulary')) return ['“단어장을 크게 만들면 문장은 짧아지지만 embedding 표가 커지고, 단어장을 작게 만들면 표는 작아지지만 처리할 토큰 수가 늘어난다.”','⚙️','↓는 감소, ↑는 증가입니다. Tokenizer는 vocabulary 크기와 sequence 길기 사이에서 계산비용의 균형을 잡습니다.','Vocabulary는 클수록 또는 작을수록 무조건 좋은 것이 아니라 목적에 맞는 절충이 필요합니다.'];
+    if(t.includes('Accuracy = 90/100')) return ['“100개 중 90개를 맞혔지만 관심 대상인 부정 문장은 하나도 찾지 못했다.”','🚨','전체 Accuracy만 보면 90%로 좋아 보이지만 부정 class의 Precision·Recall·F1은 모두 0입니다.','높은 정확도라도 소수 class를 완전히 무시한 나쁜 모델일 수 있습니다.'];
+    return ['“수식은 긴 설명을 기호로 압축한 문장입니다. 등호를 기준으로 왼쪽에서 구할 것과 오른쪽에서 사용할 재료를 나눠 읽습니다.”','🔍','기호를 한꺼번에 외우지 말고 입력, 변환 규칙, 출력 순서로 읽어보세요.','먼저 이 식이 무엇을 계산하려는지 한 문장으로 말할 수 있으면 충분합니다.'];
+  }
+  function symbols(text){
+    const defs=[]; const add=(s,m)=>{if(!defs.some(x=>x[0]===s))defs.push([s,m]);};
+    if(/⊂/.test(text)) add('⊂','왼쪽 개념이 오른쪽 범위 안에 포함됨');
+    if(/xₜ|x_t/.test(text)) add('xₜ','t번째 입력 토큰의 벡터');
+    if(/hₜ|h_t/.test(text)) add('hₜ','t번째까지 읽은 RNN의 현재 기억');
+    if(/W/.test(text)) add('W','학습으로 조정되는 가중치 행렬');
+    if(/E/.test(text)) add('E','토큰별 의미 벡터가 들어 있는 embedding 표');
+    if(/R<sup>d|R d/.test(text)) add('ℝᵈ','실수 d개로 이루어진 벡터 공간');
+    if(/Σ/.test(text)) add('Σ','각 위치의 값을 모두 더함');
+    if(/Π/.test(text)) add('Π','여러 단계의 값을 모두 곱함');
+    if(/α/.test(text)) add('αᵢ','i번째 토큰에 주는 attention 비중');
+    if(/q/.test(text)) add('q','현재 위치가 찾고 싶은 정보, Query');
+    if(/k/.test(text)) add('kᵢ','i번째 토큰의 비교용 검색표, Key');
+    if(/v/.test(text)) add('vᵢ','실제로 가져와 섞을 i번째 정보, Value');
+    if(/TP/.test(text)) add('TP','양성을 양성으로 맞힌 수');
+    if(/FP/.test(text)) add('FP','음성을 양성으로 잘못 판단한 수');
+    if(/FN/.test(text)) add('FN','양성을 놓쳐 음성으로 판단한 수');
+    if(/exp/.test(text)) add('exp','자연상수 e를 거듭제곱해 로그 척도를 되돌림');
+    return defs.slice(0,7);
+  }
+  document.querySelectorAll('.formula').forEach((formula,index)=>{
+    if(formula.nextElementSibling?.classList.contains('formula-help')) return;
+    const text=formula.textContent;
+    const [say,emoji,visual,bottom]=formulaMeaning(text);
+    const help=document.createElement('details'); help.className='formula-help';
+    const summary=document.createElement('summary'); summary.textContent='이 수식, 쉬운 말로 풀어보기'; summary.setAttribute('aria-label',`${index+1}번째 수식 설명 펼치기`);
+    const body=document.createElement('div'); body.className='formula-explain';
+    const chips=symbols(text).map(([s,m])=>`<span class="symbol-chip"><b>${s}</b> = ${m}</span>`).join('');
+    body.innerHTML=`<div class="formula-say">한글로 읽으면: ${say}</div><div class="formula-visual"><span class="emoji">${emoji}</span><p>${visual}</p></div>${chips?`<div class="symbol-list">${chips}</div>`:''}<p class="formula-bottom">한 줄 결론: ${bottom}</p>`;
+    help.append(summary,body); formula.after(help);
+  });
+})();
+</script>
 <script src="../../assets/inline-terms.js">
 </script>
 </body>
