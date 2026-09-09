@@ -109,6 +109,28 @@ GitHub Pages가 활성화되어 있으면 병합된 내용이 백과사전 사�
 
 새 학기는 semesters 배열에 기존 학기 객체를 복사해서 추가하면 자동으로 새 탭이 생성됩니다.
 
+### 과목의 수업 일정과 강의 자료 매핑
+
+각 과목 화면(`graduate/<course>/index.html`)은 `data/<course>-course.json` 하나로 두 영역을 그립니다.
+
+- `weeks`: 시각 학습 자료 카드. **Stanford Lecture 단위**(week1.html = Lecture 1)이며 `slides`에 강의 PDF, `classWeeks`에 그 자료를 다루는 실제 수업 주차를 적습니다.
+- `syllabus`: **실제 수업 주차 단위**(16주) 일정표. `lecture` 값으로 `weeks`의 카드와 연결되고, `href`는 해당 카드의 페이지를 가리킵니다.
+
+~~~json
+{
+  "week": 3,
+  "date": "2026-09-19",
+  "topic": "Transformer-based models & tricks",
+  "type": "lecture",
+  "lecture": 2,
+  "slides": "https://cme295.stanford.edu/slides/fall25-cme295-lecture2.pdf",
+  "href": "week2.html"
+}
+~~~
+
+`type`은 `lecture`(강의) · `recorded`(녹강) · `holiday`(휴강) · `exam`(시험) · `review`(해설강의) 중 하나이며, 시험·휴강처럼 자료가 없는 주차는 `lecture`, `slides`, `href`를 `null`로 둡니다.
+일정표는 오늘 날짜 기준으로 지난 수업은 흐리게, 다음 수업은 강조해서 표시합니다.
+
 ## 폴더 안내
 
 ~~~text
@@ -116,14 +138,30 @@ AI_Study/
 ├── AGENTS.md                         # 에이전트 공통 규칙
 ├── CONTRIBUTING.md                   # 사람의 협업 규칙
 ├── index.html                        # 백과사전 첫 화면
+├── .github/
+│   ├── pull_request_template.md      # PR 체크리스트
+│   └── workflows/pages.yml           # GitHub Pages 배포
 ├── assets/
-│   └── how-to-use-v2.svg             # 사용방법 이미지
+│   ├── how-to-use-v2.svg             # 사용방법 이미지
+│   ├── inline-terms.css / .js        # 본문 용어 `i` 아이콘 공통 자산
+│   ├── category-page.css / .js       # IT 카테고리 화면 공통 렌더러
+│   └── course-syllabus.css / .js     # 대학원 과목 화면 공통 렌더러 (수업 일정표 + 강의 카드)
 ├── data/
-│   ├── knowledge-categories.json      # IT 카테고리·학습 항목 데이터
-│   └── graduate-curriculum.json       # 대학원 학기·과목 데이터
+│   ├── knowledge-categories.json     # IT 카테고리·학습 항목 데이터
+│   ├── graduate-curriculum.json      # 대학원 학기·과목 데이터
+│   ├── transformer-llm-course.json   # 과목별 강의 자료(weeks) + 16주 수업 일정(syllabus)
+│   ├── diffusion-lvm-course.json
+│   ├── industrial-ai-course.json
+│   └── university-curriculum.json    # 대학교 학기·과목 데이터
 ├── graduate/
-│   └── index.html                     # 반응형 대학원 과목 화면
-├── categories/                        # IT 지식 카테고리 화면
+│   ├── index.html                    # 반응형 대학원 과목 화면
+│   ├── transformer-llm/              # index.html + week0~7.html (Stanford Lecture 단위 시각 자료)
+│   ├── diffusion-lvm/                # index.html + week0~7.html
+│   └── industrial-ai/                # index.html + week0~1.html + ai-history-map.html
+├── university/
+│   ├── index.html
+│   └── analysis/                     # 해석학 — 날짜별 학습 문서
+├── categories/                       # IT 지식 카테고리 화면
 ├── prompts/
 │   ├── agent-template.md             # 공통 에이전트 프롬프트
 │   └── create-topic.md               # 간단한 주제 생성 프롬프트

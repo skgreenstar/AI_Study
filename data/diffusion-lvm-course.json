@@ -4,9 +4,15 @@
     "title": "디퓨전과 거대비전모델",
     "icon": "🎨",
     "semester": "2026년 2학기",
+    "classDay": "토",
+    "weekUnit": "주차",
+    "reference": {
+      "name": "Stanford CME 296 — Diffusion & Large Vision Models (Spring 2026)",
+      "url": "https://cme296.stanford.edu/"
+    },
     "description": "디퓨전·Score Matching·Flow Matching에서 잠재공간, 가이던스, 이미지 생성 구조와 모델 학습까지 연결합니다.",
     "prerequisiteHref": "../../topics/diffusion-prerequisites.html",
-    "updated": "2026-09-07"
+    "updated": "2026-09-09"
   },
   "weeks": [
     {
@@ -37,6 +43,11 @@
         "DDPM",
         "ELBO·KL",
         "DDIM"
+      ],
+      "slides": "https://cme296.stanford.edu/slides/spring26-cme296-lecture1.pdf",
+      "classWeeks": [
+        1,
+        2
       ]
     },
     {
@@ -52,6 +63,11 @@
         "NCSN",
         "SDE",
         "PF-ODE"
+      ],
+      "slides": "https://cme296.stanford.edu/slides/spring26-cme296-lecture2.pdf",
+      "classWeeks": [
+        3,
+        5
       ]
     },
     {
@@ -67,6 +83,11 @@
         "Vector Field",
         "CFM",
         "Rectified Flow"
+      ],
+      "slides": "https://cme296.stanford.edu/slides/spring26-cme296-lecture3.pdf",
+      "classWeeks": [
+        6,
+        9
       ]
     },
     {
@@ -82,6 +103,11 @@
         "VAE",
         "CLIP",
         "CFG"
+      ],
+      "slides": "https://cme296.stanford.edu/slides/spring26-cme296-lecture4.pdf",
+      "classWeeks": [
+        10,
+        11
       ]
     },
     {
@@ -97,6 +123,11 @@
         "DiT",
         "adaLN-Zero",
         "MM-DiT·RoPE"
+      ],
+      "slides": "https://cme296.stanford.edu/slides/spring26-cme296-lecture5.pdf",
+      "classWeeks": [
+        12,
+        13
       ]
     },
     {
@@ -112,6 +143,10 @@
         "REPA",
         "DreamBooth·LoRA",
         "Distillation"
+      ],
+      "slides": "https://cme296.stanford.edu/slides/spring26-cme296-lecture6.pdf",
+      "classWeeks": [
+        14
       ]
     },
     {
@@ -127,7 +162,155 @@
         "FID·CLIPScore",
         "SSIM·LPIPS",
         "MLLM Judge"
-      ]
+      ],
+      "slides": "https://cme296.stanford.edu/slides/spring26-cme296-lecture7.pdf",
+      "classWeeks": []
+    }
+  ],
+  "syllabus": [
+    {
+      "week": 1,
+      "date": "2026-09-05",
+      "topic": "Diffusion",
+      "type": "lecture",
+      "lecture": 1,
+      "slides": "https://cme296.stanford.edu/slides/spring26-cme296-lecture1.pdf",
+      "href": "week1.html"
+    },
+    {
+      "week": 2,
+      "date": "2026-09-12",
+      "topic": "Diffusion",
+      "type": "lecture",
+      "lecture": 1,
+      "slides": "https://cme296.stanford.edu/slides/spring26-cme296-lecture1.pdf",
+      "href": "week1.html"
+    },
+    {
+      "week": 3,
+      "date": "2026-09-19",
+      "topic": "Score matching",
+      "type": "lecture",
+      "lecture": 2,
+      "slides": "https://cme296.stanford.edu/slides/spring26-cme296-lecture2.pdf",
+      "href": "week2.html"
+    },
+    {
+      "week": 4,
+      "date": "2026-09-26",
+      "topic": "휴강 (추석)",
+      "type": "holiday",
+      "lecture": null,
+      "slides": null,
+      "href": null
+    },
+    {
+      "week": 5,
+      "date": "2026-10-03",
+      "topic": "Score matching (녹강)",
+      "type": "recorded",
+      "lecture": 2,
+      "slides": "https://cme296.stanford.edu/slides/spring26-cme296-lecture2.pdf",
+      "href": "week2.html"
+    },
+    {
+      "week": 6,
+      "date": "2026-10-10",
+      "topic": "Flow matching",
+      "type": "lecture",
+      "lecture": 3,
+      "slides": "https://cme296.stanford.edu/slides/spring26-cme296-lecture3.pdf",
+      "href": "week3.html"
+    },
+    {
+      "week": 7,
+      "date": "2026-10-17",
+      "topic": "Midterm exam",
+      "type": "exam",
+      "lecture": null,
+      "slides": null,
+      "href": null
+    },
+    {
+      "week": 8,
+      "date": "2026-10-24",
+      "topic": "해설강의 (녹강)",
+      "type": "review",
+      "lecture": null,
+      "slides": null,
+      "href": null
+    },
+    {
+      "week": 9,
+      "date": "2026-10-31",
+      "topic": "Flow matching",
+      "type": "lecture",
+      "lecture": 3,
+      "slides": "https://cme296.stanford.edu/slides/spring26-cme296-lecture3.pdf",
+      "href": "week3.html"
+    },
+    {
+      "week": 10,
+      "date": "2026-11-07",
+      "topic": "Latent space and guidance",
+      "type": "lecture",
+      "lecture": 4,
+      "slides": "https://cme296.stanford.edu/slides/spring26-cme296-lecture4.pdf",
+      "href": "week4.html"
+    },
+    {
+      "week": 11,
+      "date": "2026-11-14",
+      "topic": "Latent space and guidance",
+      "type": "lecture",
+      "lecture": 4,
+      "slides": "https://cme296.stanford.edu/slides/spring26-cme296-lecture4.pdf",
+      "href": "week4.html"
+    },
+    {
+      "week": 12,
+      "date": "2026-11-21",
+      "topic": "Image generation architectures",
+      "type": "lecture",
+      "lecture": 5,
+      "slides": "https://cme296.stanford.edu/slides/spring26-cme296-lecture5.pdf",
+      "href": "week5.html"
+    },
+    {
+      "week": 13,
+      "date": "2026-11-28",
+      "topic": "Image generation architectures",
+      "type": "lecture",
+      "lecture": 5,
+      "slides": "https://cme296.stanford.edu/slides/spring26-cme296-lecture5.pdf",
+      "href": "week5.html"
+    },
+    {
+      "week": 14,
+      "date": "2026-12-05",
+      "topic": "Model training",
+      "type": "lecture",
+      "lecture": 6,
+      "slides": "https://cme296.stanford.edu/slides/spring26-cme296-lecture6.pdf",
+      "href": "week6.html"
+    },
+    {
+      "week": 15,
+      "date": "2026-12-12",
+      "topic": "Final exam",
+      "type": "exam",
+      "lecture": null,
+      "slides": null,
+      "href": null
+    },
+    {
+      "week": 16,
+      "date": "2026-12-19",
+      "topic": "해설강의 (녹강)",
+      "type": "review",
+      "lecture": null,
+      "slides": null,
+      "href": null
     }
   ]
 }

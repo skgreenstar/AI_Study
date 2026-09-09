@@ -2,14 +2,14 @@
   "page": {
     "title": "대학원",
     "description": "학기별 과목과 학습 자료를 한곳에서 관리합니다.",
-    "updated": "2026-09-05"
+    "updated": "2026-09-09"
   },
   "semesters": [
     {
       "id": "2026-fall",
       "label": "2026년 2학기",
       "shortLabel": "26-2",
-      "status": "진행 예정",
+      "status": "진행 중",
       "courses": [
         {
           "id": "transformer-llm",
@@ -18,7 +18,7 @@
           "color": "#7357e8",
           "description": "Attention부터 Transformer 구조와 LLM 학습·활용까지",
           "href": "../graduate/transformer-llm/index.html",
-          "status": "0차시 학습 가능"
+          "status": "16주 일정 · 8개 학습 자료"
         },
         {
           "id": "diffusion-lvm",
@@ -27,7 +27,7 @@
           "color": "#ef6797",
           "description": "확률적 생성 과정부터 Diffusion과 대규모 비전 모델까지",
           "href": "../graduate/diffusion-lvm/index.html",
-          "status": "0주차 학습 가능"
+          "status": "16주 일정 · 8개 학습 자료"
         },
         {
           "id": "industrial-ai",
@@ -38,7 +38,8 @@
           "href": "../graduate/industrial-ai/index.html",
           "status": "1주차 학습 가능"
         }
-      ]
+      ],
+      "period": "2026-09-05 ~ 2026-12-19"
     }
   ]
 }

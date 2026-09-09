@@ -4,8 +4,14 @@
     "title": "트랜스포머와 거대언어모델",
     "icon": "🧠",
     "semester": "2026년 2학기",
+    "classDay": "토",
+    "weekUnit": "차시",
+    "reference": {
+      "name": "Stanford CME 295 — Transformers & Large Language Models (Fall 2025)",
+      "url": "https://cme295.stanford.edu/"
+    },
     "description": "토큰과 Attention에서 Transformer 구조, LLM 학습·튜닝·추론과 Agentic LLM까지 연결합니다.",
-    "updated": "2026-09-08"
+    "updated": "2026-09-09"
   },
   "weeks": [
     {
@@ -36,6 +42,11 @@
         "Word2Vec",
         "RNN·LSTM",
         "Attention"
+      ],
+      "slides": "https://cme295.stanford.edu/slides/fall25-cme295-lecture1.pdf",
+      "classWeeks": [
+        1,
+        2
       ]
     },
     {
@@ -51,6 +62,10 @@
         "LayerNorm",
         "GQA·MQA",
         "BERT"
+      ],
+      "slides": "https://cme295.stanford.edu/slides/fall25-cme295-lecture2.pdf",
+      "classWeeks": [
+        3
       ]
     },
     {
@@ -66,6 +81,11 @@
         "Top-k·Top-p",
         "KV Cache",
         "PagedAttention"
+      ],
+      "slides": "https://cme295.stanford.edu/slides/fall25-cme295-lecture3.pdf",
+      "classWeeks": [
+        5,
+        6
       ]
     },
     {
@@ -81,6 +101,10 @@
         "FlashAttention",
         "SFT",
         "LoRA·QLoRA"
+      ],
+      "slides": "https://cme295.stanford.edu/slides/fall25-cme295-lecture4.pdf",
+      "classWeeks": [
+        9
       ]
     },
     {
@@ -96,6 +120,11 @@
         "RLHF·PPO",
         "Reward Model",
         "DPO"
+      ],
+      "slides": "https://cme295.stanford.edu/slides/fall25-cme295-lecture5.pdf",
+      "classWeeks": [
+        10,
+        11
       ]
     },
     {
@@ -111,6 +140,11 @@
         "Test-time Scaling",
         "GRPO",
         "DeepSeek R1"
+      ],
+      "slides": "https://cme295.stanford.edu/slides/fall25-cme295-lecture6.pdf",
+      "classWeeks": [
+        12,
+        13
       ]
     },
     {
@@ -126,7 +160,157 @@
         "Tool Calling",
         "MCP",
         "ReAct Agent"
+      ],
+      "slides": "https://cme295.stanford.edu/slides/fall25-cme295-lecture7.pdf",
+      "classWeeks": [
+        14
       ]
+    }
+  ],
+  "syllabus": [
+    {
+      "week": 1,
+      "date": "2026-09-05",
+      "topic": "Transformer",
+      "type": "lecture",
+      "lecture": 1,
+      "slides": "https://cme295.stanford.edu/slides/fall25-cme295-lecture1.pdf",
+      "href": "week1.html"
+    },
+    {
+      "week": 2,
+      "date": "2026-09-12",
+      "topic": "Transformer",
+      "type": "lecture",
+      "lecture": 1,
+      "slides": "https://cme295.stanford.edu/slides/fall25-cme295-lecture1.pdf",
+      "href": "week1.html"
+    },
+    {
+      "week": 3,
+      "date": "2026-09-19",
+      "topic": "Transformer-based models & tricks",
+      "type": "lecture",
+      "lecture": 2,
+      "slides": "https://cme295.stanford.edu/slides/fall25-cme295-lecture2.pdf",
+      "href": "week2.html"
+    },
+    {
+      "week": 4,
+      "date": "2026-09-26",
+      "topic": "휴강 (추석)",
+      "type": "holiday",
+      "lecture": null,
+      "slides": null,
+      "href": null
+    },
+    {
+      "week": 5,
+      "date": "2026-10-03",
+      "topic": "Transformer-based models & tricks (녹강)",
+      "type": "recorded",
+      "lecture": 3,
+      "slides": "https://cme295.stanford.edu/slides/fall25-cme295-lecture3.pdf",
+      "href": "week3.html"
+    },
+    {
+      "week": 6,
+      "date": "2026-10-10",
+      "topic": "Large Language Models",
+      "type": "lecture",
+      "lecture": 3,
+      "slides": "https://cme295.stanford.edu/slides/fall25-cme295-lecture3.pdf",
+      "href": "week3.html"
+    },
+    {
+      "week": 7,
+      "date": "2026-10-17",
+      "topic": "Midterm exam",
+      "type": "exam",
+      "lecture": null,
+      "slides": null,
+      "href": null
+    },
+    {
+      "week": 8,
+      "date": "2026-10-24",
+      "topic": "해설강의 (녹강)",
+      "type": "review",
+      "lecture": null,
+      "slides": null,
+      "href": null
+    },
+    {
+      "week": 9,
+      "date": "2026-10-31",
+      "topic": "Large Language Models",
+      "type": "lecture",
+      "lecture": 4,
+      "slides": "https://cme295.stanford.edu/slides/fall25-cme295-lecture4.pdf",
+      "href": "week4.html"
+    },
+    {
+      "week": 10,
+      "date": "2026-11-07",
+      "topic": "LLM Training",
+      "type": "lecture",
+      "lecture": 5,
+      "slides": "https://cme295.stanford.edu/slides/fall25-cme295-lecture5.pdf",
+      "href": "week5.html"
+    },
+    {
+      "week": 11,
+      "date": "2026-11-14",
+      "topic": "LLM Tuning",
+      "type": "lecture",
+      "lecture": 5,
+      "slides": "https://cme295.stanford.edu/slides/fall25-cme295-lecture5.pdf",
+      "href": "week5.html"
+    },
+    {
+      "week": 12,
+      "date": "2026-11-21",
+      "topic": "LLM Reasoning",
+      "type": "lecture",
+      "lecture": 6,
+      "slides": "https://cme295.stanford.edu/slides/fall25-cme295-lecture6.pdf",
+      "href": "week6.html"
+    },
+    {
+      "week": 13,
+      "date": "2026-11-28",
+      "topic": "LLM Reasoning",
+      "type": "lecture",
+      "lecture": 6,
+      "slides": "https://cme295.stanford.edu/slides/fall25-cme295-lecture6.pdf",
+      "href": "week6.html"
+    },
+    {
+      "week": 14,
+      "date": "2026-12-05",
+      "topic": "Agentic LLMs",
+      "type": "lecture",
+      "lecture": 7,
+      "slides": "https://cme295.stanford.edu/slides/fall25-cme295-lecture7.pdf",
+      "href": "week7.html"
+    },
+    {
+      "week": 15,
+      "date": "2026-12-12",
+      "topic": "Final exam",
+      "type": "exam",
+      "lecture": null,
+      "slides": null,
+      "href": null
+    },
+    {
+      "week": 16,
+      "date": "2026-12-19",
+      "topic": "해설강의 (녹강)",
+      "type": "review",
+      "lecture": null,
+      "slides": null,
+      "href": null
     }
   ]
 }
