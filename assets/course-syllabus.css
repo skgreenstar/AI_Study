@@ -1,0 +1,34 @@
+/* 대학원 과목 페이지 공통 — 16주 수업 일정 표 + 강의 카드 매핑 */
+.syllabus{margin-top:12px;background:#fff;border:1px solid var(--line,#e5def5);border-radius:22px;box-shadow:var(--shadow,0 18px 48px rgba(65,40,125,.11));overflow:hidden}
+.syllabus-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;padding:20px 24px 14px}
+.syllabus-head h3{margin:0;font-size:20px}
+.syllabus-head p{margin:0;color:var(--muted,#706985);font-size:14px}
+.syllabus-head a{color:#5c43b7;font-weight:800;text-decoration:none}
+.syllabus-legend{display:flex;flex-wrap:wrap;gap:8px;padding:0 24px 16px}
+.syllabus-legend span{font-size:12px;font-weight:800;border-radius:99px;padding:4px 10px}
+.syllabus-scroll{overflow-x:auto}
+.syllabus table{width:100%;border-collapse:collapse;min-width:640px;font-size:14px}
+.syllabus th{position:sticky;top:0;background:#f4f1ff;color:#5c43b7;font-size:12px;letter-spacing:.6px;text-align:left;padding:10px 14px;border-bottom:1px solid var(--line,#e5def5)}
+.syllabus td{padding:11px 14px;border-bottom:1px solid #f0ecfa;vertical-align:middle}
+.syllabus tr:last-child td{border-bottom:0}
+.syllabus td.num{font-weight:950;color:#5c43b7;white-space:nowrap}
+.syllabus td.date{white-space:nowrap;color:var(--muted,#706985)}
+.syllabus td.topic{font-weight:800}
+.syllabus td.topic a{color:inherit;text-decoration:none;border-bottom:2px solid #d9d0f7}
+.syllabus td.topic a:hover{border-color:#7357e8}
+.syllabus td.slide a{white-space:nowrap;color:#4d8df7;font-weight:800;text-decoration:none}
+.syllabus td.slide span,.syllabus td.note span{color:#b5afc7}
+.syllabus .type{display:inline-block;white-space:nowrap;font-size:12px;font-weight:900;border-radius:99px;padding:4px 10px}
+.type-lecture,.legend-lecture{background:#eeeaff;color:#5c43b7}
+.type-recorded,.legend-recorded{background:#e8f3ff;color:#2f6fd2}
+.type-holiday,.legend-holiday{background:#f1f0f4;color:#7b7890}
+.type-exam,.legend-exam{background:#ffe9ee;color:#c93a5e}
+.type-review,.legend-review{background:#e6f7f2;color:#1f8f74}
+.syllabus tr.past td{opacity:.62}
+.syllabus tr.holiday td.topic,.syllabus tr.exam td.topic,.syllabus tr.review td.topic{font-weight:700}
+.syllabus tr.next td{background:linear-gradient(90deg,#fff6d9,#fff)}
+.syllabus tr.next td.num:before{content:"▶ ";color:#e0a300}
+.syllabus tr.today td{background:linear-gradient(90deg,#ffe9f1,#fff)}
+.syllabus tr.today td.num:before{content:"● ";color:#ef6797}
+.week .covers{margin-top:10px;font-size:12px;font-weight:800;color:#5c43b7;background:#f4f1ff;border-radius:10px;padding:6px 10px;display:inline-block}
+@media(max-width:700px){.syllabus-head,.syllabus-legend{padding-left:16px;padding-right:16px}.syllabus td,.syllabus th{padding:9px 10px}}
