@@ -60,6 +60,8 @@ GitHub Pages가 활성화되어 있으면 병합된 내용이 백과사전 사�
 - [대학교 학기별 학습 공간](university/index.html)
   - [해석학](university/analysis/index.html)
     - [2026년 9월 7일 — 집합·증명·완비성](university/analysis/2026-09-07.html)
+- [딥러닝의 기초 및 응용](university/deep-learning-foundations-applications/index.html)
+  - [2026년 9월 7일 — 이미지 분류의 관점과 선형 분류기](university/deep-learning-foundations-applications/2026-09-07.html)
 - [대학원 학기별 학습 공간](graduate/index.html)
   - 2026년 2학기
   - 트랜스포머와 거대언어모델
