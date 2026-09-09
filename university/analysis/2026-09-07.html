@@ -1,47 +1,158 @@
 <!doctype html>
-<html lang="ko"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="2026년 9월 7일 해석학 수업: 집합, 증명, 완비성 공리와 상한">
-<title>9월 7일 해석학 | AI Study</title>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="2026년 9월 7일 해석학 수업 복습: 집합과 논리, 증명법, 수 체계, 완비성 공리와 상한">
+<title>9월 7일 해석학 — 집합에서 완비성까지 | AI Study</title>
 <style>
-:root{--bg:#f4f1ff;--ink:#202038;--muted:#69677c;--card:#fff;--violet:#7357e8;--pink:#ef6797;--blue:#4d8df7;--mint:#41bda5;--yellow:#ffc94b;--red:#ef6a6a;--line:#e4def7;--shadow:0 16px 40px rgba(60,42,120,.1)}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{word-break:keep-all;overflow-wrap:break-word;margin:0;color:var(--ink);font-family:Pretendard,"Noto Sans KR",system-ui,sans-serif;background:radial-gradient(circle at 8% 0,#ffe7e1,transparent 32%),var(--bg);line-height:1.68}.wrap{max-width:1120px;margin:auto;padding:28px 20px 80px}.top{display:flex;justify-content:space-between;gap:12px;margin-bottom:17px;font-size:14px}.top a{color:var(--muted);text-decoration:none;font-weight:850}.top span{color:var(--muted)}.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#49302f,#bd665d 58%,#7357e8);color:#fff;border-radius:32px;padding:45px;box-shadow:var(--shadow)}.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.08;margin:10px 0 15px}.hero p{max-width:750px;margin:0;opacity:.92}.pill,.tag{display:inline-block;padding:5px 11px;border-radius:99px;font-size:12px;font-weight:900}.pill{background:rgba(255,255,255,.16)}.route{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:25px 0}.route a{text-decoration:none;color:var(--ink);background:#fff;padding:14px 8px;border-radius:15px;text-align:center;font-weight:850;box-shadow:var(--shadow)}.section{margin-top:54px}.section h2{font-size:clamp(27px,4vw,39px);margin:0 0 8px}.lead{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.card,.formula,.quiz details{background:#fff;border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow)}.card h3{margin:0 0 8px}.visual{min-height:135px;margin:15px 0;padding:17px;border-radius:17px;background:#faf9ff;border:1px dashed #cfc3f4;display:flex;align-items:center;justify-content:center}.flow{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}.node{min-width:105px;padding:13px 11px;border:2px solid var(--line);border-radius:14px;background:#fff;text-align:center;font-weight:850}.node.hot{border:0;color:#fff;background:linear-gradient(135deg,var(--violet),var(--pink))}.arrow{font-size:23px;color:var(--violet)}.tag.must{background:#ffe6ef;color:#a8325c}.tag.along{background:#fff2c9;color:#805c00}.tag.later{background:#ddf7ee;color:#14725f}.sets{position:relative;width:230px;height:120px}.circle{position:absolute;top:12px;width:116px;height:96px;border-radius:50%;display:grid;place-items:center;font-weight:900;color:#fff}.circle.a{left:24px;background:#7357e8cc}.circle.b{right:24px;background:#ef6797cc}.equation{text-align:center;font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,3vw,29px);color:#3a286f}.decode{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:13px}.decode div{padding:11px;border-radius:12px;background:#f4f1ff;text-align:center;font-size:13px}.read{margin-top:13px;padding:14px;border-radius:14px;background:#241943;color:#fff}.read b{color:#ffd564}.proof{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}.step{padding:13px;border-radius:13px;background:#f6f3ff;text-align:center;font-size:13px}.warning{padding:16px;border-radius:14px;background:#fff0f0;border-left:6px solid var(--red)}.practice{padding:16px;border-radius:14px;background:#e9fbf6;border-left:6px solid var(--mint)}.quiz details{margin:10px 0}.quiz summary{font-weight:850;cursor:pointer}.answer{margin-top:12px;color:var(--muted)}.links{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.links a,.links span{padding:16px;border-radius:16px;background:#fff;text-align:center;text-decoration:none;color:var(--ink)}.links span{opacity:.55}.footer{margin-top:52px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:13px;text-align:center}.source{color:var(--violet)}@media(max-width:760px){.hero{padding:32px 24px}.route{grid-template-columns:1fr 1fr}.grid,.decode,.links,.proof{grid-template-columns:1fr}.top{flex-direction:column}}
-</style><link rel="stylesheet" href="../../assets/inline-terms.css"></head><body><main class="wrap">
+:root{--bg:#f4f1ff;--ink:#202038;--muted:#69677c;--card:#fff;--violet:#7357e8;--pink:#ef6797;--blue:#4d8df7;--mint:#41bda5;--yellow:#ffc94b;--red:#ef6a6a;--line:#e4def7;--shadow:0 16px 40px rgba(60,42,120,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{word-break:keep-all;overflow-wrap:break-word;margin:0;color:var(--ink);font-family:Pretendard,"Noto Sans KR",system-ui,sans-serif;background:radial-gradient(circle at 8% 0,#ffe8e2 0,transparent 30%),radial-gradient(circle at 100% 35%,#e5eeff 0,transparent 28%),var(--bg);line-height:1.68}
+.wrap{max-width:1140px;margin:auto;padding:28px 20px 84px}.top{display:flex;justify-content:space-between;gap:14px;margin-bottom:17px;font-size:14px}.top a{color:var(--muted);text-decoration:none;font-weight:850}.top span{color:var(--muted)}
+.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#3b2928,#aa554f 48%,#7357e8);color:#fff;border-radius:32px;padding:46px;box-shadow:var(--shadow)}.hero:after{content:"ℝ";position:absolute;right:32px;bottom:-65px;font:220px Georgia,serif;opacity:.09}.hero h1{position:relative;font-size:clamp(34px,6vw,59px);line-height:1.08;letter-spacing:-1.7px;margin:11px 0 16px}.hero p{position:relative;max-width:760px;margin:0;font-size:17px;opacity:.93}.pill,.tag{display:inline-block;padding:5px 11px;border-radius:99px;font-size:12px;font-weight:900}.pill{position:relative;background:rgba(255,255,255,.16)}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0 0}.summary div{position:relative;padding:13px;border-radius:15px;background:rgba(255,255,255,.12);font-size:13px}.summary b{display:block;color:#ffe39a}
+.route{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:25px 0}.route a{text-decoration:none;color:var(--ink);background:#fff;padding:14px 8px;border-radius:15px;text-align:center;font-weight:850;box-shadow:0 8px 22px rgba(60,42,120,.07)}
+.section{margin-top:56px}.section h2{font-size:clamp(27px,4vw,40px);letter-spacing:-1px;margin:0 0 8px}.lead{color:var(--muted);margin-top:0}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.card,.formula,.quiz details,.table-wrap{background:#fff;border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow)}.card h3{margin:0 0 8px;font-size:21px}.card p:last-child{margin-bottom:0}
+.visual{min-height:135px;margin:15px 0;padding:17px;border-radius:17px;background:#faf9ff;border:1px dashed #cfc3f4;display:flex;align-items:center;justify-content:center}.flow{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}.node{min-width:105px;padding:13px 11px;border:2px solid var(--line);border-radius:14px;background:#fff;text-align:center;font-weight:850}.node.hot{border:0;color:#fff;background:linear-gradient(135deg,var(--violet),var(--pink))}.node.pink{border-color:#f5a2bd;background:#fff0f5}.node.yellow{border-color:#f3ce68;background:#fff8dd}.node.mint{border-color:#82d8c7;background:#ebfbf7}.arrow{font-size:23px;color:var(--violet)}
+.tag.must{background:#ffe6ef;color:#a8325c}.tag.along{background:#fff2c9;color:#805c00}.tag.later{background:#ddf7ee;color:#14725f}.callout{padding:16px;border-radius:15px;margin:14px 0}.callout.key{background:#f1edff;border-left:6px solid var(--violet)}.callout.warn{background:#fff0f0;border-left:6px solid var(--red)}.callout.ok{background:#e9fbf6;border-left:6px solid var(--mint)}
+.sets{position:relative;width:245px;height:130px}.circle{position:absolute;top:13px;width:128px;height:104px;border-radius:50%;display:grid;place-items:center;font-weight:900;color:#fff}.circle.a{left:21px;background:#7357e8cc}.circle.b{right:21px;background:#ef6797cc}
+.logic{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;text-align:center}.logic div{padding:15px;border-radius:14px;background:#f6f3ff;font-weight:850}.formula{margin-top:16px}.equation{text-align:center;font:clamp(20px,3vw,29px) Georgia,"Times New Roman",serif;color:#3a286f;padding:8px}.decode{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:13px}.decode div{padding:11px;border-radius:12px;background:#f4f1ff;text-align:center;font-size:13px}.formula-read{margin-top:14px;padding:14px;border-radius:14px;background:#241943;color:#fff}.formula-read b{color:#ffd564}
+.number-line{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap}.num{padding:13px 15px;border-radius:14px;background:#fff;border:2px solid var(--line);font-weight:950}.num.q{border-color:var(--yellow)}.num.r{color:#fff;border:0;background:linear-gradient(135deg,var(--violet),var(--pink))}
+.proof{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:15px}.step{padding:14px;border-radius:14px;background:#f6f3ff;text-align:center;font-size:13px}.step b{display:block;color:var(--violet)}.proof-two{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:9px;align-items:center;margin-top:15px}.proof-two div{padding:14px;border-radius:14px;background:#f6f3ff;text-align:center}.proof-two .end{background:linear-gradient(135deg,var(--violet),var(--pink));color:#fff;font-weight:900}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:13px;border-bottom:1px solid var(--line);vertical-align:top}th{color:#5d46bd;background:#f6f3ff}tr:last-child td{border-bottom:0}.quiz details{margin:10px 0}.quiz summary{font-weight:850;cursor:pointer}.answer{margin-top:12px;padding:13px;border-radius:13px;background:#e9fbf6}.links{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.links a,.links span{padding:17px;border-radius:16px;background:#fff;text-align:center;text-decoration:none;color:var(--ink);box-shadow:var(--shadow)}.links span{opacity:.58}.footer{margin-top:54px;padding-top:20px;border-top:1px solid var(--line);text-align:center;color:var(--muted);font-size:13px}.source{color:var(--violet)}
+@media(max-width:780px){.hero{padding:34px 25px}.hero:after{font-size:150px}.summary{grid-template-columns:1fr 1fr}.route{grid-template-columns:1fr 1fr}.grid,.decode,.links,.proof{grid-template-columns:1fr}.logic,.proof-two{grid-template-columns:1fr}.top{flex-direction:column}.table-wrap{overflow-x:auto;padding:10px}table{min-width:620px}}@media(max-width:430px){.summary{grid-template-columns:1fr}}
+</style>
+<link rel="stylesheet" href="../../assets/inline-terms.css">
+</head>
+<body><main class="wrap">
 <div class="top"><a href="index.html">← 해석학 수업 기록</a><span>기타 · 기초 · 문서 ID: analysis-2026-09-07</span></div>
-<header class="hero"><span class="pill">2026년 9월 7일 월요일</span><h1>집합에서 상한까지:<br>해석학의 첫 언어</h1><p>기호를 외우는 데서 멈추지 않고, 집합과 논리가 함수·부등식·증명을 거쳐 실수의 완비성으로 연결되는 이유를 이해합니다.</p></header>
-<nav class="route"><a href="#map">전체 지도</a><a href="#analogy">쉬운 비유</a><a href="#concept">핵심 개념</a><a href="#formula">수식 해부</a><a href="#quiz">확인 퀴즈</a></nav>
+<header class="hero">
+  <span class="pill">2026년 9월 7일 월요일 · 시험 대비 복습</span>
+  <h1>집합에서 완비성까지<br>해석학의 언어 세우기</h1>
+  <p>오늘 강의는 기호를 외우는 시간이 아니라, 집합과 논리로 명제를 읽고 증명한 뒤 왜 유리수만으로는 해석학을 전개할 수 없는지 이해하는 시간이었습니다.</p>
+  <div class="summary"><div><b>출발</b>집합과 원소</div><div><b>도구</b>논리와 증명</div><div><b>확장</b>ℕ → ℤ → ℚ → ℝ</div><div><b>도착</b>완비성과 상한</div></div>
+</header>
+<nav class="route"><a href="#overview">핵심 요약</a><a href="#sets">집합·논리</a><a href="#proofs">증명 방법</a><a href="#numbers">수 체계</a><a href="#complete">완비성</a><a href="#quiz">확인 퀴즈</a></nav>
 
-<section class="section" id="map"><h2>① 한눈에 보는 큰 그림</h2><p class="lead">오늘 배운 항목은 서로 떨어진 용어가 아니라, 엄밀한 미적분을 위한 하나의 문장 구조입니다.</p><div class="visual flow"><div class="node">집합·원소</div><span class="arrow">→</span><div class="node">명제·증명</div><span class="arrow">→</span><div class="node">함수·부등식</div><span class="arrow">→</span><div class="node hot">완비성·상한</div></div></section>
+<section class="section" id="overview">
+  <h2>① 핵심 요약</h2>
+  <p class="lead">수업 전체를 5문장으로 먼저 잡고 세부 개념으로 내려갑니다.</p>
+  <div class="card">
+    <ol>
+      <li>집합은 원소를 모아 수학적 대상을 정의하는 기본 언어이며, 합집합·교집합·여집합은 논리의 ‘또는·그리고·아니다’와 연결됩니다.</li>
+      <li>명제를 증명할 때 직접증명만 고집하지 않고, 대우증명과 수학적 귀납법처럼 명제의 구조에 맞는 도구를 선택합니다.</li>
+      <li>디리클레 함수와 삼각부등식은 각각 ‘직관과 실제 함수의 차이’, ‘복잡한 오차를 단순한 합으로 제어하는 법’을 보여줍니다.</li>
+      <li>수 체계는 자연수 ℕ에서 정수 ℤ, 유리수 ℚ로 확장되지만, 유리수에는 √2처럼 잡히지 않는 경계가 남습니다.</li>
+      <li><b>★ 완비성 공리</b>는 이 빈틈을 메워, 비어 있지 않고 위로 유계인 실수 집합에 상한이 존재함을 보장합니다.</li>
+    </ol>
+  </div>
+  <div class="visual flow"><div class="node pink">집합 정의</div><span class="arrow">→</span><div class="node yellow">명제 읽기</div><span class="arrow">→</span><div class="node">증명하기</div><span class="arrow">→</span><div class="node mint">수 체계 확장</div><span class="arrow">→</span><div class="node hot">완비성</div></div>
+</section>
 
-<section class="section" id="analogy"><h2>② 생활 비유: 상자와 안전선</h2><div class="grid">
-<article class="card"><h3>집합은 이름 붙인 상자</h3><p>원소는 상자 안에 들어 있는 물건입니다. 합집합은 두 상자의 물건을 모두 모으고, 교집합은 두 상자에 공통으로 든 물건만 고릅니다.</p><p><b>비유의 한계:</b> 수학적 집합은 순서와 중복을 구분하지 않으며, 물리적 위치도 없습니다.</p></article>
-<article class="card"><h3>상한은 넘지 않는 가장 낮은 천장</h3><p>집합의 모든 수보다 위에 있는 안전선을 상계라 하고, 그중 가장 낮은 선을 상한이라 합니다.</p><p><b>비유의 한계:</b> 상한은 집합 안에 실제로 포함되지 않을 수도 있습니다.</p></article></div></section>
+<section class="section" id="analogy">
+  <h2>② 생활 비유: 상자·도미노·천장</h2>
+  <div class="grid">
+    <article class="card"><h3>집합은 조건이 적힌 상자</h3><p>“짝수만 넣기”라고 적힌 상자에는 2, 4, 6이 들어갑니다. 합집합은 두 상자의 물건을 모두 모으고, 교집합은 공통 물건만 고릅니다.</p><div class="callout warn"><b>비유의 한계:</b> 실제 상자와 달리 집합에서는 원소의 순서와 반복 횟수가 중요하지 않습니다.</div></article>
+    <article class="card"><h3>귀납법은 끝없이 놓인 도미노</h3><p>첫 도미노가 쓰러지고, 임의의 k번째가 쓰러지면 k+1번째도 쓰러진다는 규칙이 있으면 모든 도미노가 쓰러집니다.</p><div class="callout warn"><b>비유의 한계:</b> 귀납법은 실제로 무한 번 확인하는 것이 아니라 두 논리 단계로 전체 자연수를 다룹니다.</div></article>
+    <article class="card"><h3>상한은 가장 낮은 안전 천장</h3><p>집합의 모든 원소가 천장을 넘지 못하면 그 천장은 상계입니다. 가능한 천장 중 가장 낮은 것이 상한입니다.</p><div class="callout warn"><b>비유의 한계:</b> 상한은 집합의 원소일 필요가 없습니다. 천장에 실제 원소가 닿을 때만 최댓값입니다.</div></article>
+    <article class="card"><h3>완비성은 수직선의 빈틈 보증</h3><p>유리수 수직선에는 √2가 빠져 있지만, 실수에서는 경계가 수직선 밖으로 빠져나가지 않습니다.</p><div class="callout warn"><b>비유의 한계:</b> ‘빈틈이 없다’는 직관은 완비성을 이해하기 위한 표현이며, 정확한 내용은 최소상계 성질입니다.</div></article>
+  </div>
+</section>
 
-<section class="section" id="concept"><h2>③ 핵심 개념 카드</h2><p class="lead">집합 연산과 증명 방법을 구분해서 이해해 봅시다.</p><div class="grid">
-<article class="card"><span class="tag must">필수 ①</span><h3>Set and Element</h3><div class="visual flow"><div class="node hot">A = {1,2,3}</div><div class="node">2 ∈ A</div><div class="node">4 ∉ A</div></div><p><b>집합</b>은 원소들의 모임이고, <b>원소</b>는 그 모임에 속한 대상입니다. (x∈A)는 “엑스는 에이의 원소이다”라고 읽습니다.</p></article>
-<article class="card"><span class="tag must">필수 ②</span><h3>Union과 Intersection</h3><div class="visual"><div class="sets"><span class="circle a">A</span><span class="circle b">B</span></div></div><p>(A∪B)는 A 또는 B에 속하는 원소 전체, (A∩B)는 A와 B에 동시에 속하는 원소입니다. 서로소(disjoint)는 (A∩B=∅)라는 뜻이지, 확률적 독립이라는 뜻은 아닙니다.</p></article>
-<article class="card"><span class="tag along">무한 연산</span><h3>무한 합집합과 교집합</h3><p>x ∈ ⋃<sub>n=1</sub><sup>∞</sup> A<sub>n</sub>은 “어떤 n 하나라도 존재하여 x가 A<sub>n</sub>에 속한다”는 뜻입니다. 반대로 x ∈ ⋂<sub>n=1</sub><sup>∞</sup> A<sub>n</sub>은 “모든 n에 대해 x가 A<sub>n</sub>에 속한다”는 뜻입니다.</p><div class="read"><b>기억:</b> 합집합은 ‘적어도 하나’, 교집합은 ‘전부’입니다.</div></article>
-<article class="card"><span class="tag along">논리 변환</span><h3>De Morgan's Laws</h3><p>((A∪B)^c=A^c∩B^c), ((A∩B)^c=A^c∪B^c). “A 또는 B가 아니다”는 “A도 아니고 B도 아니다”로 바뀝니다. 여집합을 씌우면 합집합과 교집합이 서로 뒤집힙니다.</p></article>
-<article class="card"><span class="tag along">함수 사례</span><h3>Dirichlet's Function</h3><p>(f(x)=1) if (x∈ℚ), (f(x)=0) if (x∉ℚ). 유리수와 무리수가 모든 구간에 빽빽하게 존재하므로 어느 점에서도 함수값이 하나로 안정되지 않아 모든 점에서 불연속입니다.</p></article>
-<article class="card"><span class="tag along">거리의 기본 규칙</span><h3>Triangle Inequality</h3><p><b>|x+y| ≤ |x|+|y|</b>. 곧장 간 거리는 중간 지점을 거쳐 간 거리보다 길 수 없습니다. 해석학에서는 오차를 여러 조각으로 나눈 뒤 각 오차의 합으로 전체 오차를 제어할 때 사용합니다.</p></article>
-<article class="card"><span class="tag later">증명 전략</span><h3>Contrapositive Proof</h3><p>(P⇒Q)를 직접 보이기 어렵다면 논리적으로 동치인 (¬Q⇒¬P)를 증명합니다. “n²이 짝수이면 n도 짝수”는 “n이 홀수이면 n²도 홀수”라는 대우가 더 간단합니다.</p></article>
-<article class="card"><span class="tag later">무한 명제</span><h3>Mathematical Induction</h3><div class="proof"><span class="step">① 시작<br>P(1)</span><span class="step">② 가정<br>P(k)</span><span class="step">③ 전진<br>P(k+1)</span><span class="step">④ 결론<br>모든 n</span></div><p>첫 도미노가 쓰러지고, k번째가 쓰러지면 k+1번째도 쓰러진다는 것을 보이면 모든 자연수에 대한 명제가 성립합니다.</p></article>
-</div></section>
+<section class="section" id="sets">
+  <h2>③ 집합과 논리</h2>
+  <p class="lead">기호를 문장으로 번역하면 집합 연산이 훨씬 선명해집니다.</p>
+  <div class="grid">
+    <article class="card"><span class="tag must">필수 ①</span><h3>Set and Element</h3><div class="visual flow"><div class="node hot">A={1,2,3}</div><div class="node">2∈A</div><div class="node">4∉A</div></div><p><b>정의:</b> 집합(set)은 대상을 모은 것이고, 원소(element)는 그 안에 속한 대상입니다.</p><p><b>읽기:</b> x∈A는 “엑스는 에이에 속한다”, x∉A는 “엑스는 에이에 속하지 않는다”입니다.</p><p><b>왜 중요한가:</b> 이후 함수, 수열, 구간과 상한은 모두 어떤 집합 위에서 정의됩니다.</p></article>
+    <article class="card"><span class="tag must">필수 ②</span><h3>Union과 Intersection</h3><div class="visual"><div class="sets"><span class="circle a">A</span><span class="circle b">B</span></div></div><p><b>A∪B:</b> x∈A <em>또는</em> x∈B인 모든 x.</p><p><b>A∩B:</b> x∈A <em>그리고</em> x∈B인 모든 x.</p><p><b>★ 서로소(disjoint):</b> A∩B=∅. 공통 원소가 없다는 뜻이며 확률의 독립과는 다른 개념입니다.</p></article>
+    <article class="card"><span class="tag along">무한 연산</span><h3>무한 합집합과 무한 교집합</h3><div class="logic"><div>x∈⋃<sub>n=1</sub><sup>∞</sup>A<sub>n</sub><br><small>어떤 n에서는 속함</small></div><span class="arrow">↔</span><div>∃n, x∈A<sub>n</sub><br><small>적어도 하나</small></div></div><div class="logic" style="margin-top:10px"><div>x∈⋂<sub>n=1</sub><sup>∞</sup>A<sub>n</sub><br><small>모든 n에서 속함</small></div><span class="arrow">↔</span><div>∀n, x∈A<sub>n</sub><br><small>하나도 빠짐없이</small></div></div><div class="callout key"><b>암기보다 번역:</b> 합집합은 존재기호 ∃, 교집합은 전칭기호 ∀와 연결합니다.</div></article>
+    <article class="card"><span class="tag along">논리 변환</span><h3>De Morgan's Laws</h3><div class="formula-read"><b>(A∪B)<sup>c</sup>=A<sup>c</sup>∩B<sup>c</sup></b><br>“A 또는 B가 아니다” = “A도 아니고 B도 아니다”</div><div class="formula-read"><b>(A∩B)<sup>c</sup>=A<sup>c</sup>∪B<sup>c</sup></b><br>“A와 B가 동시에 성립하지 않는다” = “A가 아니거나 B가 아니다”</div><p>여집합이 들어가면 ∪와 ∩이 서로 바뀐다는 점이 핵심입니다.</p></article>
+  </div>
+</section>
 
-<section class="section" id="formula"><h2>④ 완비성 공리와 상한의 유일성</h2><div class="formula"><div class="equation">∅ ≠ A ⊆ ℝ, A가 위로 유계 ⇒ sup A ∈ ℝ</div><div class="decode"><div><b>A ⊆ ℝ</b><br>에이는 실수의 부분집합</div><div><b>위로 유계</b><br>모든 원소를 막는 상계가 존재</div><div><b>sup A</b><br>수프리멈 에이 · 최소상계</div></div><p><b>문장으로 읽기:</b> 비어 있지 않은 실수의 부분집합이 위로 유계이면, 그 집합에는 실수인 상한이 존재합니다.</p><p><b>왜 필요한가:</b> 유리수만으로는 생길 수 있는 ‘구멍’이 실수에는 없다는 성질이며, 수열의 수렴과 연속성 이론의 토대가 됩니다.</p></div>
-<div class="card" style="margin-top:16px"><h3>The Supremum Is Unique</h3><p>상한이 (s)와 (t) 두 개라고 가정합니다. (s)가 최소상계이고 (t)도 상계이므로 (s≤t)입니다. 반대로 (t)가 최소상계이고 (s)도 상계이므로 (t≤s)입니다. 두 부등식을 합치면 (s=t). 따라서 한 집합에는 상한이 많아야 하나만 존재합니다.</p><div class="visual flow"><div class="node">s ≤ t</div><span class="arrow">+</span><div class="node">t ≤ s</div><span class="arrow">⇒</span><div class="node hot">s = t</div></div></div></section>
+<section class="section" id="functions">
+  <h2>④ 함수와 부등식으로 보는 해석학적 사고</h2>
+  <div class="grid">
+    <article class="card"><span class="tag along">반례의 감각</span><h3>Dirichlet's Function</h3><div class="equation">f(x)={ 1, x∈ℚ &nbsp; / &nbsp; 0, x∉ℚ }</div><p>아무리 작은 구간을 잡아도 유리수와 무리수가 모두 들어 있습니다. 따라서 x에 가까이 갈 때 함수값은 1과 0 사이를 계속 오가며 어느 한 값으로 가까워지지 않습니다.</p><div class="callout key"><b>결론:</b> 디리클레 함수는 모든 실수점에서 불연속입니다. 그림이 그럴듯한 함수만 존재한다는 직관을 깨는 대표적인 예입니다.</div></article>
+    <article class="card"><span class="tag along">오차 제어</span><h3>Triangle Inequality</h3><div class="equation">|x+y| ≤ |x|+|y|</div><div class="decode"><div><b>|x+y|</b><br>합친 결과의 거리</div><div><b>|x|, |y|</b><br>각 조각의 거리</div><div><b>≤</b><br>직행은 우회보다 길지 않음</div></div><p><b>문장으로 읽기:</b> 두 수를 더한 뒤 원점까지의 거리는, 각각의 거리를 더한 것보다 크지 않습니다.</p><p><b>해석학에서의 역할:</b> |x−a|를 여러 오차 항으로 쪼개 전체 오차의 상한을 만듭니다.</p></article>
+  </div>
+</section>
 
-<section class="section"><h2>⑤ AI·데이터과학과의 연결</h2><div class="grid">
-<article class="card"><h3>손실함수의 수렴 분석</h3><p><b>문제:</b> 학습이 안정적인 값으로 가까워지는지 판단합니다.</p><p><b>입력:</b> 반복별 손실값 수열</p><p><b>연결:</b> 상계·하계, 극한과 완비성이 수렴을 엄밀히 설명합니다.</p><p><b>주의:</b> 손실이 감소한다는 사실만으로 좋은 일반화 성능이 보장되지는 않습니다.</p></article>
-<article class="card"><h3>오차 상계 만들기</h3><p><b>문제:</b> 여러 계산에서 생긴 오차가 전체 결과에 미치는 영향을 제한합니다.</p><p><b>입력:</b> 근사·측정·수치 오차</p><p><b>연결:</b> 삼각부등식으로 전체 오차를 개별 오차의 합으로 제어합니다.</p><p><b>주의:</b> 이 상계는 실제 오차보다 느슨할 수 있습니다.</p></article></div></section>
+<section class="section" id="proofs">
+  <h2>⑤ 증명 방법</h2>
+  <p class="lead">명제의 모양을 먼저 보고 가장 자연스러운 증명 도구를 고릅니다.</p>
+  <div class="grid">
+    <article class="card"><span class="tag later">증명 전략</span><h3>Contrapositive Proof</h3><div class="logic"><div>P ⇒ Q<br><small>원래 명제</small></div><span class="arrow">≡</span><div>¬Q ⇒ ¬P<br><small>대우</small></div></div><p><b>예시:</b> “n²이 짝수이면 n은 짝수이다.” 직접 접근보다 대우인 “n이 홀수이면 n²도 홀수이다”를 보이는 편이 간단합니다.</p><div class="callout warn"><b>주의:</b> 역 Q⇒P나 이 ¬P⇒¬Q는 원래 명제와 동치가 아닙니다. 대신 증명할 수 있는 것은 대우뿐입니다.</div></article>
+    <article class="card"><span class="tag later">자연수 명제</span><h3>Mathematical Induction</h3><div class="proof"><span class="step"><b>① Base</b>P(1) 확인</span><span class="step"><b>② Induction hypothesis</b>P(k) 가정</span><span class="step"><b>③ Induction step</b>P(k)⇒P(k+1)</span><span class="step"><b>④ Conclusion</b>모든 n∈ℕ</span></div><p><b>★ 교수님 용어:</b> n=1에서 확인하는 단계를 <em>base</em>, n=k에서 성립한다고 두는 것을 <em>induction hypothesis(귀납 가설)</em>라고 합니다.</p><div class="callout key"><b>핵심:</b> P(k)를 증명 없이 참이라고 끝내는 것이 아니라, 그 가정 아래 P(k+1)이 따라옴을 보여야 합니다.</div></article>
+  </div>
+</section>
 
-<section class="section"><h2>⑥ 자주 하는 오해</h2><div class="warning"><b>오해 1:</b> 서로소는 독립이라는 뜻이다.<br><b>바로잡기:</b> 서로소는 공통 원소가 없다는 집합 관계이고, 독립은 한 사건이 다른 사건의 확률에 영향을 주지 않는다는 확률 관계입니다.</div><div class="practice" style="margin-top:12px"><b>오해 2:</b> 상한은 항상 최댓값이다.<br><b>바로잡기:</b> 최댓값은 집합 안의 원소이지만 상한은 집합 밖에 있을 수 있습니다. 예를 들어 (A=(0,1))의 상한은 1이지만 최댓값은 없습니다.</div></section>
+<section class="section" id="numbers">
+  <h2>⑥ 왜 실수까지 확장해야 할까?</h2>
+  <p class="lead">오늘 강의의 후반부는 수 체계의 확장을 따라가며 완비성이 필요한 이유를 세웠습니다.</p>
+  <div class="visual number-line"><span class="num">ℕ<br><small>자연수</small></span><span class="arrow">→</span><span class="num">ℤ<br><small>정수</small></span><span class="arrow">→</span><span class="num q">ℚ<br><small>유리수</small></span><span class="arrow">→</span><span class="num r">ℝ<br><small>실수</small></span></div>
+  <div class="table-wrap"><table><thead><tr><th>수 체계</th><th>새롭게 해결한 것</th><th>여전히 남는 문제</th></tr></thead><tbody>
+    <tr><td>자연수 ℕ</td><td>개수를 셀 수 있음</td><td>3−5 같은 뺄셈이 닫혀 있지 않음</td></tr>
+    <tr><td>정수 ℤ</td><td>음수를 포함해 뺄셈 가능</td><td>1÷2 같은 나눗셈 결과가 없음</td></tr>
+    <tr><td>유리수 ℚ</td><td>정수의 비로 분수 표현 가능</td><td>x²&lt;2를 만족하는 유리수들의 정확한 경계 √2가 ℚ에 없음</td></tr>
+    <tr><td>실수 ℝ</td><td>유리수의 ‘빈틈’을 채우고 극한의 경계를 포함</td><td>이 성질을 엄밀히 보증하는 공리가 필요함 → 완비성</td></tr>
+  </tbody></table></div>
+  <div class="callout ok"><b>ℚ는 ℝ의 부분체(subfield):</b> 유리수끼리 덧셈·뺄셈·곱셈·0이 아닌 수로 나눗셈을 해도 유리수이므로 체의 연산 규칙을 유지한 채 실수 안에 포함됩니다. 하지만 ℚ 자체는 완비적이지 않습니다.</div>
+</section>
 
-<section class="section quiz" id="quiz"><h2>⑦ 확인 퀴즈</h2>
-<details><summary>Q1. x ∈ ⋂<sub>n=1</sub><sup>∞</sup> A<sub>n</sub>은 무엇을 뜻할까요?</summary><div class="answer"><b>정답:</b> 모든 자연수 n에 대해 x가 A<sub>n</sub>에 속한다는 뜻입니다. 하나에만 속하면 되는 합집합과 구분해야 합니다.</div></details>
-<details><summary>Q2. (P⇒Q)의 대우는 무엇이며 왜 대신 증명해도 될까요?</summary><div class="answer"><b>정답:</b> (¬Q⇒¬P)입니다. 원래 명제와 대우는 항상 진릿값이 같아 논리적으로 동치이기 때문입니다.</div></details>
-<details><summary>Q3. (A=(0,1))에서 상한과 최댓값은 각각 무엇일까요?</summary><div class="answer"><b>정답:</b> 상한은 1이고 최댓값은 없습니다. 1은 모든 원소의 위에 있는 최소상계지만 열린구간 A의 원소는 아닙니다.</div></details></section>
+<section class="section" id="complete">
+  <h2>⑦ 완비성 공리와 상한</h2>
+  <div class="formula">
+    <span class="tag must">★ 강의 핵심</span>
+    <div class="equation">∅ ≠ A ⊆ ℝ, A가 위로 유계 ⇒ sup A ∈ ℝ</div>
+    <div class="decode"><div><b>∅≠A⊆ℝ</b><br>비어 있지 않은 실수 집합</div><div><b>위로 유계</b><br>모든 a∈A보다 크거나 같은 수가 있음</div><div><b>sup A</b><br>수프리멈 에이 · 최소상계</div></div>
+    <div class="formula-read"><b>문장으로 읽기:</b> 비어 있지 않은 실수의 부분집합이 위로 유계이면, 그 집합의 최소상계인 상한이 실수 안에 존재합니다.</div>
+    <p><b>왜 필요한가:</b> 수열이나 함수값이 어떤 경계에 가까워질 때 그 경계가 실수 밖으로 사라지지 않는다는 기반을 제공합니다.</p>
+  </div>
+  <div class="grid" style="margin-top:16px">
+    <article class="card"><h3>Upper bound · Maximum · Supremum</h3><p><b>상계:</b> 모든 a∈A에 대해 a≤u인 수 u. 여러 개일 수 있습니다.</p><p><b>최댓값:</b> A 안에 있으면서 모든 원소보다 크거나 같은 원소. 없을 수 있습니다.</p><p><b>상한:</b> 모든 상계 중 가장 작은 값. A 안에 있을 필요는 없습니다.</p><div class="callout key"><b>예시 A=(0,1):</b> 1, 2, 3은 모두 상계이며 sup A=1입니다. 그러나 1∉A이므로 max A는 존재하지 않습니다.</div></article>
+    <article class="card"><h3>유리수 안에서만 보면?</h3><p>A={q∈ℚ:q²&lt;2}를 ℚ 안에서 생각하면 A는 위로 유계이지만 상한 √2가 ℚ에 없습니다.</p><p>이 예시는 “유리수는 조밀하다”와 “유리수는 완비하다”가 전혀 다른 말임을 보여줍니다. 유리수 사이에는 또 다른 유리수가 있어도, 필요한 경계가 유리수 안에 존재한다고 보장되지는 않습니다.</p></article>
+  </div>
+  <div class="formula">
+    <h3>The Supremum Is Unique — 왜 하나뿐인가?</h3>
+    <p>s와 t가 모두 A의 상한이라고 가정합니다.</p>
+    <div class="proof-two"><div>t는 상계<br>s는 최소상계</div><span class="arrow">⇒</span><div>s≤t<br>동시에 t≤s</div><span class="arrow">⇒</span><div class="end">s=t</div></div>
+    <p><b>증명의 논리:</b> s가 최소상계이므로 다른 상계 t보다 작거나 같고, t도 최소상계이므로 상계 s보다 작거나 같습니다. 양쪽 부등식이 모두 성립하면 두 수는 같습니다. 따라서 한 집합은 상한을 많아야 하나만 가집니다.</p>
+  </div>
+</section>
 
-<section class="section"><h2>⑧ 다음에 연결할 항목</h2><nav class="links"><a href="index.html">← 수업 목록<br><b>해석학</b></a><span>관련 항목<br><b>실수와 절댓값</b><br>예정</span><span>다음 학습 →<br><b>수열과 극한</b><br>예정</span></nav></section>
-<footer class="footer">출처: <a class="source" href="https://ocw.mit.edu/courses/18-100a-real-analysis-fall-2020/">MIT OpenCourseWare 18.100A Real Analysis</a>, <a class="source" href="https://richardhammack.github.io/BookOfProof/">Richard Hammack, Book of Proof</a> · 확인일: 2026-09-07 · 작성자: 김진혁 · 검토자: 미지정 · 상태: draft</footer>
-</main><script src="../../assets/inline-terms.js" defer></script></body></html>
+<section class="section" id="practice">
+  <h2>⑧ AI·데이터과학과의 연결</h2>
+  <div class="grid">
+    <article class="card"><h3>학습 손실의 수렴</h3><p><b>해결할 문제:</b> 반복 학습에서 손실값이 안정된 값에 가까워지는지 판단합니다.</p><p><b>입력:</b> 반복 횟수별 손실값 수열</p><p><b>배우는 것:</b> 감소하고 아래로 유계인 수열의 극한을 분석합니다.</p><p><b>출력:</b> 수렴 여부와 가능한 한계값</p><p><b>개념 연결:</b> 완비성은 경계가 실수 안에 존재한다는 이론적 토대입니다.</p><p><b>한계:</b> 손실의 수렴이 일반화 성능까지 보장하지는 않습니다.</p></article>
+    <article class="card"><h3>오차의 상한 계산</h3><p><b>해결할 문제:</b> 데이터·근사·수치 계산에서 생긴 여러 오차를 통제합니다.</p><p><b>입력:</b> 각 단계의 오차항</p><p><b>배우는 것:</b> 오차항을 분해하고 크기를 비교합니다.</p><p><b>출력:</b> 전체 오차가 넘지 않는 안전한 상계</p><p><b>개념 연결:</b> 삼각부등식으로 |e₁+e₂|≤|e₁|+|e₂|를 얻습니다.</p><p><b>한계:</b> 계산하기 쉬운 상계는 실제 오차보다 느슨할 수 있습니다.</p></article>
+  </div>
+</section>
+
+<section class="section">
+  <h2>⑨ 자주 하는 오해</h2>
+  <div class="grid">
+    <div class="callout warn"><b>서로소 = 독립?</b><br>아닙니다. 서로소는 교집합이 공집합이라는 집합 관계이고, 독립은 한 사건이 다른 사건의 확률을 바꾸지 않는다는 확률 관계입니다.</div>
+    <div class="callout warn"><b>조밀하면 완비적?</b><br>아닙니다. ℚ는 조밀하지만 √2와 같은 최소상계가 ℚ 밖에 놓일 수 있으므로 완비적이지 않습니다.</div>
+    <div class="callout warn"><b>상한 = 최댓값?</b><br>상한은 집합 밖에 있어도 되지만 최댓값은 반드시 집합의 원소여야 합니다.</div>
+    <div class="callout warn"><b>귀납 가설이 곧 증명?</b><br>P(k)를 가정하는 것은 P(k+1)을 도출하기 위한 임시 발판입니다. base와 induction step이 모두 필요합니다.</div>
+  </div>
+</section>
+
+<section class="section quiz" id="quiz">
+  <h2>⑩ 확인 퀴즈</h2>
+  <details><summary>Q1. x∈⋂<sub>n=1</sub><sup>∞</sup>A<sub>n</sub>과 x∈⋃<sub>n=1</sub><sup>∞</sup>A<sub>n</sub>의 차이를 ∀와 ∃로 설명해 보세요.</summary><div class="answer"><b>정답:</b> 교집합은 ∀n에 대해 x∈A<sub>n</sub>, 합집합은 ∃n이 존재하여 x∈A<sub>n</sub>이라는 뜻입니다. 즉 교집합은 ‘전부’, 합집합은 ‘적어도 하나’입니다.</div></details>
+  <details><summary>Q2. A={q∈ℚ:q²&lt;2}가 ℚ에서 위로 유계인데도 ℚ의 완비성을 보여주지 못하는 이유는 무엇인가요?</summary><div class="answer"><b>정답:</b> A의 최소상계는 √2인데 √2∉ℚ이기 때문입니다. 상계는 존재하지만 최소상계가 ℚ 안에 없으므로 ℚ는 최소상계 성질을 만족하지 않습니다.</div></details>
+  <details><summary>Q3. s와 t가 모두 A의 상한이라면 왜 s=t인가요?</summary><div class="answer"><b>정답:</b> s가 최소상계이고 t가 상계이므로 s≤t입니다. 반대로 t가 최소상계이고 s가 상계이므로 t≤s입니다. 따라서 두 부등식을 동시에 만족하는 s와 t는 같습니다.</div></details>
+</section>
+
+<section class="section">
+  <h2>⑪ 이전·관련·다음 학습</h2>
+  <nav class="links"><a href="index.html">← 수업 목록<br><b>해석학</b></a><span>관련 항목<br><b>실수와 절댓값</b><br>예정</span><span>다음 학습 →<br><b>상한의 ε-특성·수열과 극한</b><br>예정</span></nav>
+</section>
+<footer class="footer">
+  출처: 2026-09-07 해석학 강의 기록 · <a class="source" href="https://ocw.mit.edu/courses/18-100a-real-analysis-fall-2020/">MIT OpenCourseWare 18.100A Real Analysis</a> · <a class="source" href="https://richardhammack.github.io/BookOfProof/">Richard Hammack, Book of Proof</a><br>
+  확인일: 2026-09-09 · 작성자: 김진혁 · 검토자: 미지정 · 상태: draft · updated: 2026-09-09
+</footer>
+</main><script src="../../assets/inline-terms.js" defer></script></body>
+</html>
