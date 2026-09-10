@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="9월 8일 베이지안추론: 사후분포 요약, 충분통계량, 가능도 원리, 중단 규칙, 베이즈 가설검정과 사후 오즈를 연결합니다.">
+<meta name="author" content="AI Study · AI 보조 정리">
+<title>9월 8일 · 데이터의 정보에서 가설의 확률까지 | AI Study</title>
+<style>
+:root{--bg:#f4f1ff;--ink:#202038;--muted:#69677c;--card:#fff;--violet:#7357e8;--pink:#ef6797;--blue:#4d8df7;--mint:#41bda5;--yellow:#ffc94b;--red:#ef6a6a;--line:#e4def7;--shadow:0 16px 40px rgba(60,42,120,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{word-break:keep-all;overflow-wrap:break-word;margin:0;color:var(--ink);font-family:Pretendard,"Noto Sans KR",system-ui,sans-serif;background:radial-gradient(circle at 10% 0,#efe5ff 0,transparent 35%),var(--bg);line-height:1.65}.wrap{max-width:1120px;margin:auto;padding:28px 20px 80px}.meta{display:flex;justify-content:space-between;gap:14px;color:var(--muted);font-size:14px;margin-bottom:16px}.hero{background:linear-gradient(135deg,#382276,#7657e8 58%,#d85c99);color:white;border-radius:32px;padding:44px;box-shadow:var(--shadow)}.hero h1{font-size:clamp(32px,6vw,58px);line-height:1.08;margin:10px 0 16px}.pill,.tag{display:inline-block;padding:5px 11px;border-radius:99px;font-size:12px;font-weight:900}.pill{background:rgba(255,255,255,.16)}.route{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:24px 0}.route a{text-decoration:none;color:var(--ink);background:white;padding:14px 10px;border-radius:16px;text-align:center;font-weight:800;box-shadow:var(--shadow)}.section{margin-top:52px}.section h2{font-size:clamp(26px,4vw,39px);margin:0 0 8px}.lead{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.card,.formula,.quiz details{background:white;border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow)}.card h3{margin:0 0 8px}.visual{min-height:150px;border:1px dashed #cfc3f4;border-radius:18px;background:#faf9ff;padding:18px;margin:15px 0;display:flex;align-items:center;justify-content:center}.flow{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}.node{min-width:110px;padding:14px;border:2px solid var(--line);border-radius:15px;background:white;text-align:center;font-weight:850}.node.hot{color:white;border:0;background:linear-gradient(135deg,var(--violet),var(--pink))}.arrow{font-size:25px;color:var(--violet)}.tag.must{background:#ffe6ef;color:#a8325c}.tag.along{background:#fff2c9;color:#805c00}.tag.later{background:#ddf7ee;color:#14725f}.equation{text-align:center;font-family:Georgia,serif;font-size:clamp(20px,3vw,30px);color:#3a286f}.decode{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.decode div{padding:11px;border-radius:12px;background:#f4f1ff;text-align:center}.analogy{border-left:6px solid var(--blue)}.warning{background:#fff0f0;border-left:6px solid var(--red);padding:16px;border-radius:14px}.practice{background:#e9fbf6;border-left:6px solid var(--mint);padding:16px;border-radius:14px}.quiz details{margin:10px 0}.quiz summary{font-weight:850;cursor:pointer}.answer{margin-top:12px;color:var(--muted)}.links{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.links a{text-decoration:none;color:var(--ink);background:white;padding:16px;border-radius:16px;text-align:center}.footer{text-align:center;margin-top:52px;color:var(--muted)}
+@media(max-width:760px){.hero{padding:32px 24px}.route{grid-template-columns:1fr 1fr}.grid,.decode,.links{grid-template-columns:1fr}.meta{flex-direction:column}}
+
+a{color:#5a40c0}a:focus-visible,input:focus-visible,summary:focus-visible,button:focus-visible{outline:3px solid #4d8df7;outline-offset:4px}
+.hero{padding:30px;background:linear-gradient(135deg,#304c2b,#537c3e 65%,#719544)}.hero h1{font-size:clamp(30px,5vw,48px)}.hero p{max-width:760px}
+.grid>*{min-width:0}.route{grid-template-columns:repeat(3,minmax(0,1fr))}.meta{flex-wrap:wrap}.section{scroll-margin-top:20px}
+.note,.stamp{font-size:14px;color:var(--muted)}.stamp{display:block;margin-bottom:12px}.stack>*+*{margin-top:18px}
+.equation{padding:10px 0;overflow-wrap:anywhere;font-size:clamp(18px,2.5vw,26px)}.steps li{margin:12px 0}
+table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:15px}th,td{padding:12px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;overflow-wrap:anywhere}th{background:#f4f1ff}
+.links span{padding:16px;background:white;border-radius:16px;text-align:center}.diagram{width:100%;height:auto;display:block;max-width:680px;margin:auto}.diagram text{font:16px system-ui;fill:#202038}
+label.control{display:block;margin:18px 0 5px;font-weight:800}input[type=range]{width:100%;accent-color:var(--violet)}
+input[type=number]{width:100%;max-width:180px;font:inherit;padding:10px;border:1px solid #69677c;border-radius:10px}
+.bar{height:26px;background:#ede8fa;border-radius:12px;overflow:hidden;margin:8px 0 18px}.fill{height:100%;background:#7357e8;min-width:0}
+output{display:block;background:#e9fbf6;padding:16px;border-radius:14px;white-space:pre-line}.legend{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}.footer{text-align:left;font-size:14px}
+@media(max-width:760px){.wrap{padding:20px 16px 65px}.route{grid-template-columns:repeat(2,minmax(0,1fr))}.card,.formula{padding:18px}.hero{padding:26px 20px}th,td{padding:9px 5px;font-size:13px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style><link rel="stylesheet" href="../../assets/inline-terms.css"></head>
+<body><main class="wrap">
+<div class="meta"><a href="../../index.html">AI Study 홈</a><span><a href="../index.html">대학교</a> / <a href="index.html">베이지안추론</a> / 9월 8일</span></div>
+<header class="hero"><span class="pill">2026년 9월 8일 화요일 · 데이터사이언스를 위한 베이지안추론 · 복습용</span><h1>데이터의 정보에서<br>가설의 확률까지</h1><p>같은 관측을 했는데 실험의 중단 규칙에 따라 결론이 달라질까요? 충분통계량과 가능도 원리를 통해 이 질문을 살펴보고, 사후 오즈로 두 가설을 비교합니다.</p></header>
+<p class="note">9월 8일 녹취를 바탕으로 재구성한 AI 학습 정리입니다. 시각화·계산 재검산·생략된 유도는 복습 보충으로 구분합니다. ★는 원자료에서 반복되거나 강조된 논점입니다.</p>
+<nav class="route" aria-label="학습 목차"><a href="#map">핵심 요약</a><a href="#summary">사후분포 요약</a><a href="#sufficient">충분통계량</a><a href="#likelihood">가능도 원리</a><a href="#testing">베이즈 검정</a><a href="#quiz">확인 퀴즈</a></nav>
+
+<section class="section" id="map"><h2>① 핵심 요약과 전체 흐름</h2>
+<ul><li>베이즈 추론은 사전분포와 가능도를 결합해 사후분포를 얻으며, 점·구간 추정은 그 분포를 요약하는 방법입니다.</li>
+<li>충분통계량은 주어진 모형에서 모수에 관한 정보를 보존하는 데이터 요약이며, 인수분해 정리로 확인할 수 있습니다.</li>
+<li>★ 가능도 원리는 관측된 데이터의 모수에 대한 정보를 가능도에서 읽고, 가능도가 모수와 무관한 상수배이면 동일한 추론을 요구합니다.</li>
+<li>두 실험의 관측 가능도가 비례해도 p값은 각 실험의 표본공간과 중단 규칙에 따라 달라질 수 있습니다.</li>
+<li>베이즈 가설검정은 가설별 주변가능도로 사전 오즈를 갱신해 사후 오즈와 가설의 사후확률을 비교합니다.</li></ul>
+<div class="visual flow"><div class="node">사후분포 요약<br>점·구간</div><span class="arrow">→</span><div class="node">충분통계량<br>정보 보존</div><span class="arrow">→</span><div class="node hot">가능도 원리<br>증거의 비교</div><span class="arrow">→</span><div class="node">베이즈 검정<br>가설의 사후확률</div></div>
+<div class="legend"><span class="tag must">필수 · 개념과 수식</span><span class="tag along">병행 · 예제와 계산</span><span class="tag later">후속 · 실제 검정 실행</span></div>
+<p class="note">강의 흐름: 04:55~17:48 지난 시간 복습 → 18:43~24:07 충분통계량 → 25:00~48:57 조건부·가능도 원리 → 49:32~끝 가설검정. 실제 베이즈 검정의 구체적 실행 예제는 다음 시간으로 남겨졌습니다.</p></section>
+
+<section class="section"><h2>② 생활 비유: 자료를 요약하고 증거를 갱신하기</h2><div class="card analogy"><h3>동전 실험의 기록 담당자</h3>
+<p>동전을 독립적으로 던져 앞면 확률을 알고 싶다면, 앞면이 나온 순서를 모두 외우기보다 ‘n번 중 앞면 s번’이라는 기록이 편리합니다. 그런 다음 공정한 동전과 앞면이 더 잘 나오는 동전 중 어느 설명에 이 기록이 더 잘 맞는지 비교합니다.</p>
+<div class="visual flow"><div class="node">전체 기록<br>1,0,1,1,…</div><span class="arrow">→</span><div class="node">충분한 요약<br>앞면 횟수 s</div><span class="arrow">→</span><div class="node">두 설명의 증거<br>가능도 비교</div></div>
+<p><b>닮은 점:</b> 필요한 정보를 보존한 요약과 가설의 상대적 지지를 분리해 생각할 수 있습니다.</p><p><b>비유의 한계:</b> 앞면 확률이 시간에 따라 변하거나 관측들이 의존하면 횟수만으로 충분하지 않을 수 있습니다. 충분성은 선택한 확률모형에 대한 성질입니다.</p></div></section>
+
+<section class="section" id="summary"><h2>③ 지난 시간 복습: 사후분포를 어떻게 요약할까?</h2><span class="stamp">녹취 04:55~17:48</span>
+<div class="grid">
+<article class="card"><h3>Prior · 사전분포</h3><p><b>정의:</b> 관측 전 모수 θ에 대한 불확실성을 나타내는 분포 π(θ)입니다.</p><p><b>역할:</b> 데이터가 주기 전 알고 있던 정보를 나타냅니다.</p><p><b>예:</b> 동전의 앞면 확률이 어느 범위에 있을지에 대한 관측 전 분포.</p></article>
+<article class="card"><h3>Likelihood · 가능도</h3><p><b>정의:</b> 관측값 x를 고정하고 f(x|θ)를 θ의 함수로 읽은 L(θ;x)입니다.</p><p><b>역할:</b> 각 모수값에서 관측 데이터가 얼마나 잘 설명되는지 비교합니다.</p><p><b>주의:</b> θ에 대해 합이나 적분이 1일 필요가 없으며, 그 자체가 모수의 확률분포는 아닙니다.</p></article>
+</div>
+<div class="formula" style="margin-top:18px"><h3>Posterior · 사후분포</h3><div class="equation">π(θ|x) = f(x|θ)π(θ) / m(x)<br>m(x) = ∫ f(x|θ)π(θ) dθ</div>
+<div class="decode"><div><b>θ, x</b><br>세타, 엑스<br>모수와 관측 데이터</div><div><b>π(θ), π(θ|x)</b><br>파이 세타, 파이 세타 기븐 엑스<br>관측 전·후 분포</div><div><b>m(x), ∫ dθ</b><br>엠 엑스, 세타에 대해 적분<br>전체 확률을 1로 맞추는 상수</div></div>
+<p><b>문장으로 읽기:</b> 가능도에 사전분포를 곱하고 모든 모수에 대해 합친 값으로 나누면 사후분포가 됩니다.</p><p><b>왜 필요한가:</b> 관측 뒤의 불확실성을 한 분포로 표현합니다. 아래는 연속 모수 표기이며 이산 모수에서는 적분을 합으로 바꿉니다.</p></div>
+<div class="card" style="margin-top:18px"><h3>점(point)과 구간(interval)은 다른 질문에 답한다</h3><table><caption>사후분포의 요약 방법</caption><thead><tr><th>방법</th><th>무엇을 고르나?</th><th>해석</th></tr></thead><tbody>
+<tr><th>사후평균</th><td>E[θ|x]</td><td>분포의 무게중심</td></tr><tr><th>사후중앙값</th><td>누적확률이 1/2인 값</td><td>양쪽 확률을 반씩 나누는 지점</td></tr><tr><th>사후최빈값(MAP)</th><td>arg max<sub>θ</sub> π(θ|x)</td><td>밀도가 가장 높은 모수값</td></tr><tr><th>신용집합</th><td>사후확률 1−α를 담는 집합</td><td>가능한 값들의 범위와 불확실성</td></tr>
+</tbody></table><p><b>기호 읽기:</b> E는 ‘기댓값’, arg max는 ‘최댓값을 만드는 모수값’입니다. MAP는 밀도의 높이가 아니라 그 높이가 최대가 되는 θ입니다. 중앙값·최빈값은 일반적으로 유일하지 않을 수 있습니다.</p></div>
+<div class="grid" style="margin-top:18px">
+<article class="card"><h3>Credible Set · 신용집합</h3><div class="equation">P(θ∈C|x)=1−α</div><p>C(씨)는 집합, α(알파)는 제외하는 확률입니다. 관측 x와 모형·사전분포가 주어졌을 때 θ가 C에 속할 사후확률을 정합니다.</p><p><b>등꼬리 구간:</b> 연속 사후분포에서 왼쪽·오른쪽 꼬리에 α/2씩 남깁니다. 95% 구간이면 각 꼬리는 2.5%입니다.</p><p><b>구별:</b> 빈도론적 95% 신뢰구간은 구간 구성 절차의 반복표집 포함률을 뜻합니다. 계산 후 고정된 구간에 같은 사후확률 해석을 바로 붙이지 않습니다.</p></article>
+<article class="card"><h3>HPD · 최고사후밀도집합</h3><div class="equation">C={θ:π(θ|x)≥k}<br>∫<sub>C</sub>π(θ|x)dθ=1−α</div><p>k(케이)는 밀도의 높이 기준입니다. 높은 밀도의 지점부터 포함해 목표 확률을 채웁니다. 적절한 k로 목표 질량을 맞출 수 있는 연속분포에서의 표기입니다.</p><p><b>왜 중요한가:</b> 봉우리가 여러 개인 분포에서는 C가 여러 구간으로 갈라질 수 있습니다. 등꼬리 구간과 항상 같지는 않습니다.</p><p class="note">녹취의 ‘1만 44%’, 꼬리 ‘1/2’ 등 인식 오류는 문맥상 100(1−α)%와 α/2로 바로잡았습니다.</p></article></div></section>
+
+<section class="section" id="sufficient"><h2>④ 충분통계량: 모수 정보를 보존하는 요약</h2><span class="stamp">녹취 18:43~24:07 · 전개식은 복습 보충</span>
+<div class="card"><h3>Sufficient Statistic · 충분통계량</h3><p><b>정의:</b> T(X)가 주어졌을 때 X의 조건부분포가 θ에 의존하지 않으면 T(X)는 θ에 대한 충분통계량입니다.</p><p><b>직관:</b> 요약값을 알고 나면 나머지 원자료가 θ에 관해 더 주는 정보가 없습니다. 모든 모형에서 같은 요약값이 충분한 것은 아닙니다.</p>
+<div class="equation">f(x|θ)=g(T(x),θ)h(x)</div>
+<div class="decode"><div><b>T(x)</b><br>티 엑스 · 통계량<br>데이터를 요약한 값</div><div><b>g(T(x),θ)</b><br>지 · 모수 의존 부분<br>T(x)를 통해 데이터에 의존</div><div><b>h(x)</b><br>에이치 · 나머지 부분<br>θ에 의존하지 않음</div></div>
+<p><b>인수분해 정리로 읽기:</b> 통상적인 밀도·확률질량함수 모형에서, 가능도를 위처럼 분해할 수 있으면 T(X)의 충분성을 확인할 수 있습니다.</p></div>
+<div class="grid" style="margin-top:18px">
+<article class="card"><h3>이항·베르누이 모형</h3><p><b>가정:</b> X₁,…,Xₙ은 독립이며 각각 Bernoulli(θ), θ는 앞면 확률입니다. n은 고정하고 관측값은 0 또는 1입니다.</p><div class="equation">s=Σᵢxᵢ=n x̄<br>L(θ;x)=θ<sup>s</sup>(1−θ)<sup>n−s</sup></div><p>s(에스)는 앞면 수, Σ(시그마)는 합, x̄(엑스 바)는 표본평균입니다. θ에 의존하는 부분은 원자료를 오직 s로만 사용합니다. 고정 n에서 s와 x̄는 서로 변환 가능해 둘 다 충분통계량입니다.</p><p><b>읽기:</b> 앞면 s번과 뒷면 n−s번의 확률을 곱합니다. 횟수 S 자체의 이항 확률질량함수에는 조합수가 추가되지만 θ와 무관합니다.</p></article>
+<article class="card"><h3>정규모형</h3><p><b>가정:</b> Xᵢ는 독립인 N(μ,σ²), σ²는 알려져 있고 μ를 추론합니다. 녹취에서 생략된 계산을 이 가정 아래 보충합니다.</p><div class="equation">Σᵢ(xᵢ−μ)²<br>=Σᵢ(xᵢ−x̄)²+n(x̄−μ)²</div><p>μ(뮤)는 평균, σ²(시그마 제곱)는 분산입니다. 가능도의 지수에서 첫 항은 μ와 무관하고 둘째 항은 x̄로만 데이터에 의존합니다. 따라서 x̄는 μ에 대한 충분통계량입니다.</p><p><b>주의:</b> μ와 σ²가 모두 미지수이면 일반적으로 x̄만으로는 충분하지 않습니다. 이때 Σxᵢ와 Σxᵢ²처럼 평균과 산포 정보를 함께 보존합니다.</p></article></div></section>
+
+<section class="section" id="likelihood"><h2>⑤ 가능도 원리와 실험 설계</h2><span class="stamp">녹취 25:00~48:57</span>
+<article class="card"><h3>Conditionality Principle · 조건부 원리</h3><p><b>강의 사례:</b> 동전으로 두 실험실 중 하나를 선택합니다. 캘리포니아 실험실의 표준오차는 0.2, 뉴욕은 0.1이고, 실제로 캘리포니아에서 3g을 관측했습니다.</p>
+<table><caption>실험실 선택 정보를 사용하는가?</caption><thead><tr><th>관점</th><th>표준오차</th><th>해석</th></tr></thead><tbody><tr><th>선택된 실험실에 조건부</th><td>0.2g</td><td>실제로 수행된 측정의 오차</td></tr><tr><th>선택 전 혼합 실험</th><td>약 0.1581g</td><td>동일 평균·동일 선택확률에서 두 실험을 평균낸 오차</td></tr></tbody></table>
+<div class="equation">Var(X)=E[Var(X|E)]<br>+Var(E[X|E])<br>=(0.2²+0.1²)/2=0.025</div><p><b>기호·읽기:</b> E(실험실 표시), E[·](기댓값), Var(분산). 두 실험실의 평균이 같아 두 번째 분산 항은 0입니다. 혼합 표준편차는 √0.025≈0.1581입니다.</p><p>★ 어느 실험이 실제 수행됐는지 알면 그 실험에 맞춰 추론한다는 것이 이 사례의 요지입니다. 녹취의 약 0.16은 위 계산의 반올림이며, 표준오차를 단순 평균한 0.15가 아닙니다.</p></article>
+<article class="card" style="margin-top:18px"><h3>Likelihood Principle · 가능도 원리</h3><div class="equation">L₁(θ;x₁)=c L₂(θ;x₂), c&gt;0<br>c는 θ와 무관</div><p><b>정의:</b> 두 관측의 가능도가 모수와 무관한 양의 상수배이면 θ에 대해 같은 정보를 주는 것으로 취급합니다.</p><p><b>왜 중요한가:</b> 관측 결과가 주는 증거와 관측하지 않은 가능한 결과들에 대한 표집 계산을 구별합니다.</p><p><b>베이즈 연결:</b> 같은 사전분포를 쓰면 정규화 과정에서 c가 상쇄되어 사후분포가 같습니다. 서로 다른 사전분포까지 같아진다는 주장은 아닙니다.</p>
+<div class="visual flow"><div class="node">비례하는 가능도<br>L₁=cL₂</div><span class="arrow">+</span><div class="node">동일한 사전분포<br>π(θ)</div><span class="arrow">→</span><div class="node hot">같은 사후분포<br>상수 c 상쇄</div></div></article>
+
+<article class="card" style="margin-top:18px"><h3>동전 12회 사례: 같은 관측, 다른 중단 규칙</h3><p>앞면을 1, 뒷면을 0으로 기록합니다. 관측은 <b>앞면 9번·뒷면 3번</b>입니다. 아래는 녹취 예제를 일관된 표기로 재계산한 내용입니다.</p>
+<p>검정은 H₀:θ=0.5 대 H₁:θ&gt;0.5로 정리합니다. 녹취의 부등호 표현이 일부 불명확하지만 공정한 동전을 기준으로 오른쪽 꼬리를 계산하는 문맥은 확인됩니다.</p>
+<table><caption>두 실험 설계의 비교</caption><thead><tr><th>구분</th><th>12회로 고정</th><th>뒷면 3회에서 중단</th></tr></thead><tbody>
+<tr><th>확률변수</th><td>S: 12회 중 앞면 수</td><td>T: 3번째 뒷면까지의 총 횟수</td></tr>
+<tr><th>관측</th><td>S=9</td><td>T=12</td></tr>
+<tr><th>가능도</th><td>C(12,9)θ⁹(1−θ)³</td><td>C(11,2)θ⁹(1−θ)³</td></tr>
+<tr><th>p값</th><td>P₀(S≥9)≈0.0730</td><td>P₀(T≥12)≈0.0327</td></tr>
+<tr><th>유의수준 0.05</th><td>H₀를 기각하지 못함</td><td>H₀를 기각</td></tr></tbody></table>
+<p><b>기호·읽기:</b> C(n,k)는 ‘엔 개 중 케이 개를 고르는 조합수’, P₀는 H₀ 아래의 확률입니다. 두 번째 실험은 마지막이 뒷면이므로 앞의 11회 중 뒷면 2회의 위치를 고릅니다.</p>
+<div class="equation">P₀(S≥9)=Σ<sub>k=9</sub><sup>12</sup>C(12,k)/2¹²<br>P₀(T≥12)=Σ<sub>j=0</sub><sup>2</sup>C(11,j)/2¹¹</div>
+<p><b>두 번째 식 읽기:</b> 3번째 뒷면이 12번째 이후에 나온다는 것은 첫 11회에서 뒷면이 2번 이하라는 뜻입니다.</p>
+<div class="practice"><b>핵심:</b> 두 가능도의 θ 의존 부분은 θ⁹(1−θ)³로 같습니다. 따라서 동일한 사전분포로 얻는 사후분포는 같지만 p값은 두 설계에서 달라집니다.</div>
+<p class="note">복습 보충: 녹취의 근삿값 약 0.075·0.0325를 위 꼬리확률로 재검산했습니다. ‘기각하지 못함’은 H₀가 참임을 입증하거나 H₀의 사후확률을 계산했다는 뜻이 아닙니다.</p></article>
+
+<article class="card" style="margin-top:18px"><h3>번바움(Birnbaum) 정리의 위치</h3><div class="visual flow"><div class="node">충분성 원리<br>원자료와 충분통계량의 동등성</div><span class="arrow">+</span><div class="node">조건부 원리<br>실제로 선택된 실험</div><span class="arrow">→</span><div class="node hot">가능도 원리<br>비례 가능도의 동등성</div></div>
+<p><b>강의에서의 역할:</b> 충분성 원리와 약한 조건부 원리를 소개한 뒤 가능도 원리와 연결하는 추론의 기초 논의입니다. 위 그림은 강의의 개념 흐름이며 엄밀한 정리의 증명을 대신하지 않습니다.</p>
+<p><b>복습 보충:</b> 조건부 원리를 어떤 형태로 정의하는지가 중요하며, Birnbaum의 조건부 원리와 약한 조건부 원리를 동일시하는 해석에는 학술적 논쟁이 있습니다. <a href="https://arxiv.org/abs/1302.7021">Mayo의 논의</a>와 <a href="https://arxiv.org/abs/1411.0807">Dawid의 응답</a>을 참고할 수 있습니다. 녹취에서 언급된 철회 연대는 확인되지 않아 확정된 역사 사실로 쓰지 않습니다.</p></article></section>
+
+<section class="section" id="testing"><h2>⑥ 베이즈 가설검정: 각 가설에 확률을 배분하기</h2><span class="stamp">녹취 49:32~01:17:42 · 수식 표기와 유도는 복습 보충</span>
+<div class="card"><h3>먼저 가설 공간을 나눈다</h3><div class="equation">H₀:θ∈Θ₀, H₁:θ∈Θ₁<br>Θ₀∩Θ₁=∅, Θ₀∪Θ₁=Θ</div>
+<p><b>기호·읽기:</b> Θ(대문자 세타)는 모수 공간, ∩는 교집합, ∪는 합집합, ∅는 공집합입니다. 두 가설은 겹치지 않으며 전체 가능성을 덮습니다.</p>
+<p><b>단순가설:</b> 모수값을 완전히 지정합니다. 예: μ=0. <b>복합가설:</b> 여러 모수값을 포함합니다. 예: μ&gt;0 또는 μ≠0. 미지의 부가 모수가 남아 있다면 평균만 지정해도 완전한 단순가설은 아닐 수 있습니다.</p>
+<p>강의에서는 빈도론 검정의 귀무가설 아래 표집분포 계산과 베이즈 검정의 두 가설에 대한 상대적 타당도 비교를 대비했습니다. 대립가설은 빈도론에서도 검정의 방향·검정력·설계에 영향을 줍니다.</p></div>
+<div class="formula" style="margin-top:18px"><h3>가설의 사전확률과 가설 내부의 분포를 구분</h3><div class="equation">π(θ)=π₀g₀(θ)+π₁g₁(θ)<br>π₀+π₁=1, 0&lt;πⱼ&lt;1</div>
+<div class="decode"><div><b>πⱼ</b><br>파이 제이 · P(Hⱼ)<br>가설 자체의 사전확률</div><div><b>gⱼ(θ)</b><br>지 제이 세타<br>Hⱼ 안에서 정한 정규화된 사전분포</div><div><b>j=0,1</b><br>제이는 영 또는 일<br>두 가설을 구별하는 번호</div></div>
+<p><b>문장으로 읽기:</b> 가설별 내부 사전분포에 각 가설을 믿는 사전확률을 가중치로 붙여 전체 사전분포를 만듭니다.</p><p><b>왜 필요한가:</b> 가설의 사전확률과 모수의 사전밀도는 서로 다른 대상입니다. 각 gⱼ는 Θⱼ에만 질량을 둡니다. 점가설은 보통의 연속밀도 대신 점질량으로 다룹니다.</p></div>
+<div class="formula" style="margin-top:18px"><h3>주변가능도에서 사후확률로</h3><div class="equation">mⱼ(x)=∫<sub>Θⱼ</sub>f(x|θ)gⱼ(θ)dθ<br>αⱼ=P(Hⱼ|x)<br>=πⱼmⱼ(x) / [π₀m₀(x)+π₁m₁(x)]</div>
+<div class="decode"><div><b>mⱼ(x)</b><br>엠 제이 엑스<br>가설별 주변가능도</div><div><b>αⱼ</b><br>알파 제이<br>가설의 사후확률</div><div><b>α₀+α₁=1</b><br>두 알파의 합은 일<br>전체 가설 확률의 합</div></div>
+<p><b>문장으로 읽기:</b> 가설 내부의 모든 모수값에 대한 가능도를 사전분포로 평균낸 뒤, 가설의 사전확률을 곱하고 두 가설의 총합으로 나눕니다.</p>
+<p><b>왜 필요한가:</b> 복합가설을 하나의 최대가능도 값이 아니라 가설 내부의 불확실성까지 고려해 비교합니다. θ=θⱼ라는 점가설이면 mⱼ(x)=f(x|θⱼ)입니다. 일반적인 베이즈 요인에는 정규화된 가설별 사전분포가 필요합니다.</p></div>
+<div class="grid" style="margin-top:18px">
+<article class="card"><h3>Bayes Factor · 베이즈 요인</h3><div class="equation">B₁₀=m₁(x)/m₀(x)</div><p><b>정의:</b> H₁이 H₀에 비해 관측을 얼마나 지지받는지 나타내는 주변가능도의 비입니다.</p><p><b>읽기:</b> ‘비 일영’은 H₁을 분자로 둔 방향입니다. B₀₁=1/B₁₀이며 큰 값이 어느 가설을 지지하는지 방향을 먼저 확인합니다.</p><p><b>주의:</b> B₁₀은 0~1 사이 확률이 아닙니다. 또한 가설 내부 사전분포 gⱼ의 선택에 영향을 받습니다.</p></article>
+<article class="card"><h3>Posterior Odds · 사후 오즈</h3><div class="equation">α₁/α₀ = (π₁/π₀) × B₁₀</div><p><b>읽기:</b> 관측 후 H₁ 대 H₀의 확률비는 관측 전 확률비에 베이즈 요인을 곱한 것입니다.</p><p><b>유도:</b> α₁과 α₀의 공통 분모를 약분하면 π₁m₁/(π₀m₀)가 남습니다.</p><p>★ 가설 사전확률이 같을 때만 사후 오즈=B₁₀입니다. 사후 오즈가 3이면 H₁의 사후확률은 3/(1+3)=0.75입니다.</p></article></div>
+<div class="card" style="margin-top:18px"><h3>사전확률을 바꾸면 사후확률은? · 복습 실험</h3>
+<p>H₁의 사전확률과 B₁₀을 조절해 봅니다. 가설 내부 분포로 B₁₀을 계산하는 단계는 생략한, 오즈 갱신 전용 예제입니다.</p>
+<label class="control" for="prior">H₁의 사전확률 π₁ (%)</label><input id="prior" type="range" min="1" max="99" step="1" value="50">
+<label class="control" for="bf">베이즈 요인 B₁₀ (0.01~1000)</label><input id="bf" type="number" min="0.01" max="1000" step="any" value="3" inputmode="decimal">
+<p id="prior-label">사전확률 50.0%</p><div class="bar" role="img" aria-label="H1 사전확률" id="prior-bar"><div id="prior-fill" class="fill" style="width:50%"></div></div>
+<p id="post-label">사후확률 75.0%</p><div class="bar" role="img" aria-label="H1 사후확률" id="post-bar"><div id="post-fill" class="fill" style="width:75%;background:#14725f"></div></div>
+<output id="odds-output" for="prior bf" aria-live="polite">사전 오즈 1.0000 × B₁₀ 3 = 사후 오즈 3.0000
+P(H₁|x)=75.0%</output>
+<p class="note">계산식: q=B₁₀π₁/[B₁₀π₁+(1−π₁)]. q(큐)는 H₁의 사후확률입니다. B₁₀=3을 유지한 채 사전확률을 50%에서 10%로 낮추면 사후확률은 75%에서 25%로 바뀝니다.</p></div>
+<div class="card" style="margin-top:18px"><h3>강의의 비율 해석과 다음 시간</h3><p>후반부에는 비율이 1 부근이면 어느 쪽의 우세도 작고, 3~10이면 상당한 수준, 10 이상이면 강한 수준, 100 이상이면 매우 큰 수준으로 해석하는 표현이 소개됐습니다.</p><p><b>복습 보충:</b> 이는 절대적인 판정 법칙이 아닙니다. 사후 오즈와 베이즈 요인은 구분해야 하고, 사전 오즈가 1일 때만 수치가 같습니다. 구체적 분류 경계·번역은 기준표마다 다를 수 있어 보편적인 척도로 단정하지 않습니다.</p><div class="practice"><b>수업 종료 지점:</b> 사후 오즈의 구조와 해석까지 다뤘으며, 실제 베이즈 검정을 계산하는 구체적 실행은 다음 시간으로 예고됐습니다.</div></div></section>
+
+<section class="section" id="practice"><h2>⑦ AI·데이터과학과 연결하기</h2><p class="lead">아래는 강의 밖의 복습 보충 사례입니다.</p><div class="grid">
+<article class="card"><h3>A/B 실험 결과의 불확실성</h3><p><b>문제:</b> 클릭률 차이를 하나의 숫자로만 보고 판단하지 않기.</p><p><b>입력:</b> 그룹별 노출 수와 클릭 수.</p><p><b>배우는 것:</b> 그룹별 클릭 확률에 대한 사후분포.</p><p><b>출력:</b> 사후평균과 신용구간, 관심 가설의 사후확률.</p><p><b>개념 연결:</b> 독립 베르누이 모형에서는 횟수 요약이 충분합니다.</p><p><b>한계:</b> 방문자 의존성·시간 변화가 있으면 독립 모형과 충분성의 전제가 달라집니다.</p></article>
+<article class="card"><h3>관측을 설명하는 모형 비교</h3><p><b>문제:</b> 서로 다른 가설이 같은 데이터를 얼마나 잘 설명하는지 비교.</p><p><b>입력:</b> 관측 데이터와 가설별 가능도·사전분포.</p><p><b>배우는 것:</b> 각 가설 내부의 모수 불확실성과 가설의 지지 정도.</p><p><b>출력:</b> 주변가능도·베이즈 요인·사후 오즈.</p><p><b>개념 연결:</b> 단일 최적 모수의 적합도 대신 사전분포로 평균한 적합도를 비교합니다.</p><p><b>한계:</b> 후보 가설이 현실을 빠뜨리거나 사전분포가 달라지면 결과도 달라질 수 있습니다.</p></article></div></section>
+
+<section class="section"><h2>⑧ 자주 하는 오해</h2><div class="stack">
+<div class="warning"><b>가능도는 모수가 그 값일 확률이다?</b><br>데이터를 고정한 모수의 함수입니다. 모수의 사후확률을 얻으려면 사전분포와 정규화가 필요합니다.</div>
+<div class="warning"><b>표본평균은 언제나 충분통계량이다?</b><br>특정 모형과 어떤 모수를 추론하는지에 따라 달라집니다.</div>
+<div class="warning"><b>p값은 H₀가 참일 확률이다?</b><br>p값은 H₀ 아래에서 관측만큼 또는 더 극단적인 결과가 나올 확률이며 P(H₀|x)와 다릅니다.</div>
+<div class="warning"><b>베이즈 요인 10은 H₁의 확률이 10배 또는 100%라는 뜻이다?</b><br>증거에 의한 오즈의 갱신 비율입니다. 사전 오즈를 곱하고 확률로 환산해야 합니다.</div></div></section>
+
+<section class="section quiz" id="quiz"><h2>⑨ 확인 퀴즈 3문항</h2>
+<details><summary>Q1. σ²가 알려진 독립 정규표본에서 μ를 추론합니다. 원자료의 순서 대신 x̄로 요약해도 되는 이유는 무엇인가요?</summary><div class="answer"><b>정답:</b> 가능도의 μ 의존 부분이 데이터에 오직 x̄를 통해 의존하도록 인수분해되므로 x̄는 μ에 대한 충분통계량입니다. 분산까지 미지수인 문제에 같은 결론을 그대로 적용하면 안 됩니다.</div></details>
+<details><summary>Q2. 두 동전 실험의 p값은 다른데 동일한 사전분포를 사용한 사후분포는 왜 같을까요?</summary><div class="answer"><b>정답:</b> 두 관측 가능도가 θ와 무관한 조합수만 다르고 θ⁹(1−θ)³에 비례하기 때문입니다. 상수는 사후분포 정규화에서 사라지지만 p값은 각 실험 설계의 꼬리확률로 계산됩니다.</div></details>
+<details><summary>Q3. P(H₁)=0.1, P(H₀)=0.9, B₁₀=3이면 사후 오즈와 P(H₁|x)는 얼마인가요?</summary><div class="answer"><b>정답:</b> 사후 오즈는 (0.1/0.9)×3=1/3이고 사후확률은 (1/3)/(1+1/3)=0.25입니다. 데이터가 H₁을 상대적으로 지지해도 최종 사후확률은 0.5 미만일 수 있습니다.</div></details></section>
+
+<section class="section"><h2>⑩ 이전·관련·다음 학습</h2><nav class="links"><a href="#summary">선수지식 복습<br><b>사전·가능도·사후분포</b></a><a href="index.html">관련 수업 목록<br><b>베이지안추론</b></a><span>다음 학습 · 예정<br><b>구체적인 베이즈 검정 계산</b><br>후속 수업 자료 등록 예정</span></nav></section>
+<footer class="footer"><h2>출처와 문서 정보</h2>
+<p><b>주자료:</b> ‘데이터사이언스를 위한 베이지안추론(9월 8일).txt’ 녹취. 각 절의 시각 표시는 원자료의 해당 구간입니다. 출석 호명 등 학습과 무관한 내용은 포함하지 않았습니다.</p>
+<p><b>정리 방식:</b> 원문 인용이 아닌 AI 재구성입니다. 녹취의 불명확한 수식·용어를 문맥에 맞게 정리했고, 인수분해 전개·확률 재계산·상호작용·AI 사례·퀴즈는 복습 보충입니다. 9월 10일 후속 수업을 이번 진도로 포함하지 않았습니다.</p>
+<p><b>외부 참고:</b> 가능도 원리와 조건부 원리의 해석 논쟁에 한해 <a href="https://arxiv.org/abs/1302.7021">Mayo, On the Birnbaum Argument for the Strong Likelihood Principle</a>, <a href="https://arxiv.org/abs/1411.0807">Dawid, Discussion</a> 참조. 확인일: 2026-09-10.</p>
+<p>문서 ID: bayesian-inference-2026-09-08 · 분야: 확률통계 · 난이도: 기초 · 선수지식: 사전·가능도·사후분포(본문 복습) · 관련: bayesian-inference-for-data-science · 다음: 구체적 검정(예정)</p>
+<p>작성: AI Study · AI 보조 정리 · 검토자: 미지정 · 상태: draft · 수정일: 2026-09-10</p></footer>
+</main><script src="../../assets/inline-terms.js" defer></script>
+<script>
+(()=>{const p=document.getElementById("prior"),b=document.getElementById("bf"),out=document.getElementById("odds-output");
+function render(){const prior=Number(p.value)/100,bf=Number(b.value);
+if(!Number.isFinite(bf)||bf<0.01||bf>1000){out.textContent="B₁₀에 0.01~1000 사이의 양수를 입력해 주세요.";return;}
+const priorOdds=prior/(1-prior),postOdds=priorOdds*bf,post=postOdds/(1+postOdds);
+const percent=v=>(v*100).toFixed(v<0.001||v>0.999?4:1);
+for(const [name,v] of [["prior",prior],["post",post]]){const label=(name==="prior"?"사전확률 ":"사후확률 ")+percent(v)+"%";
+document.getElementById(name+"-label").textContent=label;document.getElementById(name+"-fill").style.width=(v*100)+"%";document.getElementById(name+"-bar").setAttribute("aria-label","H₁ "+label);}
+out.textContent="사전 오즈 "+priorOdds.toFixed(4)+" × B₁₀ "+bf+" = 사후 오즈 "+postOdds.toFixed(4)+"\nP(H₁|x)="+percent(post)+"%";}
+p.addEventListener("input",render);b.addEventListener("input",render);render();})();
+</script></body></html>
