@@ -2,7 +2,7 @@
   "page": {
     "title": "대학원",
     "description": "학기별 과목과 학습 자료를 한곳에서 관리합니다.",
-    "updated": "2026-09-09"
+    "updated": "2026-09-10"
   },
   "semesters": [
     {
@@ -36,7 +36,7 @@
           "color": "#41bda5",
           "description": "산업 데이터, 예측 모델링과 현장 AI 시스템의 기본기",
           "href": "../graduate/industrial-ai/index.html",
-          "status": "1주차 학습 가능"
+          "status": "16주 일정 · 5개 학습 자료"
         }
       ],
       "period": "2026-09-05 ~ 2026-12-19"
