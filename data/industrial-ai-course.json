@@ -3,11 +3,26 @@
   "weeks":[
     {"week":0,"title":"한 학기 전체 지도와 수업 준비","subtitle":"강의 목표·16주 로드맵·선수지식·평가 방식·시각형 학습 전략","icon":"🗺️","color":"#294f92","href":"week0.html","status":"먼저 보기","topics":["한 학기 로드맵","Python·선형대수·ML","평가 기준","시각형 공부법"],"classWeeks":[0]},
     {"week":1,"title":"AI의 개념과 발전 역사","subtitle":"AI·ML·DL에서 Transformer·생성형 AI·Agentic AI까지","icon":"🧭","color":"#4f7cff","href":"week1.html","status":"학습 가능","topics":["AI·ML·DL","Perceptron·XOR","Transformer·GPT","Agentic AI"],"classWeeks":[1]},
-    {"week":2,"title":"산업 AI의 개념과 발전 동향","subtitle":"일반 AI와의 차이·산업 데이터·구축 생명주기·6대 기술 동향","icon":"🏭","color":"#22a98f","href":"week2.html","status":"새 자료","topics":["Sense→Improve","Domain Shift","Digital Twin","Edge·Physical AI"],"classWeeks":[1]},
-    {"week":3,"title":"머신러닝 기초: 지도학습과 비지도학습","subtitle":"데이터 표현부터 학습·평가, K-means와 PCA까지","icon":"🧠","color":"#745ad8","href":"week3.html","status":"새 자료","topics":["회귀·분류","Train·Validation·Test","Gradient Descent","K-means·PCA"],"classWeeks":[2,3]},
+    {"week":2,"title":"산업 AI의 개념과 발전 동향","subtitle":"교수님 강의·제조 현장 사례·산업 데이터·구축 생명주기·6대 동향","icon":"🏭","color":"#22a98f","href":"week2.html","status":"수업·PDF 반영","topics":["수율·희귀 불량","Domain Shift","Digital Twin","Autoencoder"],"classWeeks":[2]},
+    {"week":3,"title":"머신러닝 기초: 지도학습과 비지도학습","subtitle":"2차시 후반 실제 진도와 다음 차시 예습 범위를 구분한 학습 자료","icon":"🧠","color":"#745ad8","href":"week3.html","status":"2차시 후반 반영","topics":["Rule→ML→DL","회귀·분류","지도·비지도학습","K-means·PCA 예습"],"classWeeks":[2,3]},
     {"week":"부록","title":"AI의 모든 역사 · 전체 지도","subtitle":"1943년 인공 뉴런부터 딥러닝·Foundation Model·Agentic AI까지","icon":"🧭","color":"#7657e8","href":"ai-history-map.html","status":"부록 보기","topics":["AI 겨울","기호주의·연결주의","딥러닝 혁명","생성형·Agentic AI"],"type":"appendix"}
   ],
   "syllabus":[
-    {"week":1,"date":"2026-09-03","type":"lecture","topic":"산업 AI의 개념·사례·발전 역사","lecture":"1·2","href":"week1.html"},{"week":2,"date":"2026-09-10","type":"lecture","topic":"머신러닝 기초 1 · 지도학습","lecture":3,"href":"week3.html"},{"week":3,"date":"2026-09-17","type":"lecture","topic":"머신러닝 기초 2 · 비지도학습","lecture":3,"href":"week3.html"},{"week":4,"date":"2026-09-24","type":"lecture","topic":"딥러닝 모델의 기초 1"},{"week":5,"date":"2026-10-01","type":"lecture","topic":"딥러닝 모델의 기초 2 · 훈련 기법"},{"week":6,"date":"2026-10-08","type":"lecture","topic":"산업 시계열 1 · AR·MA·ARMA·ACF/PACF"},{"week":7,"date":"2026-10-15","type":"lecture","topic":"산업 시계열 2 · ARIMA·예측 평가"},{"week":8,"date":"2026-10-22","type":"exam","topic":"중간고사"},{"week":9,"date":"2026-10-29","type":"lecture","topic":"주파수 영역 시계열 · Fourier·Spectrum·PSD"},{"week":10,"date":"2026-11-05","type":"lecture","topic":"딥러닝 시계열 1 · RNN·LSTM·GRU·TCN"},{"week":11,"date":"2026-11-12","type":"lecture","topic":"딥러닝 시계열 2 · Attention·Transformer"},{"week":12,"date":"2026-11-19","type":"lecture","topic":"Anomaly Detection · 이상 탐지"},{"week":13,"date":"2026-11-26","type":"lecture","topic":"MLOps · 모델 배포와 운영"},{"week":14,"date":"2026-12-03","type":"lecture","topic":"산업용 Computer Vision 최신 기법"},{"week":15,"date":"2026-12-10","type":"lecture","topic":"시계열 데이터 처리 최신 기법"},{"week":16,"date":"2026-12-17","type":"exam","topic":"기말고사"}
+    {"week":1,"date":"2026-09-03","type":"lecture","topic":"AI의 개념·발전 역사","lecture":1,"href":"week1.html"},
+    {"week":2,"date":"2026-09-10","type":"lecture","topic":"산업 AI 개념·동향 + 머신러닝 도입","lecture":"2·3","href":"week2.html","slides":"../../assets/pdfs/industrial-ai/GITA407-Lecture-02-Industrial-AI-Basics-and-Trends.pdf"},
+    {"week":3,"date":"2026-09-17","type":"lecture","topic":"머신러닝 기초 · 지도·비지도학습","lecture":3,"href":"week3.html"},
+    {"week":4,"date":"2026-09-24","type":"lecture","topic":"딥러닝 모델의 기초 1"},
+    {"week":5,"date":"2026-10-01","type":"lecture","topic":"딥러닝 모델의 기초 2 · 훈련 기법"},
+    {"week":6,"date":"2026-10-08","type":"lecture","topic":"산업 시계열 1 · AR·MA·ARMA·ACF/PACF"},
+    {"week":7,"date":"2026-10-15","type":"lecture","topic":"산업 시계열 2 · ARIMA·예측 평가"},
+    {"week":8,"date":"2026-10-22","type":"exam","topic":"중간고사"},
+    {"week":9,"date":"2026-10-29","type":"lecture","topic":"주파수 영역 시계열 · Fourier·Spectrum·PSD"},
+    {"week":10,"date":"2026-11-05","type":"lecture","topic":"딥러닝 시계열 1 · RNN·LSTM·GRU·TCN"},
+    {"week":11,"date":"2026-11-12","type":"lecture","topic":"딥러닝 시계열 2 · Attention·Transformer"},
+    {"week":12,"date":"2026-11-19","type":"lecture","topic":"Anomaly Detection · 이상 탐지"},
+    {"week":13,"date":"2026-11-26","type":"lecture","topic":"MLOps · 모델 배포와 운영"},
+    {"week":14,"date":"2026-12-03","type":"lecture","topic":"산업용 Computer Vision 최신 기법"},
+    {"week":15,"date":"2026-12-10","type":"lecture","topic":"시계열 데이터 처리 최신 기법"},
+    {"week":16,"date":"2026-12-17","type":"exam","topic":"기말고사"}
   ]
 }
