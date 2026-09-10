@@ -2,7 +2,7 @@
   "page": {
     "title": "대학교",
     "description": "학기별 과목과 시간표, 학습 자료를 중복 없이 관리합니다.",
-    "updated": "2026-09-07"
+    "updated": "2026-09-10"
   },
   "semesters": [
     {
@@ -30,7 +30,7 @@
             }
           ],
           "href": "analysis/index.html",
-          "status": "9월 7일 수업 기록"
+          "status": "9월 7일·8일 수업 기록"
         },
         {
           "id": "deep-learning-foundations-applications",
