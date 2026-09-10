@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="2026년 9월 8일 화요일 해석학: 상계와 상한, 완비성, 평행이동과 엡실론 판별법을 증명 흐름으로 복습합니다.">
+<meta name="author" content="AI Study · AI 보조 정리">
+<title>9월 8일 · 상한을 증명하는 방법 | 해석학 · AI Study</title>
+<style>
+:root{--bg:#f4f1ff;--ink:#202038;--muted:#69677c;--card:#fff;--violet:#7357e8;--pink:#ef6797;--blue:#4d8df7;--mint:#41bda5;--yellow:#ffc94b;--red:#ef6a6a;--line:#e4def7;--shadow:0 16px 40px rgba(60,42,120,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{word-break:keep-all;overflow-wrap:break-word;margin:0;color:var(--ink);font-family:Pretendard,"Noto Sans KR",system-ui,sans-serif;background:radial-gradient(circle at 10% 0,#efe5ff 0,transparent 35%),var(--bg);line-height:1.65}.wrap{max-width:1120px;margin:auto;padding:28px 20px 80px}.meta{display:flex;justify-content:space-between;gap:14px;color:var(--muted);font-size:14px;margin-bottom:16px}.hero{background:linear-gradient(135deg,#382276,#7657e8 58%,#d85c99);color:white;border-radius:32px;padding:44px;box-shadow:var(--shadow)}.hero h1{font-size:clamp(32px,6vw,58px);line-height:1.08;margin:10px 0 16px}.pill,.tag{display:inline-block;padding:5px 11px;border-radius:99px;font-size:12px;font-weight:900}.pill{background:rgba(255,255,255,.16)}.route{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:24px 0}.route a{text-decoration:none;color:var(--ink);background:white;padding:14px 10px;border-radius:16px;text-align:center;font-weight:800;box-shadow:var(--shadow)}.section{margin-top:52px}.section h2{font-size:clamp(26px,4vw,39px);margin:0 0 8px}.lead{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.card,.formula,.quiz details{background:white;border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow)}.card h3{margin:0 0 8px}.visual{min-height:150px;border:1px dashed #cfc3f4;border-radius:18px;background:#faf9ff;padding:18px;margin:15px 0;display:flex;align-items:center;justify-content:center}.flow{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}.node{min-width:110px;padding:14px;border:2px solid var(--line);border-radius:15px;background:white;text-align:center;font-weight:850}.node.hot{color:white;border:0;background:linear-gradient(135deg,var(--violet),var(--pink))}.arrow{font-size:25px;color:var(--violet)}.tag.must{background:#ffe6ef;color:#a8325c}.tag.along{background:#fff2c9;color:#805c00}.tag.later{background:#ddf7ee;color:#14725f}.equation{text-align:center;font-family:Georgia,serif;font-size:clamp(20px,3vw,30px);color:#3a286f}.decode{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.decode div{padding:11px;border-radius:12px;background:#f4f1ff;text-align:center}.analogy{border-left:6px solid var(--blue)}.warning{background:#fff0f0;border-left:6px solid var(--red);padding:16px;border-radius:14px}.practice{background:#e9fbf6;border-left:6px solid var(--mint);padding:16px;border-radius:14px}.quiz details{margin:10px 0}.quiz summary{font-weight:850;cursor:pointer}.answer{margin-top:12px;color:var(--muted)}.links{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.links a{text-decoration:none;color:var(--ink);background:white;padding:16px;border-radius:16px;text-align:center}.footer{text-align:center;margin-top:52px;color:var(--muted)}
+@media(max-width:760px){.hero{padding:32px 24px}.route{grid-template-columns:1fr 1fr}.grid,.decode,.links{grid-template-columns:1fr}.meta{flex-direction:column}}
+
+a{color:#5a40c0}a:focus-visible,summary:focus-visible,input:focus-visible,button:focus-visible{outline:3px solid #4d8df7;outline-offset:4px}
+.hero{padding:30px;background:linear-gradient(135deg,#6b3330,#b25f55 72%,#d37569)}.hero h1{font-size:clamp(30px,5vw,48px)}
+.grid>*{min-width:0}.route{grid-template-columns:repeat(3,minmax(0,1fr))}.meta{flex-wrap:wrap}.meta a{font-weight:800}
+.section{scroll-margin-top:18px}.section .card+.card{margin-top:16px}.grid>.card+.card{margin-top:0}
+.equation{overflow-wrap:anywhere;font-size:clamp(18px,2.8vw,27px);padding:10px 0}
+.proof{padding-left:24px}.proof li{margin:12px 0}.note{font-size:14px;color:var(--muted)}.formula+.formula{margin-top:16px}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.comparison{border-collapse:collapse;width:100%;font-size:15px;table-layout:fixed}
+.comparison th,.comparison td{padding:12px 8px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;overflow-wrap:anywhere}.comparison th{background:#f4f1ff}
+.diagram{display:block;width:100%;height:auto;max-width:620px;margin:18px auto}.diagram text{font-family:system-ui,sans-serif;font-size:16px;fill:var(--ink)}
+.links span{background:white;padding:16px;border-radius:16px;text-align:center}.checklist label{display:block;margin:10px 0}.checklist input{accent-color:var(--violet)}
+#epsilon{width:100%;accent-color:var(--violet)}output{display:block;padding:14px;background:#f4f1ff;border-radius:12px;font-weight:700}
+.footer{font-size:14px;text-align:left}.footer p{margin:10px 0}.card h3{font-size:21px}
+@media(max-width:760px){.wrap{padding:20px 16px 60px}.hero{padding:26px 20px}.route{grid-template-columns:repeat(2,minmax(0,1fr))}.card,.formula{padding:18px}.comparison th,.comparison td{padding:10px 5px;font-size:13px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+<link rel="stylesheet" href="../../assets/inline-terms.css">
+</head><body><main class="wrap">
+<div class="meta"><a href="../../index.html">AI Study 홈</a><span><a href="../index.html">대학교</a> / <a href="index.html">해석학</a> / 9월 8일</span></div>
+<header class="hero"><span class="pill">2026년 9월 8일 화요일 · 해석학 · 기초 · 복습용</span><h1>상한을 안다는 것에서<br>상한을 증명하는 것으로</h1><p>“모든 원소보다 위에 있다”와 “그중 가장 작다”를 나눠 증명하고, ε를 이용해 상한에 임의로 가까이 접근하는 원소를 찾아봅니다.</p></header>
+<p class="note">자료 성격: 9월 8일 강의 기록을 바탕으로 재구성한 AI 학습 정리입니다. 원문 인용이 아니며, 증명의 빈 단계를 채운 부분과 시각화·AI 활용 사례는 ‘복습 보충’으로 표시합니다.</p>
+<nav class="route" aria-label="수업 목차"><a href="#map">핵심 요약</a><a href="#concept">개념 비교</a><a href="#proofs">예제와 증명</a><a href="#epsilon-section">ε 판별법</a><a href="#practice">AI 연결</a><a href="#quiz">확인 퀴즈</a></nav>
+
+<section class="section" id="map"><h2>① 한눈에 보는 큰 그림</h2>
+<ul><li>상한(supremum)은 상계(upper bound) 중 가장 작은 값이며, 집합 안에 들어 있는 최댓값(maximum)과 구별합니다.</li>
+<li>★ 상한을 증명할 때는 <b>상계성</b>과 <b>최소성</b>을 각각 확인해야 합니다.</li>
+<li>실수의 완비성은 비어 있지 않고 위로 유계인 실수 집합의 상한을 보장하지만, 유리수 안에서는 같은 성질이 성립하지 않습니다.</li>
+<li>집합을 c만큼 평행이동하면 상한도 c만큼 이동하며, ε 판별법은 “상한 바로 아래까지 원소가 있다”를 엄밀한 문장으로 표현합니다.</li></ul>
+<p class="note">★는 강의 기록에서 확인된 강조점입니다.</p>
+<div class="visual flow"><div class="node">9월 7일<br>완비성·상한의 유일성</div><span class="arrow">→</span><div class="node hot">상계성 + 최소성<br>구체적인 증명</div><span class="arrow">→</span><div class="node">ε 판별법<br>임의의 간격 안의 원소</div></div>
+<div class="legend"><span class="tag must">필수 · 정의와 두 조건</span><span class="tag along">병행 · 증명 복습</span><span class="tag later">후속 · α²=2 증명</span></div></section>
+
+<section class="section" id="analogy"><h2>② 생활 비유: 가장 낮은 천장</h2>
+<article class="card analogy"><h3>집합의 원소 위로 내려오는 천장</h3><p>원소를 높이로 생각하면 상계는 모든 높이를 덮는 천장입니다. 상한은 더 내리면 반드시 어떤 원소를 아래에 가둘 수 없게 되는, 가장 낮은 천장입니다.</p>
+<div class="visual flow"><div class="node">높은 천장<br>상계는 여러 개</div><span class="arrow">↓</span><div class="node hot">가장 낮은 천장<br>상한은 하나</div><span class="arrow">?</span><div class="node">실제로 닿는 원소<br>있으면 최댓값</div></div>
+<p><b>닮은 점:</b> 상계와 최소상계의 차이, 상한을 실제로 달성하는지를 구분할 수 있습니다.</p><p><b>비유의 한계:</b> 현실의 유한한 물건에는 가장 높은 물건이 있지만, 무한집합은 상한에 한없이 가까워질 뿐 실제로 닿지 않을 수도 있습니다.</p></article></section>
+
+<section class="section" id="concept"><h2>③ 주요 개념과 차이</h2><div class="grid">
+<article class="card"><span class="tag must">정의</span><h3>Upper Bound · 상계</h3><p><b>정의:</b> 모든 a∈A에 대해 a≤u이면 u는 A의 상계입니다.</p><p><b>왜 중요한가:</b> 상한 증명의 첫 조건입니다. 상계 하나를 찾았다고 최소성까지 증명된 것은 아닙니다.</p><p><b>예시:</b> A=(0,2)의 상계는 2, 3, 100처럼 2 이상인 모든 실수입니다.</p></article>
+<article class="card"><span class="tag must">정의</span><h3>Supremum · 상한</h3><p><b>정의:</b> s가 A의 상계이고 모든 상계 u에 대해 s≤u이면 s=sup A입니다.</p><p><b>왜 중요한가:</b> “넘지 않는 한계값”을 집합에 실제로 포함되는지와 무관하게 다룰 수 있습니다.</p><p><b>예시:</b> sup(0,2)=2. 2가 집합 밖에 있어도 상한입니다.</p></article>
+<article class="card"><span class="tag must">구별</span><h3>Maximum · 최댓값</h3><p><b>정의:</b> m∈A이면서 모든 a∈A에 대해 a≤m인 값입니다.</p><p><b>왜 중요한가:</b> 최댓값은 상한을 실제로 달성한 원소입니다. 최댓값이 있으면 상한과 같습니다.</p><p><b>예시:</b> A={1/n:n∈ℕ}, ℕ={1,2,3,…}이면 max A=sup A=1입니다.</p></article>
+<article class="card"><span class="tag along">증명 읽기</span><h3>Claim · 주장</h3><p><b>정의:</b> 지금부터 증명할 명제에 붙이는 이름입니다. 더 큰 정리의 중간 단계일 때도 사용합니다.</p><p><b>왜 중요한가:</b> 무엇이 가정이고 무엇이 증명할 결론인지 분리합니다. Claim이라고 쓰여 있다고 증명 없이 참인 것은 아닙니다.</p><p><b>예시:</b> “Claim: sup(0,2)=2.” 다음 줄부터 상계성과 최소성을 보입니다.</p></article></div>
+<div class="card" style="margin-top:16px"><h3>같은 예제로 비교하기</h3><table class="comparison"><caption>상계·상한·최댓값의 비교 (실수 안에서)</caption><thead><tr><th scope="col">집합</th><th scope="col">상계 전체</th><th scope="col">상한</th><th scope="col">최댓값</th></tr></thead><tbody><tr><th scope="row">(0,2)</th><td>[2,∞)</td><td>2</td><td>없음</td></tr><tr><th scope="row">(0,2]</th><td>[2,∞)</td><td>2</td><td>2</td></tr><tr><th scope="row">{1/n:n∈ℕ}</th><td>[1,∞)</td><td>1</td><td>1</td></tr></tbody></table><p class="note">복습 보충: (0,2]는 열린구간과 비교하기 위해 추가한 예입니다. ∞는 상계인 실수 원소가 아니라 끝없이 뻗는 구간을 나타내는 기호입니다.</p></div></section>
+
+<section class="section" id="proofs"><h2>④ 수식 해부와 강의 흐름</h2>
+<div class="formula"><h3>상한 증명의 공통 틀</h3><div class="equation">s=sup A ⇔<br>(∀a∈A, a≤s) 그리고<br>(u가 A의 상계 ⇒ s≤u)</div>
+<div class="decode"><div><b>A, a</b><br>에이, 소문자 에이<br>집합과 그 원소</div><div><b>s, u</b><br>에스, 유<br>상한 후보와 임의의 상계</div><div><b>∀, ∈, ≤, ⇔, ⇒</b><br>모든, 속한다, 이하,<br>동치, 이면</div></div>
+<p><b>문장으로 읽기:</b> s는 모든 원소 이상이고, 어떤 상계보다도 크지 않을 때 정확히 A의 상한입니다.</p><p><b>왜 필요한가:</b> 직관으로 찾은 값을 두 개의 검증 가능한 조건으로 바꿉니다.</p></div>
+
+<article class="card" style="margin-top:16px"><h3>예제 1 · sup{1/n:n∈ℕ}=1</h3><p class="note">n(엔)은 양의 자연수이고 1/n은 ‘엔 분의 일’입니다. 수업 예제를 정의에 맞춰 풀어 쓴 복습 증명입니다.</p>
+<ol class="proof"><li><b>상계성:</b> n≥1이므로 모든 1/n≤1입니다. 따라서 1은 상계입니다.</li><li><b>최소성:</b> 1=1/1∈A입니다. 임의의 상계 u는 이 원소 1도 덮어야 하므로 1≤u입니다.</li><li><b>결론:</b> sup A=1이며, 1∈A이므로 max A=1도 성립합니다.</li></ol>
+<p><b>문장으로 읽기:</b> 양의 자연수의 역수 중 가장 큰 원소는 1이고, 따라서 가장 작은 상계도 1입니다. “1/n이 0에 가까워진다”는 사실과 집합의 상한을 혼동하지 마세요.</p></article>
+
+<article class="card"><h3>예제 2 · sup(0,2)=2</h3>
+<svg class="diagram" viewBox="0 0 500 140" role="img" aria-label="열린구간 0과 2. 끝점 2는 포함되지 않지만 상한이다.">
+<line x1="30" y1="64" x2="475" y2="64" stroke="#69677c" stroke-width="2"/><line x1="70" y1="64" x2="360" y2="64" stroke="#7357e8" stroke-width="8"/>
+<circle cx="70" cy="64" r="8" fill="white" stroke="#7357e8" stroke-width="3"/><circle cx="360" cy="64" r="8" fill="white" stroke="#ef6797" stroke-width="3"/>
+<text x="70" y="105" text-anchor="middle">0</text><text x="360" y="105" text-anchor="middle">2 = sup A</text><text x="210" y="35" text-anchor="middle">A = (0,2)</text><text x="260" y="134" text-anchor="middle">빈 원: 끝점은 A에 포함되지 않음</text></svg>
+<p>★ 수업의 핵심은 “2가 상계”와 “2보다 작은 상계가 없음”을 따로 보이는 것입니다.</p>
+<ol class="proof"><li><b>상계성:</b> 모든 a∈(0,2)에 대해 a&lt;2이므로 2는 상계입니다.</li><li><b>최소성:</b> b&lt;2를 임의로 잡습니다. b≤0이면 1∈(0,2)이면서 b&lt;1입니다. 0&lt;b&lt;2이면 a=(b+2)/2로 잡아 b&lt;a&lt;2를 얻습니다. 어느 경우든 b보다 큰 원소가 있으므로 b는 상계가 아닙니다.</li><li><b>결론:</b> 2보다 작은 상계가 없으므로 sup(0,2)=2입니다.</li></ol>
+<p><b>기호·읽기:</b> b(비)는 2보다 작은 후보, (b+2)/2는 ‘비와 이의 평균’입니다. 후보와 2 사이의 중점을 골라 후보가 상계일 수 없음을 보입니다.</p><p class="note">복습 보충: 중점 선택과 b≤0의 경우 구분을 명시해 증명의 생략 단계를 채웠습니다. 최댓값이 없는 이유도 같은 방식입니다. 어떤 a∈(0,2)를 골라도 (a+2)/2가 더 큰 원소입니다.</p></article>
+
+<article class="card" id="completeness"><h3>Completeness Axiom · 완비성 공리</h3>
+<div class="equation">∅≠A⊆ℝ, A가 위로 유계<br>⇒ sup A∈ℝ</div>
+<p><b>기호·읽기:</b> ∅(공집합), ≠(같지 않음), ⊆(부분집합), ℝ(실수 전체). 비어 있지 않고 위로 유계인 실수의 부분집합은 실수인 상한을 갖습니다.</p>
+<p><b>왜 필요한가:</b> 상한의 존재를 보장합니다. 9월 7일의 유일성 증명은 “있다면 하나”를, 완비성은 조건을 만족할 때 “있다”를 말합니다.</p>
+<h4>Viewed Only Inside the Rationals · 유리수 안에서만 본다면</h4>
+<p>집합의 원소뿐 아니라 <b>상계와 최소상계 후보도 유리수로 제한</b>한다는 뜻입니다. 복습을 위해 S={q∈ℚ:q²&lt;2}로 표기합니다. q(큐)는 유리수, ℚ(큐)는 유리수 전체입니다. 녹취의 집합 표기가 일부 불명확해 이 표기는 문맥에 맞춰 정리한 것으로, 원래 판서의 부가 조건은 확인이 필요합니다.</p>
+<p>S는 0을 포함해 비어 있지 않고, 2를 상계로 가집니다. 따라서 실수의 완비성으로 α=sup<sub>ℝ</sub>S를 둘 수 있습니다. 여기서 α(알파)는 실수 안에서 잡은 상한입니다.</p>
+<div class="visual flow"><div class="node">실수의 완비성<br>α의 존재</div><span class="arrow">→</span><div class="node hot">다음 증명 과제<br>α²=2</div><span class="arrow">→</span><div class="node">α=√2는 무리수<br>유리수 완비성 실패</div></div>
+<div class="practice"><b>9월 8일에서 남겨 둔 부분:</b> α²=2의 증명은 다음 시간에 이어갈 예정으로 언급됐습니다. 이를 이번 시간에 완료한 증명으로 기록하지 않습니다.</div>
+<p class="note">복습 보충: α²=2와 유리수의 조밀성을 알고 나면, √2보다 작은 유리수는 상계가 될 수 없고 √2보다 큰 유리수 상계는 더 작은 유리수 상계로 바꿀 수 있어 유리수 최소상계가 없음을 설명할 수 있습니다. 이는 앞으로 완성할 논리의 개요입니다. 참고: <a href="https://ocw.mit.edu/courses/18-100a-real-analysis-fall-2020/resources/mit18_100af20_lec33/">MIT 18.100A · 유리수의 최소상계 성질 실패</a>.</p></article>
+
+<article class="card" id="translation"><h3>평행이동: sup(c+A)=c+sup A</h3>
+<p><b>가정:</b> ∅≠A⊆ℝ가 위로 유계이고 c∈ℝ입니다. s=sup A로 둡니다.</p><div class="equation">c+A={c+a:a∈A}<br>sup(c+A)=c+s</div>
+<div class="decode"><div><b>c</b><br>씨 · 모든 원소에 더하는 상수</div><div><b>c+A</b><br>씨 플러스 에이<br>평행이동한 집합</div><div><b>s=sup A</b><br>에스는 에이의 수프리멈<br>이동 전 상한</div></div>
+<p><b>문장으로 읽기:</b> A의 모든 원소에 같은 c를 더하면 가장 작은 상계도 c만큼 이동합니다.</p><p><b>왜 필요한가:</b> 집합 연산과 상한 사이의 관계를 정의로 증명하는 연습입니다.</p>
+<ol class="proof"><li><b>상계성:</b> 모든 a∈A에 대해 a≤s입니다. 양변에 c를 더하면 c+a≤c+s이므로 c+s는 c+A의 상계입니다.</li><li><b>최소성:</b> u를 c+A의 임의의 상계라 합시다. 모든 a∈A에 대해 c+a≤u이므로 a≤u−c입니다. 즉 u−c는 A의 상계이고, s≤u−c입니다. 따라서 c+s≤u입니다.</li><li><b>결론:</b> 두 조건에 의해 sup(c+A)=c+sup A입니다.</li></ol>
+<p class="note">상계성부터 보이는 전략은 강의 기록에서 확인됩니다. 위 최소성의 완결된 서술은 정의를 사용한 복습 보충 증명입니다. c가 음수여도 같은 수를 더하거나 빼는 연산은 부등호 방향을 바꾸지 않습니다.</p>
+<div class="visual flow"><div class="node">A=(0,2)<br>상한 2</div><span class="arrow">+3</span><div class="node">3+A=(3,5)<br>상한 5</div><span class="arrow">=</span><div class="node hot">3+sup A<br>3+2=5</div></div></article>
+
+<article class="card" id="epsilon-section"><h3>Epsilon Criterion · 엡실론 상한 판별법</h3>
+<p><b>가정:</b> A는 비어 있지 않은 실수 집합이고 <b>s는 이미 A의 상계</b>입니다.</p>
+<div class="equation">s=sup A ⇔<br>∀ε&gt;0, ∃a∈A : s−ε&lt;a</div>
+<div class="decode"><div><b>ε&gt;0</b><br>엡실론은 영보다 크다<br>임의의 양수 간격</div><div><b>∀, ∃</b><br>모든, 존재한다<br>ε마다 원소를 찾음</div><div><b>s−ε&lt;a≤s</b><br>에스 마이너스 엡실론보다 큰 에이<br>상한 바로 아래의 원소</div></div>
+<p><b>문장으로 읽기:</b> 어떤 양수 간격 ε를 주더라도 s보다 ε만큼 아래인 수를 넘는 A의 원소가 존재하면, 상계 s는 상한입니다.</p><p><b>왜 필요한가:</b> 다른 상계를 모두 비교하는 대신, 상한 가까이 원소가 존재함을 보여 최소성을 확인합니다.</p>
+<div class="warning"><b>양화사의 순서:</b> ∀ε&gt;0 다음에 ∃a∈A가 나옵니다. ε가 달라지면 a를 다시 골라도 됩니다. “모든 원소가 상한에 가깝다”는 뜻도, “어떤 한 ε에서만 가깝다”는 뜻도 아닙니다.</div>
+<h4>양방향 증명 · 복습 보충</h4><p class="note">판별법은 수업 주제와 질문에서 확인됩니다. 녹취에서 양방향 증명 전체가 확인되지 않아 아래는 정의에 기반해 보충한 증명입니다.</p>
+<ol class="proof"><li><b>⇒ 상한이면:</b> ε&gt;0을 임의로 잡습니다. s−ε는 s보다 작아 상계일 수 없습니다. 따라서 s−ε&lt;a인 원소 a∈A가 존재합니다. s가 상계이므로 a≤s도 성립합니다.</li><li><b>⇐ 조건이 성립하면:</b> s보다 작은 상계 b가 있다고 가정합니다. ε=s−b&gt;0으로 잡으면 어떤 a∈A가 s−ε=b&lt;a를 만족합니다. b가 상계라는 가정과 모순입니다. 따라서 s보다 작은 상계가 없고 s=sup A입니다.</li></ol>
+<p><b>ε=s−b의 역할:</b> ‘에스와 비의 차이’를 ε로 정하면 s−ε가 정확히 b가 됩니다. 막연한 “조금 작은 수”를 반박할 상계 후보에 맞춰 정하는 선택입니다.</p>
+<h4>간격을 줄여 보기 · 복습 시각화</h4><p>A=(0,2), s=2에서 ε를 줄여도 a=2−ε/2를 선택하면 항상 2−ε&lt;a&lt;2입니다.</p>
+<label for="epsilon">ε 간격 조절 (0.02~1.50)</label><input id="epsilon" type="range" min="0.02" max="1.5" step="0.01" value="1">
+<svg class="diagram" viewBox="0 0 480 145" role="img" aria-labelledby="epsilon-title"><title id="epsilon-title">상한 2 바로 아래 간격 안에서 원소 a를 선택하는 수직선</title>
+<line x1="25" y1="65" x2="445" y2="65" stroke="#69677c" stroke-width="2"/><line x1="40" y1="65" x2="400" y2="65" stroke="#7357e8" stroke-width="6"/>
+<rect id="epsilon-window" x="220" y="46" width="180" height="38" rx="8" fill="#ef6797" opacity=".22"/>
+<line id="epsilon-bound" x1="220" x2="220" y1="32" y2="92" stroke="#a8325c" stroke-width="2" stroke-dasharray="4"/>
+<circle cx="40" cy="65" r="7" fill="white" stroke="#7357e8" stroke-width="3"/><circle cx="400" cy="65" r="7" fill="white" stroke="#7357e8" stroke-width="3"/>
+<circle id="epsilon-point" cx="310" cy="65" r="7" fill="#14725f"/><text x="40" y="116" text-anchor="middle">0</text><text x="415" y="116" text-anchor="middle">s=2</text><text x="250" y="25" text-anchor="middle">점선 s−ε &lt; 초록 점 a &lt; 끝점 s</text>
+</svg>
+<output id="epsilon-output" for="epsilon" aria-live="polite">ε=1.00 → 1.00 &lt; a=1.50 &lt; 2.00</output>
+<p class="note">a(에이)는 선택한 원소입니다. 분홍 영역은 (s−ε,s), 초록 점은 그 안의 a를 나타냅니다. 슬라이더는 유한한 범위의 예시이며, 모든 ε&gt;0에 대한 증명은 위의 논리를 사용합니다.</p></article></section>
+
+<section class="section" id="practice"><h2>⑤ AI·데이터과학과 연결하기</h2><p class="lead">다음 사례는 강의에서 다뤘다고 단정하지 않는 복습용 연결입니다.</p><div class="grid">
+<article class="card"><h3>최적 점수와 실제 달성의 차이</h3><p><b>문제:</b> 모델 성능의 최선의 값과 그 값을 달성하는 모델이 같은 문제인지 구분합니다.</p><p><b>입력:</b> 모델 후보 θ와 점수 J(θ), 가능한 점수들의 집합 A</p><p><b>배우는 것:</b> 데이터를 잘 설명하는 모델 파라미터 θ(세타)</p><p><b>출력:</b> 선택된 모델과 그 점수</p><p><b>개념 연결:</b> s=sup A라도 s∈A일 필요는 없습니다. s−ε보다 좋은 점수를 내는 후보의 존재와 최고점을 실제로 달성하는 후보의 존재를 구별합니다.</p><p><b>한계:</b> 상한의 존재만으로 학습 알고리즘이 그 근처의 모델을 찾아준다는 보장은 없습니다.</p></article>
+<article class="card"><h3>모든 점수에 상수 더하기</h3><p><b>문제:</b> 평가 점수의 기준점을 바꾸면 최고 가능한 값이 어떻게 바뀌는지 확인합니다.</p><p><b>입력:</b> 동일한 후보들의 점수 J(θ)와 상수 c</p><p><b>배우는 것:</b> 원래 목적함수에서 학습하는 모델 파라미터</p><p><b>출력:</b> J(θ)+c로 옮긴 점수와 이동한 상한</p><p><b>개념 연결:</b> 가능한 점수 집합이 c+A로 변하므로 상한도 c+sup A가 됩니다. 모든 점수 차이는 유지됩니다.</p><p><b>한계:</b> 후보마다 다른 값을 더하거나 비선형 변환을 하면 이 평행이동 규칙을 그대로 적용할 수 없습니다.</p></article></div></section>
+
+<section class="section"><h2>⑥ 자주 하는 오해</h2>
+<div class="warning"><b>상계 하나를 찾으면 상한 증명이 끝난다?</b><br>최소성까지 보여야 합니다. (0,2)에서 3도 상계지만 상한은 아닙니다.</div>
+<div class="warning" style="margin-top:12px"><b>상한은 반드시 집합에 속한다?</b><br>상한이 집합에 속할 때 최댓값이 됩니다. 열린구간의 끝점은 상한이어도 원소는 아닙니다.</div>
+<div class="warning" style="margin-top:12px"><b>유리수는 조밀하니까 완비적이다?</b><br>사이에 원소가 있다는 조밀성과 최소상계가 그 수 체계 안에 있다는 완비성은 다른 성질입니다.</div>
+<div class="warning" style="margin-top:12px"><b>ε 조건만 맞으면 s는 상한이다?</b><br>s가 상계라는 가정도 필요합니다. A=(0,2), s=1은 ε 조건을 만족하지만 상계가 아닙니다.</div></section>
+
+<section class="section quiz" id="quiz"><h2>⑦ 확인 퀴즈 3문항</h2>
+<details><summary>Q1. A=(0,2)에서 3은 상계인데 왜 상한은 아닐까요? 최댓값은 있을까요?</summary><div class="answer"><b>정답:</b> 더 작은 상계 2가 있으므로 3은 최소상계가 아닙니다. 상한은 2이고, 모든 원소 a보다 큰 (a+2)/2가 집합에 있으므로 최댓값은 없습니다.</div></details>
+<details><summary>Q2. A가 비어 있지 않고 위로 유계이며 sup A=5라면 sup(−3+A)는 얼마인가요? 최소성을 어떻게 확인하나요?</summary><div class="answer"><b>정답:</b> −3+5=2입니다. u가 −3+A의 상계이면 u+3은 A의 상계라 5≤u+3, 즉 2≤u입니다. 모든 원소가 2 이하라는 상계성도 함께 확인합니다.</div></details>
+<details><summary>Q3. ε 판별법에서 s보다 작은 상계 b가 있다고 가정할 때 ε를 어떻게 정하고 어떤 모순을 얻나요?</summary><div class="answer"><b>정답:</b> ε=s−b&gt;0으로 정합니다. 판별 조건으로 b=s−ε&lt;a인 a∈A가 나오므로, b가 모든 원소 이상인 상계라는 가정에 모순됩니다.</div></details></section>
+
+<section class="section"><h2>⑧ 이전·관련·다음 학습</h2><nav class="links"><a href="2026-09-07.html">← 선수지식<br><b>9월 7일 · 집합·증명·완비성</b></a><a href="index.html">관련 수업 목록<br><b>해석학 전체 기록</b></a><span>다음 학습 · 예정<br><b>α²=2 증명 완성</b><br>날짜는 확인 필요</span></nav>
+<div class="card checklist" style="margin-top:16px"><h3>복습 완료 체크</h3><label><input type="checkbox">상계성과 최소성을 분리해 sup(0,2)=2를 증명할 수 있다.</label><label><input type="checkbox">상한과 최댓값, 조밀성과 완비성을 구분할 수 있다.</label><label><input type="checkbox">ε가 주어졌을 때 원소 a를 고른다는 순서를 설명할 수 있다.</label><p class="note">공식 과제·제출 일정은 확인된 기록에 없어 별도로 기재하지 않았습니다.</p></div></section>
+<footer class="footer"><h2>출처와 정리 범위</h2>
+<p><b>수업 근거:</b> 프로젝트 대화 ‘해석학(9월 8일)’과 첨부 녹취 ‘한양대학교 - ERICA 캠퍼스 159.txt’, ‘160.txt’에서 확인된 대목. 녹취의 인식 오류를 수학적 문맥에 맞춰 풀어썼으며, 원문 전체의 정확한 전사본은 아닙니다.</p>
+<p><b>복습 보충:</b> 중점·평행이동·ε 판별법의 완결된 증명 서술, 비교 예제, 시각화, AI 활용 사례와 퀴즈. 유리수 집합의 정확한 판서 표기는 확인 필요, α²=2 증명은 후속으로 남깁니다.</p>
+<p><b>외부 참고:</b> <a href="https://ocw.mit.edu/courses/18-100a-real-analysis-fall-2020/pages/lecture-notes-and-readings/">MIT OpenCourseWare 18.100A · 강의 노트 목록</a>의 Week 2는 최소상계 성질과 실수·유리수의 차이를 다룹니다. 실제 학교 강의의 진도 근거와는 구분합니다. 확인일: 2026-09-10.</p>
+<p>문서 ID: analysis-2026-09-08 · 분야: 기타(해석학) · 난이도: 기초 · 선수지식: analysis-2026-09-07 · 관련: analysis · 다음: α²=2 증명(예정)</p>
+<p>작성: AI Study · AI 보조 정리 · 검토자: 미지정 · 상태: draft · 수정일: 2026-09-10</p></footer>
+</main>
+<script src="../../assets/inline-terms.js" defer></script>
+<script>
+(()=>{const slider=document.getElementById("epsilon");
+function draw(){const e=Number(slider.value),a=2-e/2,left=40+180*(2-e);
+document.getElementById("epsilon-window").setAttribute("x",left);
+document.getElementById("epsilon-window").setAttribute("width",180*e);
+document.getElementById("epsilon-bound").setAttribute("x1",left);
+document.getElementById("epsilon-bound").setAttribute("x2",left);
+document.getElementById("epsilon-point").setAttribute("cx",40+180*a);
+document.getElementById("epsilon-output").textContent="ε="+e.toFixed(2)+" → "+(2-e).toFixed(2)+" < a="+a.toFixed(2)+" < 2.00";}
+slider.addEventListener("input",draw);draw();})();
+</script></body></html>
