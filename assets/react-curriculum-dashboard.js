@@ -1,12 +1,12 @@
 /* Shared React curriculum portal for university and graduate school. */
 const {useEffect,useMemo,useState}=React;const h=React.createElement;const SCRIPT=document.currentScript;
-const SRC=SCRIPT.dataset.source,MODE=SCRIPT.dataset.mode||'graduate',STORE='ai-study.curriculum.'+MODE+'.v1';
+const SRC=SCRIPT.dataset.source,MODE=SCRIPT.dataset.mode||'graduate',SEMESTER_START=SCRIPT.dataset.semesterStart||'',STORE='ai-study.curriculum.'+MODE+'.v1';
 const DAY_INDEX={일:0,월:1,화:2,수:3,목:4,금:5,토:6};
 function seoulNow(){const p=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23',weekday:'short'}).formatToParts(new Date()).map(x=>[x.type,x.value]));return {iso:`${p.year}-${p.month}-${p.day}`,hour:+p.hour,minute:+p.minute,weekday:{Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6}[p.weekday]}}
 function parseDate(s){return new Date(s+'T00:00:00+09:00')}function fmt(s){return new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',month:'long',day:'numeric',weekday:'short'}).format(parseDate(s))}
 function localData(){try{return JSON.parse(localStorage.getItem(STORE)||'null')}catch{return null}}function save(x){localStorage.setItem(STORE,JSON.stringify(x))}
 function download(x){const b=new Blob([JSON.stringify(x,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=MODE+'-curriculum-backup.json';a.click();URL.revokeObjectURL(a.href)}
-function semesterWeek(s,today){if(!s.period)return null;const start=s.period.split('~')[0].trim();return Math.max(1,Math.floor((parseDate(today)-parseDate(start))/604800000)+1)}
+function semesterWeek(s,today){const start=s.period?s.period.split('~')[0].trim():SEMESTER_START;if(!start)return null;return Math.max(1,Math.floor((parseDate(today)-parseDate(start))/604800000)+1)}
 function nextMeeting(data,now){const found=[];(data.semesters?.[0]?.courses||[]).forEach(c=>(c.meetings||[]).forEach(m=>{const wd=DAY_INDEX[m.day];if(wd==null)return;let delta=(wd-now.weekday+7)%7;const start=+(m.time||'00:00').slice(0,2)*60+ +(m.time||'00:00').slice(3,5);if(delta===0&&start<=now.hour*60+now.minute)delta=7;found.push({delta,c,m})}));return found.sort((a,b)=>a.delta-b.delta||(a.m.time||'').localeCompare(b.m.time||''))[0]}
 function Course({c}){
  const tag=c.href?'a':'article';return h(tag,{className:'course '+(c.href?'link':''),href:c.href||undefined,style:{'--accent':c.color||'#7357e8'}},h('span',{className:'course-icon'},c.icon||'📘'),h('h3',null,c.title),h('p',null,c.description||''),c.meetings?.length?h('div',{className:'meetings'},...c.meetings.map((m,i)=>h('div',{className:'meeting',key:i},h('span',{className:'day'},m.day),h('b',null,m.time),h('span',{className:'place'},m.place)))):null,h('span',{className:'status'},c.status||'자료 준비 중',c.href?' →':''));
