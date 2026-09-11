@@ -63,6 +63,7 @@ GitHub Pages가 활성화되어 있으면 병합된 내용이 백과사전 사�
     - [2026년 9월 8일 — 상한의 증명·완비성·엡실론 판별법](university/analysis/2026-09-08.html)
   - [데이터사이언스를 위한 베이지안추론](university/bayesian-inference-for-data-science/index.html)
     - [2026년 9월 8일 — 충분통계량·가능도 원리·베이즈 가설검정](university/bayesian-inference-for-data-science/2026-09-08.html)
+    - [2026년 9월 10일 — 정규모형 검정·린들리 역설·JZS 실습](university/bayesian-inference-for-data-science/2026-09-10.html)
 - [딥러닝의 기초 및 응용](university/deep-learning-foundations-applications/index.html)
   - [2026년 9월 7일 — 이미지 분류의 관점과 선형 분류기](university/deep-learning-foundations-applications/2026-09-07.html)
 - [대학원 학기별 학습 공간](graduate/index.html)
