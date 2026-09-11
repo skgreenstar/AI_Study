@@ -52,7 +52,7 @@ function Syllabus({data,today,onEdit}){
           h('td',null,h('span',{className:`type type-${x.type}`},TYPE[x.type]||x.type)),
           h('td',{className:'topic'},x.href?h('a',{href:x.href},x.topic):x.topic),
           h('td',{className:'slide'},x.slides?h('a',{href:x.slides,target:'_blank',rel:'noopener'},`Lecture ${x.lecture} PDF ↗`):h('span',null,'—')),
-          h('td',{className:'note'},x.href?h('a',{href:x.href},'시각 자료 →'):h('span',null,'—'));
+          h('td',{className:'note'},x.href?h('a',{href:x.href},'시각 자료 →'):h('span',null,'—')));
       })))));
 }
 function Weeks({data}){
