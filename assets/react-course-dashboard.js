@@ -1,6 +1,8 @@
 /* React course dashboard: dynamic KST schedule + device-local editor.
  * Static JSON remains the canonical fallback. Local edits are isolated per browser.
  */
+const SCRIPT=document.currentScript;
+const COURSE_ID=SCRIPT?.dataset.course||'industrial-ai';
 const {useEffect,useMemo,useState}=React;
 const h=React.createElement;
 const TYPE={lecture:'강의',recorded:'녹강',holiday:'휴강',exam:'시험',review:'해설(녹강)'};
@@ -86,7 +88,7 @@ function Editor({data,onClose,onSave,onReset}){
 function App(){
  const [base,setBase]=useState(null),[data,setData]=useState(null),[editing,setEditing]=useState(false);
  const today=useMemo(seoulIso,[]);
- useEffect(()=>{fetch('../../data/industrial-ai-course.json').then(r=>r.json()).then(x=>{setBase(x);setData(loadLocal(x.course.id)||x)}).catch(()=>setData({error:true}))},[]);
+ useEffect(()=>{fetch(`../../data/${COURSE_ID}-course.json`).then(r=>r.json()).then(x=>{setBase(x);setData(loadLocal(x.course.id)||x)}).catch(()=>setData({error:true}))},[]);
  if(!data)return h('div',{className:'loading'},'강의 일정을 불러오고 있습니다…');
  if(data.error)return h('div',{className:'error'},'주차 데이터를 불러오지 못했습니다.');
  const save=x=>{saveLocal(x.course.id,x);setData(x);setEditing(false)};
