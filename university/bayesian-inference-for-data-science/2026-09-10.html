@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>베이지안추론 9월 10일 | 정규모형 검정·JZS | AI Study</title>
+<meta name="description" content="9월 10일 목요일 베이지안추론 수업: 단순·복합가설의 정규모형 검정, 제프리스–린들리 역설, JZS 사전분포와 R 실습">
+<style>
+:root{--bg:#f4f1ff;--ink:#202038;--muted:#69677c;--card:#fff;--violet:#7357e8;--pink:#ef6797;--blue:#4d8df7;--mint:#41bda5;--yellow:#ffc94b;--red:#ef6a6a;--line:#e4def7;--shadow:0 16px 40px rgba(60,42,120,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{word-break:keep-all;overflow-wrap:break-word;margin:0;color:var(--ink);font-family:Pretendard,"Noto Sans KR",system-ui,sans-serif;background:radial-gradient(circle at 10% 0,#efe5ff 0,transparent 35%),var(--bg);line-height:1.65}.wrap{max-width:1120px;margin:auto;padding:28px 20px 80px}.meta{display:flex;justify-content:space-between;gap:14px;color:var(--muted);font-size:14px;margin-bottom:16px}.hero{background:linear-gradient(135deg,#382276,#7657e8 58%,#d85c99);color:white;border-radius:32px;padding:44px;box-shadow:var(--shadow)}.hero h1{font-size:clamp(32px,6vw,58px);line-height:1.08;margin:10px 0 16px}.pill,.tag{display:inline-block;padding:5px 11px;border-radius:99px;font-size:12px;font-weight:900}.pill{background:rgba(255,255,255,.16)}.route{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:24px 0}.route a{text-decoration:none;color:var(--ink);background:white;padding:14px 10px;border-radius:16px;text-align:center;font-weight:800;box-shadow:var(--shadow)}.section{margin-top:52px}.section h2{font-size:clamp(26px,4vw,39px);margin:0 0 8px}.lead{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.card,.formula,.quiz details{background:white;border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow)}.card h3{margin:0 0 8px}.visual{min-height:150px;border:1px dashed #cfc3f4;border-radius:18px;background:#faf9ff;padding:18px;margin:15px 0;display:flex;align-items:center;justify-content:center}.flow{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}.node{min-width:110px;padding:14px;border:2px solid var(--line);border-radius:15px;background:white;text-align:center;font-weight:850}.node.hot{color:white;border:0;background:linear-gradient(135deg,var(--violet),var(--pink))}.arrow{font-size:25px;color:var(--violet)}.tag.must{background:#ffe6ef;color:#a8325c}.tag.along{background:#fff2c9;color:#805c00}.tag.later{background:#ddf7ee;color:#14725f}.equation{text-align:center;font-family:Georgia,serif;font-size:clamp(20px,3vw,30px);color:#3a286f}.decode{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.decode div{padding:11px;border-radius:12px;background:#f4f1ff;text-align:center}.analogy{border-left:6px solid var(--blue)}.warning{background:#fff0f0;border-left:6px solid var(--red);padding:16px;border-radius:14px}.practice{background:#e9fbf6;border-left:6px solid var(--mint);padding:16px;border-radius:14px}.quiz details{margin:10px 0}.quiz summary{font-weight:850;cursor:pointer}.answer{margin-top:12px;color:var(--muted)}.links{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.links a{text-decoration:none;color:var(--ink);background:white;padding:16px;border-radius:16px;text-align:center}.footer{text-align:center;margin-top:52px;color:var(--muted)}
+@media(max-width:760px){.hero{padding:32px 24px}.route{grid-template-columns:1fr 1fr}.grid,.decode,.links{grid-template-columns:1fr}.meta{flex-direction:column}}
+.hero{padding:30px 36px}.hero h1{font-size:clamp(30px,5vw,48px);line-height:1.2}.hero a{color:white}.route{grid-template-columns:repeat(6,minmax(0,1fr))}.grid>*,.decode>*,.links>*,.controls>*{min-width:0}.card,.formula{margin-bottom:18px}.source-note{font-size:14px;color:var(--muted)}.equation{font-size:clamp(17px,2.4vw,25px);overflow-wrap:anywhere;padding:16px 6px;background:#faf9ff;border-radius:14px}.table-wrap{margin:20px 0}table{width:100%;border-collapse:collapse;background:white;table-layout:fixed}caption{text-align:left;font-weight:800;padding:10px}th,td{text-align:left;padding:12px;border:1px solid var(--line);overflow-wrap:anywhere}th{background:#eee9ff}.lab{margin-top:24px;padding:22px;background:#faf9ff;border:1px solid var(--line);border-radius:18px}.lab h4{font-size:21px;margin:0 0 10px}.controls{display:grid;grid-template-columns:2fr 1fr 1fr;gap:20px}label{display:block;font-weight:700}input[type=range]{width:100%;accent-color:var(--violet)}select{display:block;width:100%;max-width:280px;margin:7px 0;padding:10px;border-radius:10px;border:1px solid #a59abd;background:white;color:var(--ink);font:inherit}.result{display:block;white-space:pre-line;padding:18px;margin:16px 0;background:#eee9ff;border-radius:14px;font-weight:750;overflow-wrap:anywhere}svg{width:100%;height:auto;display:block;overflow:visible}svg text{fill:#202038;font-size:15px;font-family:system-ui,sans-serif}.plot-legend{font-size:14px;color:var(--muted)}.bar{height:22px;border-radius:20px;background:#e4def7;overflow:hidden}.bar>div{height:100%;background:#23987e}.stack{display:grid;gap:12px}.checklist label{padding:14px;margin-top:10px;background:white;border-radius:12px;font-weight:500}.checklist input{accent-color:var(--violet)}pre{max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere;background:#201640;color:#f5f1ff;padding:20px;border-radius:14px;font-size:14px}a{color:#5740b6}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #4d8df7;outline-offset:4px}.footer{text-align:left;font-size:14px}.footer h2{font-size:22px}.links span{text-align:center;box-shadow:none}section{scroll-margin-top:20px}@media(max-width:760px){.hero{padding:28px 22px}.route{grid-template-columns:repeat(2,minmax(0,1fr))}.controls{grid-template-columns:1fr}.lab{padding:14px}th,td{padding:8px;font-size:13px}.formula,.card{padding:18px}.equation{font-size:17px}.wrap{padding:20px 14px 60px}}@media print{.route,.controls{display:none}.hero,.card,.formula{box-shadow:none}.section{break-inside:auto}}
+</style><link rel="stylesheet" href="../../assets/inline-terms.css"></head><body><main class="wrap">
+<div class="meta"><a href="../../index.html">AI Study 홈</a><span><a href="../index.html">대학교</a> / <a href="index.html">베이지안추론</a></span></div>
+<header class="hero"><span class="pill">2026년 9월 10일 목요일 · 2주차</span><h1>베이즈 검정을<br>직접 계산하는 시간</h1><p>단순가설에서 복합가설로, 분산을 아는 정규모형에서 분산을 모르는 JZS t 검정으로 연결합니다.</p><p>확률통계 · 중급 · 복습·시험 대비 · 선수지식: <a href="2026-09-08.html">9월 8일 사후 오즈</a></p></header>
+<nav class="route" aria-label="수업 목차"><a href="#map">전체 흐름</a><a href="#analogy">생활 비유</a><a href="#concept">핵심 개념</a><a href="#formula">수식·실험</a><a href="#practice">R·AI 실습</a><a href="#quiz">확인 퀴즈</a></nav>
+<section class="section" id="map"><h2>① 한눈에 보는 큰 그림</h2><p class="lead">강의 녹취 전체와 week2.pdf 21쪽을 대조한 복습용 재구성입니다. ★는 강의에서 반복 설명하거나 실습으로 확인한 핵심입니다.</p>
+<div class="card"><p>두 가설의 주변가능도 비인 베이즈 요인으로 사전 오즈를 사후 오즈로 갱신합니다. 단순가설끼리는 모수가 고정되므로 가능도 비를 바로 계산할 수 있습니다. 복합가설에서는 사전분포 전체에 걸쳐 가능도를 평균해야 합니다. 제프리스–린들리 역설은 <b>무엇을 고정하고 표본 수를 늘리는지</b>가 핵심이며, 분산이 미지수인 실습에서는 JZS 사전분포를 사용합니다.</p></div>
+<div class="visual flow"><div class="node">9/8 복습<br>사후 오즈</div><span class="arrow">→</span><div class="node hot">모형 지정<br>주변가능도 계산</div><span class="arrow">→</span><div class="node">가설 비교<br>사전분포 확인</div></div>
+<div class="table-wrap"><table><caption>실제 강의 순서와 슬라이드 대응</caption><thead><tr><th>녹취 구간</th><th>학습 내용</th><th>week2.pdf</th></tr></thead><tbody>
+<tr><td>00:22–13:23</td><td>원리 복습, 가설 분할, 사후확률·오즈</td><td>3–11쪽</td></tr><tr><td>13:23–18:56</td><td>θ=0 대 θ=10, 로지스틱 사후확률</td><td>12–14쪽</td></tr><tr><td>18:56–33:02</td><td>점귀무가설·정규 대립가설, 린들리 역설</td><td>15–20쪽</td></tr><tr><td>33:46–39:49</td><td>R 시각화, 로그 계산과 분산 변화</td><td>앞 수식의 실습</td></tr><tr><td>39:49–51:06</td><td>분산 미지수, JZS, sleep 대응표본 실습</td><td>21쪽 + 수업 시연</td></tr>
+</tbody></table></div><p><span class="tag must">분홍: 필수</span> <span class="tag along">노랑: 함께 보충</span> <span class="tag later">민트: 응용</span> · 보라: 학습 흐름 · 빨강: 오해 주의</p></section>
+<section class="section" id="analogy"><h2>② 생활 비유: 두 예보를 비교하기</h2><div class="card analogy"><h3>정확한 온도 하나 vs 여러 온도의 예측 분포</h3>
+<div class="visual flow"><div class="node">예보 A<br>중심 온도 고정</div><span class="arrow">↔</span><div class="node">예보 B<br>여러 중심에 확률 배분</div><span class="arrow">→</span><div class="node hot">관측 온도를<br>얼마나 잘 예측했나?</div></div>
+<p><b>닮은 점:</b> 단순가설은 모수 하나를 지정합니다. 복합가설은 가능한 모수들에 사전확률을 나누고, 각 모수가 관측을 설명하는 정도를 평균합니다. 많은 후보 중 가장 잘 맞는 하나만 고르는 방식과 결과가 다릅니다.</p>
+<p><b>비유의 한계:</b> 실제 온도에는 계절·지역·시간 의존성이 있습니다. 여기서는 지정된 정규 오차와 두 가설 안에서만 비교합니다. 베이즈 요인이 크다고 후보 가설이 현실을 완벽히 설명하는 것은 아닙니다.</p></div></section>
+<section class="section" id="concept"><h2>③ 핵심 개념 카드</h2><div class="grid">
+<article class="card"><span class="tag must">★ 9월 8일에서 이어짐</span><h3>Bayes Factor · 베이즈 요인</h3><p><b>정의:</b> B₁₀=m₁(x)/m₀(x). 관측이 H₁과 H₀의 사전 오즈를 바꾸는 배수입니다.</p><p><b>왜 중요한가:</b> 가설 자체의 사전확률과 데이터가 주는 증거를 구분합니다.</p><div class="visual flow"><span class="node">사전 오즈</span><span class="arrow">×</span><span class="node">B₁₀</span><span class="arrow">→</span><span class="node hot">사후 오즈</span></div><p><b>예:</b> B₁₀=10, 사전 오즈=1/9이면 사후 오즈=10/9입니다.</p></article>
+<article class="card"><span class="tag must">★ 평균한 적합도</span><h3>Marginal Likelihood · 주변가능도</h3><p><b>정의:</b> 가설 내부의 사전분포로 가능도를 평균한 값입니다.</p><p><b>왜 중요한가:</b> 복합가설에서 아직 모르는 θ를 적분해 데이터에 대한 예측을 만듭니다.</p><div class="visual flow"><span class="node">θ의 후보</span><span class="arrow">→</span><span class="node">가능도 × 사전 가중치</span><span class="arrow">→</span><span class="node">적분</span></div><p><b>예:</b> θ가 정규분포를 따르면 x̄의 주변분산에는 θ의 불확실성도 더해집니다.</p></article>
+<article class="card"><span class="tag must">점귀무가설</span><h3>Dirac Measure · 디락측도</h3><p><b>정의:</b> 한 점 θ₀에 확률 1을 두는 확률측도입니다. 보통의 연속 확률밀도 함수처럼 높이를 읽으면 안 됩니다.</p><p><b>왜 중요한가:</b> 연속 사전분포만으로는 확률이 0인 θ=θ₀에 별도의 가설 확률 π₀를 줄 수 있습니다.</p><div class="visual flow"><span class="node">H₀: θ=θ₀<br>점질량 π₀</span><span class="arrow">+</span><span class="node">H₁: θ≠θ₀<br>연속 부분 π₁</span></div><p><b>예:</b> π₀=π₁=0.5인 점질량·연속분포 혼합.</p></article>
+<article class="card"><span class="tag along">★ 실습의 연결 고리</span><h3>Logistic Function · 로지스틱 함수</h3><p><b>정의:</b> 실수 a를 1/(1+e⁻ᵃ)로 바꾸어 0과 1 사이로 보냅니다.</p><p><b>왜 중요한가:</b> a가 로그 사후 오즈이면 결과가 H₁의 사후확률입니다.</p><div class="visual flow"><span class="node">로그 사전 오즈</span><span class="arrow">+</span><span class="node">로그 B₁₀</span><span class="arrow">→</span><span class="node hot">확률</span></div><p><b>예:</b> a=0이면 0.5. 절댓값이 커질 때 직접 지수를 나누기보다 안정적인 함수를 씁니다.</p></article>
+<article class="card"><span class="tag along">★ 고정 조건 확인</span><h3>Jeffreys–Lindley Paradox · 제프리스–린들리 역설</h3><p><b>정의:</b> 고정된 유의한 z값에서 표본 수를 늘릴 때, p값은 같지만 베이즈 요인은 점귀무가설을 점점 더 지지할 수 있는 현상입니다.</p><p><b>왜 중요한가:</b> p값과 가설의 사후확률이 서로 다른 질문에 답한다는 것을 보여줍니다.</p><p><b>예:</b> z=1.96, σ=τ=1인 계산을 아래에서 비교합니다.</p></article>
+<article class="card"><span class="tag later">★ 분산을 모르는 실습</span><h3>JZS Prior · JZS 사전분포</h3><p><b>정의:</b> Jeffreys–Zellner–Siow 사전분포. 효과크기 δ에 코시 사전분포를 주고 공통 미지 분산도 함께 처리합니다.</p><p><b>왜 중요한가:</b> σ²를 모르는 정규평균 검정에서 베이즈 요인을 계산하는 구체적 선택입니다.</p><p><b>예:</b> 동일한 10명의 수면시간 차이를 이용한 베이지안 대응표본 t 검정.</p></article>
+</div></section>
+<section class="section" id="formula"><h2>④ 수식 해부와 직접 조작</h2><p class="lead">수식은 슬라이드 표기를 대조해 정리했습니다. 유도와 계산기는 복습 보충입니다.</p>
+<article class="formula"><h3>A. 가설마다 따로 확률을 설정한다</h3><p>Θ₀∩Θ₁=∅, Θ₀∪Θ₁=Θ로 전체 모수공간을 나눕니다. 가설 사전확률 πⱼ와 가설 내부 모수의 사전분포 gⱼ는 역할이 다릅니다.</p>
+<div class="equation">mⱼ(x) = ∫ f(x|θ) gⱼ(θ) dθ<br>α₁ / α₀ = (π₁ / π₀) × B₁₀<br>α₁ = π₁B₁₀ / (π₀ + π₁B₁₀)</div>
+<div class="decode"><div><b>Θ, θ, x</b><br>세타 대문자: 모수공간<br>세타: 모수 · 엑스: 관측값</div><div><b>πⱼ, gⱼ(θ)</b><br>파이 제이: 가설 사전확률<br>지 제이: 가설 안의 사전분포</div><div><b>mⱼ, αⱼ, B₁₀</b><br>엠 제이: 주변가능도<br>알파 제이: 가설 사후확률<br>비 일공: H₁ 대 H₀ 증거 비</div></div>
+<p>j(제이)는 0 또는 1, f(에프)는 표본모형의 밀도, ∫(적분)은 가능한 θ에 걸친 가중 합입니다. 적분 범위는 Θⱼ이며, 점가설에는 해당 점의 질량을 사용합니다. π₀+π₁=1, α₀+α₁=1입니다.</p><p><b>문장으로 읽기:</b> 각 가설이 관측을 예측한 정도를 비교하고, 기존 가설 오즈에 곱해 갱신합니다. <b>필요한 이유:</b> 증거의 비를 최종 가설 확률로 환산하기 위해서입니다.</p></article>
+<article class="formula" id="simple"><h3>B. 단순가설 대 단순가설: 0일까, 10일까?</h3><p class="source-note">녹취 13:23–18:56 · week2.pdf 12–14쪽</p>
+<p>관측 하나가 X|θ∼N(θ,1), H₀:θ=0, H₁:θ=10이고 π₀=π₁=0.5라고 합니다. 이 예제의 후보 모수공간은 {0,10}입니다.</p>
+<div class="equation">log B₁₀ = −(x−10)²/2 + x²/2 = 10x−50<br>B₁₀ = exp(10x−50)<br>α₁(x) = 1 / {1 + exp[−(10x−50)]}</div>
+<div class="decode"><div><b>N(θ,1)</b><br>엔: 정규분포<br>평균 θ, 분산 1</div><div><b>exp, log</b><br>익스프: 자연지수 e의 거듭제곱<br>로그: 자연로그</div><div><b>α₁(x)</b><br>알파 일: x 관측 후<br>평균 10인 가설의 확률</div></div>
+<p><b>유도:</b> 같은 정규화 상수는 밀도 비에서 소거됩니다. −(x−10)²+x²=20x−100이므로 2로 나누면 10x−50입니다. 녹취의 불명확한 계수는 슬라이드 13쪽에 맞췄습니다.</p>
+<p><b>문장으로 읽기:</b> x가 5보다 클수록 평균 10인 가설의 지지가 커집니다. <b>필요한 이유:</b> 가능도 비가 실제 사후확률 곡선으로 이어지는 가장 간단한 예제입니다.</p>
+<div class="table-wrap"><table><caption>같은 사전확률·분산 1에서 직접 계산</caption><thead><tr><th>x</th><th>B₁₀</th><th>P(H₁|x)</th></tr></thead><tbody><tr><td>4.5</td><td>0.00674</td><td>0.669%</td></tr><tr><td>5.0</td><td>1</td><td>50%</td></tr><tr><td>5.5</td><td>148.413</td><td>99.331%</td></tr></tbody></table></div>
+<div class="warning"><b>슬라이드 14쪽의 경계값 구분:</b> α₁&gt;0.99는 오즈&gt;99이므로 x&gt;5+log(99)/10≈5.459512입니다. 슬라이드 11쪽의 오즈&gt;100 기준이면 x&gt;5.460517, α₁&gt;100/101입니다. 두 기준은 매우 가깝지만 동일하지 않습니다. 증거 강도의 요약 관례가 참·거짓을 보장하지는 않습니다.</div>
+<div class="lab"><h4>실험 1 · 관측값과 오차를 바꿔보기</h4><p>H₀:θ=0, H₁:θ=10은 그대로 두고 표준편차 σ와 사전확률을 바꿉니다. 분산은 σ²입니다.</p>
+<div class="controls"><label for="obs">관측 x <output id="obs-label">5.00</output><input id="obs" type="range" min="0" max="10" step="0.01" value="5"></label><label for="sd">표준편차 σ<select id="sd"><option value="1">1 (강의 기본)</option><option value="2">2</option><option value="3">3</option></select></label><label for="prior">사전확률 P(H₁)<select id="prior"><option value="0.5">50%</option><option value="0.1">10%</option><option value="0.9">90%</option></select></label></div>
+<svg id="simple-plot" viewBox="0 0 640 310" role="img" aria-labelledby="simple-title simple-desc"><title id="simple-title">관측값에 따른 두 가설의 사후확률</title><desc id="simple-desc">보라 실선은 H₁, 분홍 점선은 H₀의 사후확률이며 세로선은 선택한 관측값입니다.</desc><g id="simple-drawing"></g></svg>
+<p class="plot-legend">보라 실선: P(H₁|x) · 분홍 점선: P(H₀|x) · 세로선: 선택한 관측값</p><output id="simple-output" class="result" aria-live="polite"></output>
+<p>일반화한 로그 사후 오즈는 log[π₁/(1−π₁)]+(10x−50)/σ²입니다. σ가 커지면 같은 관측값의 증거가 약해져 곡선이 완만해집니다. 사전확률이 다르면 50% 교차점도 이동합니다.</p><noscript>계산기는 JavaScript가 필요합니다. 위 표에서 기본 예제의 결과를 확인할 수 있습니다.</noscript></div></article>
+<article class="formula" id="composite"><h3>C. 단순가설 대 복합가설: 평균이 θ₀와 다른가?</h3><p class="source-note">녹취 18:56–29:04 · week2.pdf 15–19쪽</p>
+<p>서로 독립인 X₁,…,Xₙ|θ∼N(θ,σ²), <b>σ²는 알려짐</b>을 가정합니다. H₀:θ=θ₀, H₁:θ≠θ₀이고 H₁ 안에서 θ∼N(θ₀,τ²), τ²&gt;0을 사용합니다.</p>
+<p>H₁의 정규밀도는 θ₀에서 양수여도 그 한 점의 확률은 0입니다. 따라서 θ≠θ₀와 모순되지 않습니다. H₀의 점질량과 연속밀도의 높이를 혼동하지 마세요.</p>
+<div class="visual flow"><div class="node">ε∼N(0,v)<br>관측 오차</div><span class="arrow">+</span><div class="node">θ∼N(θ₀,τ²)<br>모수 불확실성</div><span class="arrow">→</span><div class="node hot">x̄=θ+ε<br>N(θ₀,v+τ²)</div></div>
+<p>여기서 v=σ²/n이고 ε와 θ는 독립입니다. 두 독립 정규변수의 합은 평균과 분산을 각각 더한 정규분포이므로 H₁의 주변분산은 v+τ²입니다. H₀에서는 x̄∼N(θ₀,v)입니다.</p>
+<div class="equation">z = |x̄−θ₀| / (σ/√n), &nbsp; κ = nτ²/σ²<br>B₁₀ = (1+κ)⁻¹ᐟ² exp{ z²κ / [2(1+κ)] }</div>
+<div class="decode"><div><b>x̄, n, σ²</b><br>엑스 바: 표본평균<br>엔: 표본 수<br>시그마 제곱: 관측 분산</div><div><b>θ₀, τ², v</b><br>세타 영: 귀무 평균<br>타우 제곱: 대립 사전분산<br>브이: 표본평균 오차분산</div><div><b>z, κ, ε</b><br>제트: 표준화된 절대 차이<br>카파: 사전분산/오차분산<br>엡실론: 관측 오차</div></div>
+<p><b>유도:</b> 정규밀도 비의 앞부분은 √[v/(v+τ²)]입니다. 지수 부분은 (x̄−θ₀)²{1/v−1/(v+τ²)}/2입니다. 각각 κ와 z로 바꾸면 위 식을 얻습니다. x̄는 알려진 분산의 정규모형에서 충분통계량이며, 전체 표본의 공통 잔차 요인은 비에서 소거됩니다.</p>
+<p><b>문장으로 읽기:</b> 대립가설의 넓은 예측분포로 인한 앞부분의 감소와, 귀무 평균에서 벗어난 관측의 적합도 증가를 함께 계산합니다. <b>필요한 이유:</b> 단일 최적값의 가능도 대신 사전분포로 평균한 증거를 비교하기 위해서입니다.</p></article>
+<article class="formula" id="paradox"><h3>D. 제프리스–린들리 역설: 무엇을 고정하나요?</h3><p class="source-note">녹취 29:04–33:02 · week2.pdf 20쪽 · 조건을 명시한 복습 보충</p>
+<div class="warning"><b>고정:</b> 유의한 z값, σ, τ&gt;0, 두 가설의 양의 사전확률. <b>변화:</b> n 증가. 그러면 |x̄−θ₀|=zσ/√n은 작아집니다. 슬라이드의 “기각역이 0에 가까워진다”는 말은 원래 평균 차이 척도의 임계값에 해당하며, z 척도의 임계값 1.96 자체가 줄어드는 것은 아닙니다.</div>
+<div class="equation">n → ∞ ⇒ κ → ∞<br>(1+κ)⁻¹ᐟ² → 0,&nbsp; exp{z²κ/[2(1+κ)]} → exp(z²/2)<br>B₁₀ → 0,&nbsp; P(H₀|x) → 1</div>
+<p><b>읽기:</b> 엔이 무한대로 갈 때 카파도 커지고, 첫 인자는 0으로, 둘째 인자는 유한한 상수로 갑니다. 따라서 비 일공은 0으로 갑니다. <b>의미:</b> p값이 고정되어도 가설 사후확률은 달라질 수 있습니다.</p>
+<div class="lab"><h4>실험 2 · 같은 z=1.96에서 표본 수 늘리기</h4><p>σ=τ=1, π₀=π₁=0.5. 양측 p값은 약 0.049996으로 유지됩니다.</p>
+<div class="table-wrap"><table><caption>같은 z, 다른 표본 수</caption><thead><tr><th>n</th><th>|x̄−θ₀|</th><th>B₁₀</th><th>P(H₀|x)</th></tr></thead><tbody id="paradox-table"><tr><td>10</td><td>0.619806</td><td>1.728466</td><td>36.6506%</td></tr><tr><td>100</td><td>0.196000</td><td>0.666458</td><td>60.0075%</td></tr><tr><td>1,000</td><td>0.061981</td><td>0.215349</td><td>82.2809%</td></tr><tr><td>10,000</td><td>0.019600</td><td>0.068248</td><td>93.6113%</td></tr><tr><td>1,000,000</td><td>0.001960</td><td>0.006826</td><td>99.3220%</td></tr></tbody></table></div>
+<label for="sample-size">표본 수 n<select id="sample-size"><option value="10">10</option><option value="100">100</option><option value="1000">1,000</option><option value="10000">10,000</option><option value="1000000">1,000,000</option></select></label>
+<output id="paradox-output" class="result" aria-live="polite"></output><div class="bar" role="img" id="null-bar" aria-label="귀무가설 사후확률"><div id="null-fill"></div></div><p class="plot-legend">민트 막대의 길이: P(H₀|x), 전체 길이: 100%</p></div>
+<p><b>반드시 구분:</b> 0이 아닌 평균 차이 |x̄−θ₀|를 고정하면 z는 √n에 비례해 커집니다. 이 경우 위의 “B₁₀→0” 결론을 그대로 적용할 수 없습니다. 역설은 한 방법이 무조건 틀렸다는 선언이 아니라, 질문과 사전분포·점가설이 다른 데서 생기는 비교입니다.</p></article>
+<article class="formula" id="jzs"><h3>E. σ²가 미지수이면: JZS 사전분포</h3><p class="source-note">녹취 39:49–46:11 · week2.pdf 21쪽</p>
+<p>이 절에서는 슬라이드의 μ를 평균 모수로 사용합니다. H₀:μ=μ₀ 대 H₁:μ≠μ₀. 알려진 σ 대신 표본표준편차 s를 쓰는 빈도론적 검정통계량은 t=(x̄−μ₀)/(s/√n)이며 독립 정규표본·H₀ 아래 자유도 n−1의 t분포를 따릅니다.</p>
+<div class="equation">δ = (μ−μ₀)/σ<br>H₁: δ ∼ Cauchy(0,r), &nbsp; H₀: δ=0<br>두 가설 공통: π(σ²) ∝ 1/σ², &nbsp; σ²&gt;0</div>
+<div class="decode"><div><b>μ, μ₀, σ, s</b><br>뮤: 모집단 평균 · 뮤 영: 귀무 평균<br>시그마: 모집단 표준편차<br>에스: 표본 표준편차</div><div><b>δ, r</b><br>델타: 표준화 효과크기<br>알: 코시 사전분포의 척도<br>분산과는 다른 개념</div><div><b>π(σ²), ∝</b><br>파이: σ²에 대한 사전밀도<br>비례 기호: 정규화 상수 생략<br>dσ²를 기준으로 한 밀도</div></div>
+<p><b>문장으로 읽기:</b> 평균 차이를 표준편차 단위로 표현한 효과크기에 코시분포를 두고, 미지 분산을 두 가설에서 공통으로 다룹니다. <b>필요한 이유:</b> 평균 차이뿐 아니라 분산의 불확실성도 검정에 반영하기 위해서입니다.</p>
+<div class="grid"><div class="card"><h3>Cauchy Distribution · 코시분포</h3><p>중심 주변이 높지만 정규분포보다 꼬리가 두꺼운 분포입니다. 전체 확률은 1인 <b>proper 사전분포</b>입니다.</p><p>녹취의 “기댓값이 무한대”는 정확히는 <b>기댓값이 정의되지 않는다</b>로 고칩니다. 양·음의 꼬리 적분이 각각 발산하므로 대칭이라고 평균 0이 되는 것은 아닙니다.</p></div><div class="card"><h3>Improper Prior · 부적절 사전분포</h3><p>∫₀∞(1/v)dv가 발산하므로 v=σ²에 대한 1/v는 적분값을 1로 만들 수 없습니다.</p><p>임의의 improper 사전을 모형마다 다르게 넣어도 된다는 뜻이 아닙니다. 여기서는 <b>두 모형의 공통 분산에 같은 사전을 사용</b>하는 JZS 구성입니다. 일반적인 베이즈 요인에서는 정의되지 않은 상수가 문제가 됩니다.</p></div></div>
+<p><b>계층 표현(슬라이드):</b> r=1일 때 g∼Inverse-χ²₁, δ|g∼N(0,g)를 두면 주변분포가 Cauchy(0,1)입니다. g(지)는 양의 잠재 분산, Inverse-χ²₁(인버스 카이 스퀘어 원)은 자유도 1인 역카이제곱분포입니다. g=1/U, U∼χ²₁로 정의하면 척도가 명확합니다. 전체 주변가능도 적분 전개는 생략하고 아래 함수로 계산합니다.</p></article></section>
+<section class="section" id="practice"><h2>⑤ R 실습과 AI 활용</h2><p class="lead">녹취 속 R 시연을 재구성한 복습 코드입니다. 원본 .R 파일을 그대로 옮긴 것은 아닙니다.</p>
+<article class="card"><h3>1. 로그 가능도에서 사후확률로</h3><pre><code># X | theta ~ N(theta, sigma^2), theta = 0 or 10
+x &lt;- seq(0, 10, length.out = 401)
+sigma &lt;- 1
+prior1 &lt;- 0.5
+log_B10 &lt;- dnorm(x, mean = 10, sd = sigma, log = TRUE) -
+           dnorm(x, mean = 0, sd = sigma, log = TRUE)
+post1 &lt;- plogis(qlogis(prior1) + log_B10)
+matplot(x, cbind(1 - post1, post1), type = "l",
+        lty = c(2, 1), col = c("#ef6797", "#7357e8"),
+        xlab = "Observed x", ylab = "Posterior probability")
+legend("right", c("H0", "H1"), lty = c(2, 1),
+       col = c("#ef6797", "#7357e8"))</code></pre>
+<p>dnorm의 <code>sd</code>에는 분산이 아닌 표준편차를 넣습니다. 로그 밀도의 차이는 로그 B₁₀이고 <code>qlogis</code>는 로그 사전 오즈, <code>plogis</code>는 역변환입니다. 강의에서는 직접 exp를 계산할 때의 수치 문제를 강조했습니다. 함수 정의: <a href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Logistic.html">R 공식 Logistic 문서</a>.</p></article>
+<article class="card"><h3>2. sleep 자료: 동일한 10명의 차이를 비교한다</h3>
+<p><b>문제:</b> 두 수면제 조건의 평균 차이가 0인가? <b>입력:</b> 동일한 사람의 두 조건에서 측정한 수면 증가 시간. 20명의 독립 표본이 아니라 10쌍입니다. <a href="https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/sleep.html">R 공식 데이터 설명</a>.</p>
+<div class="visual flow"><span class="node">ID로 두 조건 연결</span><span class="arrow">→</span><span class="node">약 2 − 약 1<br>차이 10개</span><span class="arrow">→</span><span class="node hot">JZS 검정<br>B₁₀ 확인</span></div>
+<pre><code># 처음 한 번만: install.packages("BayesFactor")
+library(BayesFactor)
+data(sleep)
+# 행 순서에 의존하지 않고 ID로 두 조건을 맞춥니다.
+wide &lt;- reshape(sleep, idvar = "ID", timevar = "group",
+                direction = "wide")
+d &lt;- wide$extra.2 - wide$extra.1
+stopifnot(length(d) == 10L, !anyNA(d))
+t.test(d, mu = 0, alternative = "two.sided")
+bf_medium &lt;- ttestBF(x = d, mu = 0, rscale = "medium")
+bf_slide &lt;- ttestBF(x = d, mu = 0, rscale = 1)
+bf_medium
+bf_slide
+B10 &lt;- as.vector(bf_medium)[1]
+prior1 &lt;- 0.5
+post1 &lt;- plogis(qlogis(prior1) + log(B10))
+c(B10 = B10, posterior_H1 = post1)
+packageVersion("BayesFactor")</code></pre>
+<div class="practice"><b>슬라이드와 실습의 추가 확인 사항:</b> 슬라이드 21쪽은 r=1인 Cauchy(0,1)입니다. 패키지 기본 <code>rscale="medium"</code>은 r=√2/2이므로 <b>같은 사전분포가 아닙니다</b>. 위 코드는 두 설정을 모두 비교합니다. <a href="https://rdrr.io/cran/BayesFactor/man/ttestBF.html">패키지 저자의 ttestBF 도움말</a>.</div>
+<p>녹취에서 약 17.5가 언급되지만 원본 코드의 척도·출력은 확인되지 않았습니다. 이를 모든 설정의 재현값으로 고정하지 않습니다. <code>ttestBF</code> 출력은 H₁/H₀의 <b>베이즈 요인</b>이며, 동일한 가설 사전확률을 가정할 때만 사후 오즈와 같습니다. <a href="https://rdrr.io/cran/BayesFactor/f/vignettes/manual.Rmd">패키지 저자의 실습 설명</a>.</p>
+<p><b>해석:</b> 양측 대립가설의 지지는 “평균 차이가 0이 아니다”에 대한 증거입니다. 차이의 방향·크기는 효과크기 사후분포로 별도로 살핍니다. 정규성, 극단값, 사람 사이의 독립성, 사전 척도에 대한 민감도를 함께 확인합니다. 이 R 코드는 현재 환경에서 직접 실행하지 못했습니다.</p></article>
+<div class="grid"><article class="card"><span class="tag later">강의 밖 복습 보충</span><h3>AI 모델의 성능 차이 검토</h3><p><b>문제·입력:</b> 동일한 평가 단위에서 두 모델의 점수 차이를 구합니다.</p><p><b>배우는 것:</b> 평균 성능 차이와 불확실성.</p><p><b>출력:</b> 평균 차이에 대한 가설 증거와 효과크기 사후분포.</p><p><b>연결:</b> 대응 차이를 모형화해 H₀:차이 0과 H₁을 비교합니다.</p><p><b>한계:</b> 교차검증 폴드·중복 데이터는 서로 의존할 수 있어 독립 t 모형을 그대로 쓰면 안 됩니다. 검정 지지와 실용적 개선은 별도입니다.</p></article>
+<article class="card"><span class="tag later">강의 밖 복습 보충</span><h3>생성모형 관점의 이진 분류</h3><p><b>문제·입력:</b> 숫자 특성을 보고 두 클래스를 비교합니다.</p><p><b>배우는 것:</b> 클래스별 관측 분포와 사전확률.</p><p><b>출력:</b> 클래스 사후확률.</p><p><b>연결:</b> 두 클래스의 로그 밀도 비에 로그 사전 오즈를 더하고 로지스틱 함수로 확률화합니다.</p><p><b>한계:</b> 수업 예제는 알려진 두 평균을 비교합니다. 복잡한 이미지 분류나 학습된 신경망 전체를 이 정규모형 하나로 설명할 수는 없습니다.</p></article></div></section>
+<section class="section" id="mistakes"><h2>⑥ 자주 하는 오해와 시험 점검</h2><div class="stack">
+<div class="warning"><b>p=0.05이면 H₀의 확률이 5%다?</b><br>p값은 H₀ 아래의 꼬리확률입니다. 가설 사후확률에는 가설 사전확률과 두 가설의 주변가능도가 필요합니다.</div>
+<div class="warning"><b>단순가설의 가능도 비를 복합가설에도 그대로 쓰면 된다?</b><br>복합가설은 사전분포를 따라 가능도를 적분해야 합니다. 최대로 잘 맞는 θ 하나만 대입하면 다른 비교가 됩니다.</div>
+<div class="warning"><b>사전분포를 넓게 잡으면 항상 더 객관적이다?</b><br>사전 척도 τ나 r는 주변가능도에 영향을 줍니다. 문제에 맞는 척도와 민감도 확인이 필요합니다.</div>
+<div class="warning"><b>베이즈 요인이 크면 차이도 크다?</b><br>가설 증거와 효과크기는 다릅니다. 차이의 실제 크기와 불확실성을 함께 보고합니다.</div>
+</div><div class="checklist"><label><input type="checkbox"> πⱼ와 gⱼ가 서로 다른 사전정보임을 설명할 수 있다.</label><label><input type="checkbox"> 정규밀도 비에서 10x−50을 직접 유도할 수 있다.</label><label><input type="checkbox"> H₁에서 x̄의 분산에 τ²가 더해지는 이유를 설명할 수 있다.</label><label><input type="checkbox"> z 고정과 평균 차이 고정의 차이를 설명할 수 있다.</label><label><input type="checkbox"> sleep의 대응 구조와 rscale 설정을 확인할 수 있다.</label></div></section>
+<section class="section quiz" id="quiz"><h2>⑦ 확인 퀴즈 3문항</h2>
+<details><summary>Q1. θ=0 대 θ=10, 분산 1, 같은 사전확률일 때 x=5라면 두 가설의 사후확률은?</summary><div class="answer"><b>각각 0.5입니다.</b> log B₁₀=10×5−50=0이므로 B₁₀=1입니다. 사전 오즈 1이 그대로 유지됩니다.</div></details>
+<details><summary>Q2. 제프리스–린들리 역설에서 n을 늘릴 때 z와 |x̄−θ₀|를 둘 다 고정할 수 있나요?</summary><div class="answer"><b>σ가 고정되고 z가 0이 아니면 불가능합니다.</b> z=|x̄−θ₀|√n/σ이므로 z를 고정하려면 평균 차이가 1/√n에 비례해 줄어야 합니다.</div></details>
+<details><summary>Q3. sleep을 독립적인 20명으로 분석하고 기본 rscale로 실행하면 슬라이드의 JZS 예제를 그대로 재현한 걸까요?</summary><div class="answer"><b>아닙니다.</b> 동일한 10명의 대응 자료이므로 ID별 차이를 사용해야 합니다. 기본 medium은 r=√2/2이고 슬라이드의 Cauchy(0,1)은 r=1이므로 척도도 명시해야 합니다.</div></details></section>
+<section class="section"><h2>⑧ 이전·관련·다음 학습</h2><nav class="links"><a href="2026-09-08.html">← 이전 수업 · 9월 8일<br><b>충분통계량·가능도 원리·사후 오즈</b></a><a href="index.html">관련 수업 목록<br><b>데이터사이언스를 위한 베이지안추론</b></a><span class="card">다음 학습<br><b>후속 수업 자료 등록 예정</b><br>새 수업이 등록되면 연결합니다.</span></nav></section>
+<footer class="footer"><h2>출처와 문서 정보</h2><p><b>주자료:</b> 데이터사이언스를 위한 베이지안추론(9월 10일).txt, 녹취 00:00–51:06. 이성동 교수, 「2주차: 베이즈 가설 검정」 week2.pdf, 1–21쪽. 제공된 원자료를 읽어 재구성했습니다.</p>
+<p><b>정리 범위:</b> 수업 내용은 위 시간표에 대응합니다. 수식 전개·정확한 경계값·린들리 역설의 고정 조건·계산기·AI 사례·퀴즈는 복습 보충입니다. 원본 R 스크립트는 미확인으로, 실습 코드는 공식 함수 설명에 맞춰 재구성했습니다.</p>
+<p><b>외부 확인:</b> <a href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Logistic.html">R Logistic</a> · <a href="https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/sleep.html">R sleep</a> · <a href="https://rdrr.io/cran/BayesFactor/man/ttestBF.html">BayesFactor ttestBF 도움말</a> · <a href="https://rdrr.io/cran/BayesFactor/f/vignettes/manual.Rmd">BayesFactor 실습 문서</a>. 확인일: 2026-09-10.</p>
+<p>문서 ID: 2026-09-10 · 분야: 확률통계 · 난이도: 중급 · 선수지식: 베이지안추론 2026-09-08 · 관련: bayesian-inference-for-data-science · 다음: 후속 수업 예정</p><p>작성: AI Study · AI 보조 정리 · 검토자: 미지정 · 상태: draft · 수정일: 2026-09-11</p></footer>
+
+</main><script src="../../assets/inline-terms.js" defer></script><script>
+(()=>{
+"use strict";
+const el=id=>document.getElementById(id);
+const sigmoid=a=>a>=0?1/(1+Math.exp(-a)):Math.exp(a)/(1+Math.exp(a));
+const fmt=v=>v!==0&&(Math.abs(v)<0.0001||Math.abs(v)>=1e6)?v.toExponential(4):v.toFixed(4);
+const percent=p=>p<0.000001?"<0.0001%":p>0.999999?">99.9999%":(p*100).toFixed(4)+"%";
+const ns="http://www.w3.org/2000/svg";
+function shape(tag,attrs,text){const n=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,String(v));if(text!==undefined)n.textContent=text;return n;}
+function drawSimple(){
+const x=+el("obs").value,sd=+el("sd").value,prior=+el("prior").value;
+if(![x,sd,prior].every(Number.isFinite)||x<0||x>10||sd<=0||prior<=0||prior>=1){el("simple-output").textContent="입력 범위를 확인해 주세요.";return;}
+const logPrior=Math.log(prior)-Math.log1p(-prior),logBF=(10*x-50)/(sd*sd);
+const p1=sigmoid(logPrior+logBF),p0=sigmoid(-logPrior-logBF);
+el("obs-label").textContent=x.toFixed(2);
+const out=el("simple-output");out.dataset.p1=p1;out.dataset.p0=p0;out.dataset.logBf=logBF;
+out.textContent="log B₁₀ = "+fmt(logBF)+" · B₁₀ = "+fmt(Math.exp(logBF))+"\nP(H₁|x) = "+percent(p1)+" · P(H₀|x) = "+percent(p0);
+const g=el("simple-drawing");g.replaceChildren();
+const X=v=>58+v*54.6,Y=p=>258-220*p;
+for(const p of [0,0.5,1]){g.append(shape("line",{x1:58,x2:604,y1:Y(p),y2:Y(p),stroke:"#e4def7"}));g.append(shape("text",{x:48,y:Y(p)+5,"text-anchor":"end"},p.toFixed(1)));}
+g.append(shape("path",{d:"M58 38 V258 H604",fill:"none",stroke:"#69677c"}));
+for(const v of [0,2,4,6,8,10])g.append(shape("text",{x:X(v),y:280,"text-anchor":"middle"},v));
+g.append(shape("text",{x:331,y:304,"text-anchor":"middle"},"관측값 x"));
+g.append(shape("text",{x:58,y:22},"사후확률"));
+for(const j of [1,0]){let d="";for(let i=0;i<=400;i++){const a=logPrior+(10*(i/40)-50)/(sd*sd),p=sigmoid(j?a:-a);d+=(i?" L":"M")+X(i/40).toFixed(2)+" "+Y(p).toFixed(2);}
+g.append(shape("path",{d,fill:"none",stroke:j?"#7357e8":"#d74379","stroke-width":3,"stroke-dasharray":j?"none":"8 5"}));}
+g.append(shape("line",{x1:X(x),x2:X(x),y1:38,y2:258,stroke:"#69677c","stroke-dasharray":"3 4"}));
+g.append(shape("circle",{cx:X(x),cy:Y(p1),r:5,fill:"#7357e8"}));
+el("simple-desc").textContent="표준편차 "+sd+", H₁ 사전확률 "+percent(prior)+". 관측 x="+x+"에서 H₁ 사후확률 "+percent(p1)+". 보라 실선 H₁, 분홍 점선 H₀.";
+}
+function drawParadox(){
+const n=+el("sample-size").value,z=1.96;
+if(!Number.isInteger(n)||n<=0)return;
+const logBF=-0.5*Math.log1p(n)+0.5*z*z*n/(1+n),bf=Math.exp(logBF),p0=sigmoid(-logBF),delta=z/Math.sqrt(n);
+const out=el("paradox-output");out.dataset.bf=bf;out.dataset.p0=p0;out.dataset.delta=delta;
+out.textContent="n="+n.toLocaleString("ko-KR")+" · 평균 차이="+delta.toFixed(6)+"\nB₁₀="+fmt(bf)+" · P(H₀|x)="+percent(p0)+"\n양측 p값≈0.049996 (변하지 않음)";
+el("null-fill").style.width=(100*p0)+"%";el("null-bar").setAttribute("aria-label","H₀ 사후확률 "+percent(p0));
+}
+for(const id of ["obs","sd","prior"])el(id).addEventListener("input",drawSimple);
+el("sample-size").addEventListener("change",drawParadox);drawSimple();drawParadox();
+})();
+
+</script></body></html>

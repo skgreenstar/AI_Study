@@ -2,7 +2,7 @@
   "page": {
     "title": "대학교",
     "description": "학기별 과목과 시간표, 학습 자료를 중복 없이 관리합니다.",
-    "updated": "2026-09-10"
+    "updated": "2026-09-11"
   },
   "semesters": [
     {
@@ -88,7 +88,7 @@
             }
           ],
           "href": "bayesian-inference-for-data-science/index.html",
-          "status": "9월 8일 수업 기록"
+          "status": "9월 8일·10일 수업 기록"
         }
       ]
     }
