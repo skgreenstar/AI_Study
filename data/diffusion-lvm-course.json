@@ -12,7 +12,7 @@
     },
     "description": "디퓨전·Score Matching·Flow Matching에서 잠재공간, 가이던스, 이미지 생성 구조와 모델 학습까지 연결합니다.",
     "prerequisiteHref": "../../topics/diffusion-prerequisites.html",
-    "updated": "2026-09-09"
+    "updated": "2026-09-12"
   },
   "weeks": [
     {
@@ -32,8 +32,8 @@
     },
     {
       "week": 1,
-      "title": "Diffusion·DDPM·DDIM",
-      "subtitle": "이미지 확률분포·Forward/Reverse Process·ELBO·KL Divergence·Noise Prediction·빠른 Sampling",
+      "title": "Diffusion Denoising·DDPM 학습",
+      "subtitle": "Gaussian Forward Process·Reverse Posterior·ELBO·KL·Mean Matching·Noise Prediction Loss·Training Recipe·DDIM",
       "icon": "🌫️",
       "color": "#7657e8",
       "href": "week1.html",
@@ -42,7 +42,10 @@
         "Diffusion",
         "DDPM",
         "ELBO·KL",
-        "DDIM"
+        "DDIM",
+        "Reverse Posterior",
+        "Noise Prediction",
+        "Denoising Training"
       ],
       "slides": "https://cme296.stanford.edu/slides/spring26-cme296-lecture1.pdf",
       "classWeeks": [
