@@ -11,7 +11,7 @@
       "url": "https://cme295.stanford.edu/"
     },
     "description": "토큰과 Attention에서 Transformer 구조, LLM 학습·튜닝·추론과 Agentic LLM까지 연결합니다.",
-    "updated": "2026-09-09"
+    "updated": "2026-09-12"
   },
   "weeks": [
     {
@@ -31,8 +31,8 @@
     },
     {
       "week": 1,
-      "title": "NLP·Tokenization·Word2Vec·Attention의 탄생",
-      "subtitle": "AI 계층 지도·NLP 과제와 평가·토큰화·임베딩·RNN/LSTM 한계·Seq2Seq Attention",
+      "title": "NLP·Attention에서 Transformer 원리까지",
+      "subtitle": "토큰화·임베딩·RNN/LSTM 한계·QKV·Self-Attention·멀티헤드·위치정보·Encoder/Decoder·학습과 추론",
       "icon": "🔦",
       "color": "#7357e8",
       "href": "week1.html",
@@ -41,7 +41,10 @@
         "Tokenization",
         "Word2Vec",
         "RNN·LSTM",
-        "Attention"
+        "Attention",
+        "Q·K·V",
+        "Self-Attention",
+        "Encoder·Decoder"
       ],
       "slides": "https://cme295.stanford.edu/slides/fall25-cme295-lecture1.pdf",
       "classWeeks": [
