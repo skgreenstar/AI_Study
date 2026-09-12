@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>1차시 · NLP에서 Attention까지 | AI Study</title>
+<title>1–2차시 · NLP에서 Transformer 원리까지 | AI Study</title>
 <meta name="description" content="AI와 LLM의 관계, NLP 과제와 평가, 토큰화, Word2Vec, RNN과 Attention의 탄생을 시각적으로 배우는 트랜스포머 1차시">
 <link rel="stylesheet" href="../../assets/inline-terms.css">
 <style>
@@ -300,9 +300,9 @@ body{margin:0;word-break:keep-all;overflow-wrap:break-word;background:radial-gra
 <main class="wrap">
 <a class="back" href="index.html">← 트랜스포머와 거대언어모델 · 주차 목록</a>
 <header class="hero">
-<div class="kicker">TRANSFORMER & LLM · WEEK 1 · VISUAL STUDY</div>
-<h1>언어를 숫자로 바꾸고<br>필요한 기억에 집중한다</h1>
-<p>AI의 큰 지도에서 LLM의 위치를 찾고, 자연어 과제와 평가의 한계를 지나 토큰·임베딩·RNN을 거쳐 Attention이 왜 등장했는지 연결합니다.</p>
+<div class="kicker">TRANSFORMER & LLM · CLASS 1–2 · VISUAL STUDY</div>
+<h1>언어를 숫자로 바꾸고<br>Transformer로 연결한다</h1>
+<p>AI의 큰 지도에서 토큰·임베딩·RNN을 거쳐 Attention이 왜 등장했는지 이해하고, Q·K·V 수식부터 Encoder·Decoder와 학습·추론까지 Transformer 전체 원리를 연결합니다.</p>
 <div class="badges">
 <span class="badge">AI→ML→DL→Transformer</span>
 <span class="badge">NLP Tasks</span>
@@ -310,6 +310,8 @@ body{margin:0;word-break:keep-all;overflow-wrap:break-word;background:radial-gra
 <span class="badge">Word2Vec</span>
 <span class="badge">RNN·LSTM</span>
 <span class="badge">Attention</span>
+<span class="badge">Q·K·V</span>
+<span class="badge">Encoder·Decoder</span>
 </div>
 </header>
 <nav class="nav">
@@ -323,6 +325,7 @@ body{margin:0;word-break:keep-all;overflow-wrap:break-word;background:radial-gra
 <a href="#history">발전사</a>
 <a href="#rnn">RNN 한계</a>
 <a href="#attention">Attention</a>
+<a href="#transformer-deep">Transformer 심화</a>
 <a href="#quiz">복습</a>
 </nav>
 <section class="section" id="map">
@@ -708,6 +711,150 @@ body{margin:0;word-break:keep-all;overflow-wrap:break-word;background:radial-gra
 <div class="callout">
 <b>다음 연결:</b> 2014년 Seq2Seq에 Attention을 얹어 번역의 병목을 줄였고, 2017년 Transformer는 recurrence를 중심에서 제거하고 self-attention으로 token 관계를 병렬 처리했습니다.</div>
 </section>
+
+<section class="section" id="transformer-deep">
+<h2>🧠 10. 2차시 심화: Self-Attention에서 Transformer까지</h2>
+<p class="lead">오늘 수업의 중심입니다. “과거 정보를 직접 본다”는 Attention 아이디어가 어떻게 행렬 계산이 되고, Encoder·Decoder 전체 구조와 다음 토큰 생성으로 이어지는지 한 번에 연결합니다.</p>
+<div class="callout"><b>이번 차시의 네 문장:</b> Attention은 필요한 정보를 직접 조회합니다. Self-Attention은 같은 문장 안에서 Q·K·V를 만듭니다. Transformer는 여기에 위치정보·잔차연결·정규화·FFN을 더합니다. 학습은 토큰 위치를 병렬 계산할 수 있지만 자기회귀 추론은 앞 토큰을 기다려야 합니다.</div>
+
+<article class="lecture-note" style="margin-top:16px">
+<span class="lecture-label">PART A · 1980s → 2017</span>
+<h3>왜 RNN을 보완하는 데서 끝내지 않고 없앴을까?</h3>
+<div class="walk">
+<div class="walk-step"><b>1980s · RNN</b>직전 hidden state를 받아 순서대로 기억</div>
+<div class="walk-step"><b>1997 · LSTM</b>gate와 cell state로 장기 기억을 개선</div>
+<div class="walk-step"><b>2014 · Attention</b>decoder가 encoder의 모든 위치를 직접 조회</div>
+<div class="walk-step"><b>2017 · Transformer</b>recurrence를 제거하고 attention 중심으로 병렬 학습</div>
+</div>
+<div class="grid g2" style="margin-top:14px">
+<div class="card"><h3>RNN의 정보 경로</h3><div class="formula">h₁ → h₂ → h₃ → … → hₙ</div><p>첫 토큰 정보가 마지막까지 가려면 여러 변환을 통과합니다. 장거리 의존성에서 정보와 gradient가 약해질 수 있고, hₜ를 계산하려면 hₜ₋₁을 기다려야 합니다.</p></div>
+<div class="card"><h3>Attention의 정보 경로</h3><div class="formula">현재 query ─────────→ 필요한 모든 key/value</div><p>멀리 있는 위치도 한 번의 attention 연산으로 직접 참조합니다. 2014년 Bahdanau Attention은 고정 길이 context vector 병목을 완화했습니다.</p></div>
+</div>
+<div class="why"><b>정확한 역사 해석:</b> 수업에서 소개된 “TPU가 RNN을 못 돌려 Transformer가 탄생했다”는 이야기는 병렬화 동기를 기억하기 좋은 일화이지만 공식 원인으로 단정하면 안 됩니다. 원 논문이 명시한 핵심은 recurrence와 convolution을 제거하여 더 병렬화하기 쉽고 훈련 시간을 줄이는 구조입니다. 1세대 TPU 논문도 LSTM/RNN 추론 결과를 보고했습니다.</div>
+</article>
+
+<article class="lecture-note" style="margin-top:16px">
+<span class="lecture-label">PART B · QUERY · KEY · VALUE</span>
+<h3>Q·K·V는 “검색창 · 색인 · 실제 내용”이다</h3>
+<div class="term-primer">
+<div><b>Query</b><small>쿼리 · /ˈkwɪri/ · 질의</small>현재 토큰이 지금 찾고 싶은 정보</div>
+<div><b>Key</b><small>키 · /kiː/ · 검색표</small>각 토큰이 비교를 위해 내놓은 주소·특징</div>
+<div><b>Value</b><small>밸류 · /ˈvæljuː/ · 실제 값</small>선택되었을 때 가져와 섞을 내용</div>
+</div>
+<div class="grid g2" style="margin-top:14px">
+<div class="card"><h3>도서관 비유</h3><p><b>Query</b>는 “Transformer 원리를 설명하는 책을 찾습니다”라는 검색문입니다. <b>Key</b>는 책마다 붙은 제목·키워드이고, <b>Value</b>는 책 안의 실제 본문입니다.</p><p>검색문과 색인이 잘 맞는 책일수록 높은 가중치를 받고 그 책의 본문을 더 많이 가져옵니다.</p><div class="why"><b>비유의 한계:</b> 실제 Q·K·V는 사람이 정한 문장이 아니라 학습된 선형변환으로 만들어지는 연속 벡터입니다.</div></div>
+<div class="card"><h3>Self의 정확한 뜻</h3><div class="formula">Q = XW<sup>Q</sup><br>K = XW<sup>K</sup><br>V = XW<sup>V</sup></div><p>Q·K·V가 모두 같은 입력 시퀀스 X에서 출발하므로 <b>Self-Attention</b>입니다. 하지만 서로 다른 W를 거치므로 Q=K=V라는 뜻은 아닙니다.</p></div>
+</div>
+</article>
+
+<article class="lecture-note" style="margin-top:16px">
+<span class="lecture-label">PART C · SCALED DOT-PRODUCT ATTENTION</span>
+<h3>한 줄 수식을 네 번의 계산으로 해체하기</h3>
+<div class="formula">Attention(Q,K,V) = softmax( QK<sup>T</sup> / √d<sub>k</sub> )V</div>
+<div class="walk" style="margin-top:14px">
+<div class="walk-step"><b>① QKᵀ</b>모든 토큰 쌍의 관련도 logit</div>
+<div class="walk-step"><b>② ÷ √dₖ</b>내적 크기를 안정적인 범위로 조정</div>
+<div class="walk-step"><b>③ softmax</b>각 행의 합이 1인 attention weight</div>
+<div class="walk-step"><b>④ weight × V</b>필요한 실제 내용을 가중합</div>
+</div>
+<div class="grid g2" style="margin-top:14px">
+<div class="card"><h3>행렬의 모양</h3><div class="formula">Q: n×dₖ &nbsp; Kᵀ: dₖ×n<br>QKᵀ: <span class="hi">n×n</span><br>(n×n)V(n×dᵥ) → n×dᵥ</div><p>n×n 행렬의 i행 j열은 “i번째 query가 j번째 key를 얼마나 관련 있다고 보는가?”입니다. 행렬곱 한 번으로 모든 토큰 쌍을 계산하므로 GPU·TPU의 병렬 연산에 잘 맞습니다.</p></div>
+<div class="card"><h3>왜 √dₖ로 나눌까?</h3><p>dₖ가 커질수록 여러 성분 곱의 합인 내적값도 커지는 경향이 있습니다. 큰 logit은 softmax를 지나 지나치게 뾰족한 확률을 만들고 gradient를 작게 만들 수 있습니다.</p><div class="formula">내적의 분산 ≈ dₖ<br>√dₖ로 나눈 뒤 분산 규모 ≈ 1</div><p><b>한 줄 결론:</b> scaling은 관련도를 없애는 것이 아니라 softmax가 학습하기 좋은 숫자 범위로 맞춥니다.</p></div>
+</div>
+<div class="why"><b>용어를 안전하게 구분:</b> QKᵀ/√dₖ는 attention <b>logits 또는 raw scores</b>, softmax 결과는 attention <b>weights</b>, weights×V는 attention <b>output/context vector</b>라고 부르면 혼동이 가장 적습니다. 자료마다 “attention score”의 범위는 다르게 쓰일 수 있습니다.</div>
+</article>
+
+<article class="lecture-note" style="margin-top:16px">
+<span class="lecture-label">PART D · MULTI-HEAD ATTENTION</span>
+<h3>한 명의 독해자가 아니라 서로 다른 관점의 독해팀</h3>
+<div class="formula">headᵢ = Attention(QWᵢ<sup>Q</sup>, KWᵢ<sup>K</sup>, VWᵢ<sup>V</sup>)<br>MultiHead = Concat(head₁,…,headₕ)W<sup>O</sup></div>
+<div class="grid g3" style="margin-top:14px">
+<div class="card"><h3>Head A</h3><p>주어와 동사의 관계처럼 문법적 의존성을 포착할 수 있습니다.</p></div>
+<div class="card"><h3>Head B</h3><p>수식어와 명사 또는 멀리 떨어진 참조 관계를 볼 수 있습니다.</p></div>
+<div class="card"><h3>Head C</h3><p>가까운 위치나 구두점 같은 국소 패턴에 집중할 수 있습니다.</p></div>
+</div>
+<p>각 head가 반드시 사람이 이름 붙일 수 있는 하나의 역할만 맡는 것은 아닙니다. 역할 분화가 관찰되기도 하지만 중복되거나 해석하기 어려운 head도 있습니다. 보통 dₖ=dᵥ=d_model/h로 두어 h개 출력을 이어 붙인 뒤에도 전체 폭이 d_model이 되게 합니다.</p>
+<div class="callout"><b>원 논문의 숫자:</b> Transformer-base는 encoder 6층 + decoder 6층, d_model=512, head 8개, head당 64차원입니다. 녹취의 “12/24층”은 BERT-base/large 등과 섞인 설명으로 보입니다.</div>
+</article>
+
+<article class="lecture-note" style="margin-top:16px">
+<span class="lecture-label">PART E · POSITIONAL INFORMATION</span>
+<h3>Attention은 관계를 보지만 순서는 저절로 모른다</h3>
+<div class="grid g2">
+<div class="card"><h3>순서가 의미를 바꾼다</h3><p><b>개가 사람을 물었다</b><br><b>사람이 개를 물었다</b></p><p>단어 집합이 비슷해도 순서가 바뀌면 의미가 뒤집힙니다. 위치정보가 없는 self-attention은 입력 순서를 함께 바꾸면 출력도 같은 방식으로 바뀌는 <b>permutation equivariant</b> 성질을 가집니다.</p></div>
+<div class="card"><h3>원 Transformer의 sinusoidal 방식</h3><div class="formula">PE(pos,2i)=sin(pos/10000<sup>2i/d</sup>)<br>PE(pos,2i+1)=cos(pos/10000<sup>2i/d</sup>)</div><p>각 위치에 서로 다른 주파수의 sin·cos 무늬를 만들고 token embedding에 더합니다. pos는 위치, i는 차원 번호, d는 embedding 차원입니다.</p></div>
+</div>
+<p>현대 모델은 learned absolute embedding, relative position bias, RoPE, ALiBi 등 다양한 방식을 사용합니다. 수업의 “도메인에 맞는 위치 구조가 Transformer의 범용성을 만든다”는 통찰은 중요합니다. 다만 ViT는 positional encoding만 바꾸는 것이 아니라 이미지를 patch로 자르고 투영하는 입력 설계도 함께 바꿉니다.</p>
+</article>
+
+<article class="lecture-note" style="margin-top:16px">
+<span class="lecture-label">PART F · ENCODER · DECODER · CROSS-ATTENTION</span>
+<h3>Encoder는 읽고, Decoder는 쓰며, Cross-Attention은 둘을 연결한다</h3>
+<div class="grid g3">
+<div class="card"><h3>Encoder Self-Attention</h3><p>Q·K·V 모두 입력 문장에서 옵니다. 일반적인 encoder는 왼쪽과 오른쪽 문맥을 모두 봅니다.</p></div>
+<div class="card"><h3>Decoder Self-Attention</h3><p>Q·K·V 모두 지금까지의 출력에서 옵니다. causal mask로 미래 정답을 가립니다.</p></div>
+<div class="card"><h3>Cross-Attention</h3><p>Q는 decoder, K·V는 encoder 출력에서 옵니다. 번역할 다음 단어가 원문의 어느 부분을 볼지 결정합니다.</p></div>
+</div>
+<div class="walk" style="margin-top:14px">
+<div class="walk-step"><b>Token embedding + Position</b>무엇이며 어디에 있는가</div>
+<div class="walk-step"><b>Attention + Add & Norm</b>토큰 사이 정보 교환</div>
+<div class="walk-step"><b>FFN + Add & Norm</b>각 토큰 내부 정보 가공</div>
+<div class="walk-step"><b>Linear + Softmax</b>다음 토큰의 vocabulary 확률</div>
+</div>
+<h3>Attention 외에 FFN·Residual·LayerNorm이 필요한 이유</h3>
+<div class="grid g3">
+<div class="card"><b>FFN</b><p>Attention으로 섞인 정보를 각 위치에서 동일한 MLP로 비선형 가공합니다. 원 논문은 512→2048→512 구조를 썼습니다.</p></div>
+<div class="card"><b>Residual connection</b><p>x에 sublayer 출력을 더해 원래 정보와 gradient가 깊은 층을 통과하기 쉽게 합니다.</p></div>
+<div class="card"><b>LayerNorm</b><p>벡터의 숫자 규모를 정리해 깊은 네트워크의 학습을 안정화합니다. 원 논문은 Post-LN, 많은 현대 LLM은 Pre-LN 계열을 사용합니다.</p></div>
+</div>
+</article>
+
+<article class="lecture-note" style="margin-top:16px">
+<span class="lecture-label">PART G · TRAINING VS INFERENCE</span>
+<h3>“병렬화된다”는 말의 정확한 범위</h3>
+<div class="grid g2">
+<div class="card"><h3>학습 · Teacher Forcing</h3><div class="formula">입력: [BOS], Un, ours, …<br>정답: Un, ours, en, …</div><p>정답 문장을 한 칸 오른쪽으로 이동해 한꺼번에 넣습니다. causal mask가 미래 토큰을 가리므로 정답 유출 없이 모든 위치의 loss를 동시에 계산할 수 있습니다.</p></div>
+<div class="card"><h3>추론 · Autoregressive Decoding</h3><div class="formula">[BOS] → Un → ours → … → [EOS]</div><p>아직 다음 정답이 없으므로 방금 만든 토큰을 다시 입력해야 합니다. 시간축 전체를 한꺼번에 생성할 수 없지만 이전 K·V를 cache해 반복 계산을 줄일 수 있습니다.</p></div>
+</div>
+<div class="why"><b>한 줄 결론:</b> Transformer의 큰 혁신은 <b>학습 시 시퀀스 위치 병렬화</b>입니다. 자기회귀 생성 추론까지 완전히 병렬이라는 뜻은 아닙니다.</div>
+<h3>다음 토큰 생성은 분류인가?</h3><p>마지막 linear layer는 d_model 차원의 상태를 vocabulary 크기 V의 logits로 바꾸고 softmax로 각 토큰의 확률을 만듭니다. 한 시점만 보면 V개 class 중 하나를 고르는 분류와 비슷합니다. 그러나 선택한 토큰을 다시 조건으로 넣어 가변 길이 시퀀스를 만드는 <b>자기회귀 과정</b>까지가 생성 모델의 전체 동작입니다.</p>
+</article>
+
+<article class="lecture-note" style="margin-top:16px">
+<span class="lecture-label">PART H · LABEL SMOOTHING · MODEL FAMILIES</span>
+<h3>과신을 낮추고, 목적에 맞는 구조를 고른다</h3>
+<div class="grid g2">
+<div class="card"><h3>Label Smoothing</h3><div class="formula">one-hot [1,0,0,…]<br>→ [1−ε, ε/(V−1), …]</div><p>정답 확률을 정확히 1로 강요하지 않아 과도한 확신을 줄이는 regularization입니다. 원 Transformer는 ε=0.1을 사용했고 정확도와 BLEU가 개선됐다고 보고했습니다.</p></div>
+<div class="card"><h3>Decoder의 선택</h3><p>항상 최고 확률만 고르면 greedy decoding입니다. temperature, top-k, top-p, beam search 등으로 정확성·다양성·탐색 범위를 조절할 수 있습니다.</p></div>
+</div>
+<table class="compare" style="margin-top:14px"><thead><tr><th>구조</th><th>보는 범위</th><th>강점</th><th>대표</th></tr></thead><tbody>
+<tr><td>Encoder-only</td><td>양방향 전체 문맥</td><td>분류·검색 표현·정보 추출</td><td>BERT</td></tr>
+<tr><td>Decoder-only</td><td>과거 토큰만</td><td>자유 생성·대화·코드</td><td>GPT·Llama</td></tr>
+<tr><td>Encoder–Decoder</td><td>입력 전체 + 출력 과거</td><td>번역·요약·조건부 변환</td><td>T5</td></tr>
+</tbody></table>
+<p>“최근 LLM은 encoder가 없다”기보다는 <b>범용 생성 LLM에서 decoder-only가 지배적</b>이라고 표현하는 편이 정확합니다. Encoder-only와 encoder–decoder 모델도 목적에 따라 계속 사용됩니다.</p>
+</article>
+
+<article class="lecture-note" style="margin-top:16px">
+<span class="lecture-label">PART I · 녹취 오개념 교정</span>
+<h3>강의의 의도는 살리고, 그대로 외우면 위험한 부분은 분리하기</h3>
+<table class="compare"><thead><tr><th>녹취 표현</th><th>정확한 정리</th></tr></thead><tbody>
+<tr><td>R&amp;B·RNA</td><td>음성 인식 오류이며 문맥상 <b>RNN</b>입니다.</td></tr>
+<tr><td>내적 결과가 attention weight</td><td>보통 내적·scaling 결과는 logit, softmax 이후가 weight, weight×V가 output입니다.</td></tr>
+<tr><td>원 Transformer 12/24 layers</td><td>원 논문은 encoder 6층과 decoder 6층입니다.</td></tr>
+<tr><td>d_model은 보통 7068</td><td>음성 인식 또는 착오입니다. 원 논문은 512이고 현대 모델은 구조마다 다릅니다.</td></tr>
+<tr><td>GPT-2가 최초의 LLM</td><td>LLM 경계에는 합의가 없어 최초라고 단정하기 어렵습니다. GPT-2는 scaling과 zero-shot 가능성을 각인한 중요한 이정표입니다.</td></tr>
+<tr><td>각 head가 관사·동사를 하나씩 담당</td><td>그런 패턴이 관찰될 수 있지만 필연은 아니며 중복·비해석적 head도 존재합니다.</td></tr>
+</tbody></table>
+</article>
+
+<article class="lecture-note" style="margin-top:16px">
+<span class="lecture-label">PART J · 30초 출력 연습</span>
+<h3>내 말로 설명하면 진짜 이해한 것이다</h3>
+<div class="callout"><b>모범 설명:</b> RNN은 정보를 순서대로 전달해서 긴 문장에서 초기 정보가 약해지고 병렬화가 어렵습니다. Attention은 현재 토큰의 Query와 모든 토큰의 Key를 비교해 가중치를 만들고, 그 가중치로 Value를 합칩니다. Transformer는 이 Self-Attention에 위치정보, FFN, 잔차연결, 정규화를 결합합니다. Encoder는 입력 전체를 이해하고 Decoder는 미래를 가린 채 다음 토큰을 생성하며, 번역 구조에서는 Cross-Attention으로 Encoder 정보를 가져옵니다. 학습은 Teacher Forcing으로 위치별 병렬 계산이 가능하지만 추론은 자기회귀라 순차적입니다.</div>
+</article>
+</section>
+
 <section class="section" id="lecture-detail">
 <h2>🎙️ 교수님 강의 상세 복습</h2>
 <p class="lead">위의 개념 지도에 더해, 수업에서 강조한 설명의 맥락과 사례를 순서대로 다시 풀어낸 영역입니다. 강의 취지는 유지하고 용어·연도는 정확한 표기로 보완했습니다.</p>
