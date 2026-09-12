@@ -329,7 +329,7 @@ body{word-break:keep-all;overflow-wrap:break-word;margin:0;background:radial-gra
 </nav>
 
 <section class="section" id="map">
-<h2>🗺️ 1차시 전체 지도</h2>
+<h2>🗺️ 1–2차시 전체 지도</h2>
 <p class="lead">Diffusion은 복잡한 이미지를 한 번에 만드는 대신, 아주 쉬운 작은 복원 문제를 여러 번 풉니다.</p>
 <div class="flow">
 <div class="node" style="background:var(--mint)">
@@ -372,7 +372,7 @@ body{word-break:keep-all;overflow-wrap:break-word;margin:0;background:radial-gra
 <h2>0. 수식 전에 잡는 준비운동</h2>
 <p class="lead">역사와 수업 지도를 먼저 보고, 어려운 세부 유도는 각 개념 아래의 ‘심화 펼쳐보기’에서 필요할 때만 확인하세요.</p>
 <div class="level-guide"><span class="level-easy">● 기본: 그림·직관부터 읽기</span><span class="level-deep">＋ 심화: 수식은 접어서 선택 학습</span></div>
-<div class="lecture-map" aria-label="1차시 강의 흐름">
+<div class="lecture-map" aria-label="1–2차시 강의 흐름">
 <div class="lecture-stop"><span class="icon">🏛️</span><b>생성모델 역사</b><small>VAE · GAN · Diffusion</small></div>
 <div class="lecture-stop"><span class="icon">🎯</span><b>무엇을 배우나</b><small>조건 → 구조 → 학습 → 생성 → 평가</small></div>
 <div class="lecture-stop"><span class="icon">🗺️</span><b>데이터 분포</b><small>관측 샘플 뒤의 p<sub>data</sub></small></div>
@@ -390,67 +390,181 @@ body{word-break:keep-all;overflow-wrap:break-word;margin:0;background:radial-gra
 <div class="joint"><div class="tile" style="background:var(--mint)"><b>관측한 고양이 이미지</b><br><small>p<sub>data</sub>에서 나온 유한한 샘플</small></div><div class="arrow">→</div><div class="tile" style="background:var(--violet)"><b>학습한 생성모델</b><br><small>보지 못한 새 샘플 생성</small></div></div>
 <div class="formula" style="margin-top:14px">관측: x<sup>(1)</sup>, …, x<sup>(N)</sup> ~ p<sub>data</sub>(x)<br>목표: p<sub>θ</sub>(x) ≈ p<sub>data</sub>(x) &nbsp;→&nbsp; x<sub>new</sub> ~ p<sub>θ</sub>(x)</div>
 <p><b>핵심:</b> 세상의 모든 고양이 이미지를 직접 모으는 것이 아니라, 우리가 본 이미지들이 나온 <em>보이지 않는 분포</em>를 모델이 근사하게 합니다. 조건이 없는 생성을 먼저 이해한 뒤 텍스트·이미지 같은 조건을 붙입니다.</p>
-<h3>④ 노이즈에서 조각하는 이유</h3>
-<div class="signal-mix"><div class="signal-part" style="background:linear-gradient(135deg,var(--mint),var(--green))"><b>남은 원본 신호</b><span>√ᾱ<sub>t</sub> x₀</span></div><div class="signal-part" style="background:linear-gradient(135deg,var(--blue),var(--violet))"><b>새로 섞인 노이즈</b><span>√(1-ᾱ<sub>t</sub>) ε</span></div></div>
-<div class="formula">x<sub>t</sub> = √ᾱ<sub>t</sub>x₀ + √(1-ᾱ<sub>t</sub>)ε, &nbsp; ε ~ N(0,I)<br>α<sub>t</sub>=1-β<sub>t</sub>, &nbsp; ᾱ<sub>t</sub>=∏<sub>s=1</sub><sup>t</sup>α<sub>s</sub></div>
-<p>Gaussian noise는 만들기 쉽고 매번 다른 값을 뽑을 수 있습니다. 정방향에서는 깨끗한 이미지 x₀를 조금씩 지우고, 역방향에서는 p<sub>θ</sub>(x<sub>t-1</sub>|x<sub>t</sub>)가 그 한 단계를 되돌리도록 학습합니다. DDPM의 대표 설정은 T=1000입니다.</p>
-<p class="truth-note"><b>교수님의 조각 비유를 정확히 읽기:</b> 노이즈 안에 완성 이미지가 미리 들어 있는 것은 아닙니다. 모델이 학습한 데이터 분포의 방향을 따라 불가능해 보이는 픽셀 조합을 단계적으로 자연스러운 샘플로 옮깁니다.</p>
-<h3>⑤ ᾱ<sub>t</sub>가 만드는 ‘한 번에 점프’</h3>
-<div class="grid g3"><article class="card"><h3>x₀ → x₁</h3><p>√α₁만큼 신호 유지</p></article><article class="card"><h3>x₁ → x₂</h3><p>다시 √α₂만큼 유지</p></article><article class="card"><h3>x₀ → x<sub>t</sub></h3><p>누적하면 √(α₁···α<sub>t</sub>) = √ᾱ<sub>t</sub></p></article></div>
-<p>독립 Gaussian들의 선형결합도 Gaussian이고, 분산은 계수의 제곱에 따라 합쳐집니다. 그래서 모든 중간 이미지를 실제로 만들지 않아도 임의 시점 x<sub>t</sub>를 x₀에서 직접 샘플링할 수 있습니다. 이것이 학습 때 무작위 t를 효율적으로 고르는 기반입니다.</p>
-<h3>⑥ 교수님이 멈춰 설명한 확률 3종 세트</h3>
-<div class="prob-canvas"><article class="prob-card"><b>결합확률 · Joint</b><div class="prob-sketch joint"></div><div class="formula">p(x₁,x₂)</div><p>두 변수를 동시에 보는 전체 지형</p></article><article class="prob-card"><b>조건부확률 · Conditional</b><div class="prob-sketch conditional"></div><div class="formula">p(x₂|x₁)</div><p>x₁을 고정하고 잘라 본 한 단면</p></article><article class="prob-card"><b>주변확률 · Marginal</b><div class="prob-sketch marginal"></div><div class="formula">p(x₁)=∫p(x₁,x₂)dx₂</div><p>x₂ 방향을 모두 더해 접은 그림자</p></article></div>
-<div class="formula" style="margin-top:14px">연쇄법칙: p(x₁,…,x<sub>T</sub>) = p(x₁)∏<sub>t=2</sub><sup>T</sup>p(x<sub>t</sub>|x<sub>1:t-1</sub>)<br>Markov 성질을 쓰면: q(x<sub>1:T</sub>|x₀)=∏<sub>t=1</sub><sup>T</sup>q(x<sub>t</sub>|x<sub>t-1</sub>)</div>
-<p class="truth-note"><b>중요한 정확성 보완:</b> “분류의 변수들은 모두 독립”이라고 일반화할 수는 없습니다. 강의의 핵심은 여기서 x₀→x₁→…→x<sub>T</sub>가 서로 연결된 Markov chain이므로, 조건부 항을 함부로 없앨 수 없다는 점입니다.</p>
-<h3>⑦ 우도(Likelihood)는 무엇이고, 왜 바로 계산하지 못하나</h3>
-<div class="likelihood-card"><div class="likelihood-title">우도 · Likelihood <span class="likelihood-pron">라이클리후드 · /ˈlaɪklihʊd/</span></div><p><b>한글 뜻:</b> 현재 모델이 우리가 실제로 관측한 데이터를 얼마나 그럴듯하게 설명하는지를 나타내는 값입니다.</p><div class="likelihood-view"><div class="likelihood-fixed"><b>실제 데이터 x₀는 고정</b><br><small>예: 실제 고양이 사진</small></div><div class="likelihood-arrow">→</div><div class="likelihood-score"><b>모델 θ를 바꿔 비교</b><br><small>어떤 모델이 이 사진에 더 높은 p<sub>θ</sub>(x₀)를 주는가?</small></div></div><p><b>확률과 차이:</b> 확률은 모델을 고정하고 “어떤 데이터가 나올까?”를 묻습니다. 우도는 관측 데이터를 고정하고 “어떤 모델이 이 데이터를 가장 잘 설명할까?”를 묻습니다.</p><div class="formula">Likelihood: L(θ;x₀)=p<sub>θ</sub>(x₀)<br>Maximum Likelihood: θ*=arg max<sub>θ</sub> p<sub>θ</sub>(x₀)</div></div>
-<div class="path-cloud"><div class="path-end" style="background:var(--mint)">x₀<br><small>관측 이미지</small></div><div class="paths"></div><div class="path-end" style="background:var(--violet)">x<sub>T</sub><br><small>노이즈</small></div></div>
-<div class="formula" style="margin-top:14px">p<sub>θ</sub>(x₀) = ∫ p<sub>θ</sub>(x<sub>0:T</sub>) dx<sub>1:T</sub><br>θ* = arg max<sub>θ</sub> E<sub>x₀~p_data</sub>[ log p<sub>θ</sub>(x₀) ]</div>
-<p><b>로그우도(Log-likelihood, 로그 라이클리후드)</b>는 우도에 로그를 취한 값입니다. 로그는 매우 작은 값의 계산을 안정시키고 여러 데이터의 확률 곱을 덧셈으로 바꿉니다. 하지만 중간 잠재상태 x₁,…,x<sub>T</sub>의 가능한 경로를 모두 적분해야 하므로 p<sub>θ</sub>(x₀)는 직접 계산하기 어렵습니다. 이것이 <b>intractable(계산이 사실상 불가능한)</b>하다는 뜻입니다.</p>
-<div class="joint"><div class="tile" style="background:var(--red)"><b>실제 이미지의 우도</b><br><small>모델의 데이터 설명 점수 · 직접 계산 어려움</small></div><div class="arrow">→</div><div class="tile" style="background:var(--amber)"><b>계산 가능한 하한</b><br><small>ELBO로 우회</small></div></div>
-<p class="lecture-quote"><b>1차시의 도착점:</b> “실제 이미지에 모델이 부여하는 설명 점수 p<sub>θ</sub>(x₀)를 직접 계산하기 어려우니, 계산 가능한 lower bound를 찾아 최대화하자.” 아래 기존 ELBO·DDPM·DDIM 구역은 이 문제 설정을 이어서 더 깊게 확장한 학습자료입니다.</p>
+<div class="callout"><b>중복 통합 안내:</b> 여기서는 역사·수업 목표·선수지식·생성모델의 문제만 잡습니다. 정방향 확산, 역방향 복원, 우도·ELBO와 학습식은 아래 각 단계에서 직관과 수식을 한 흐름으로 설명합니다.</div>
 </div>
 </section>
 
-<section class="section" id="pdf-deep-dive">
-<div class="pdf-deep">
-<span class="lecture-tag">📚 원본 강의 PDF 정밀 대조</span>
-<h2>수식이 결론으로 점프하지 않도록: 강의자료 전체 논리</h2>
-<p class="lead">강의자료의 순서인 Motivation → Forward/Backward → Variational formulation → Training → Inference → Faster sampling을 따라, 각 식이 왜 다음 식으로 이어지는지 해부합니다.</p>
 
-<h3>1. 직접 계산하기 어려운 우도(모델의 데이터 설명 점수)를 학습 가능한 손실로 바꾸는 4단계</h3>
-<div class="derivation-road">
-<div class="derive-step"><strong>1</strong><b>Lower bound 만들기</b><small>Jensen 부등식과 정방향 분포 q를 이용해 log p<sub>θ</sub>(x₀) 아래에 ELBO를 둔다.</small></div>
-<div class="derive-step"><strong>2</strong><b>시간별 KL로 펼치기</b><small>전체 경로 문제를 각 t의 역방향 한 걸음 비교로 분해한다.</small></div>
-<div class="derive-step"><strong>3</strong><b>두 분포를 계산 가능하게</b><small>Bayes·Markov·Gaussian 성질로 q posterior와 p<sub>θ</sub>를 다룬다.</small></div>
-<div class="derive-step"><strong>4</strong><b>Noise MSE 도출</b><small>두 Gaussian의 KL을 계산하면 실제 노이즈와 예측 노이즈의 오차가 된다.</small></div>
+
+
+
+
+
+
+
+
+
+
+
+<section class="section" id="distribution">
+<div class="lecture-shell">
+<span class="lecture-tag">STEP 1 · 무엇을 생성하고 어떤 노이즈를 쓰는가</span>
+<h2>1. 문제 설정과 고차원 Gaussian</h2>
+<article class="pdf-deep" style="margin-top:16px">
+<span class="lecture-tag">PART A · 문제 설정</span>
+<h3>오늘은 Text-to-Image가 아니라 Unconditional Generation</h3>
+<div class="grid g2">
+<div class="card"><h3>Conditional</h3><p>텍스트·클래스·다른 이미지 같은 조건 c를 받아 p(x|c)를 학습합니다. “책을 읽는 곰 인형”처럼 원하는 결과를 지시합니다.</p></div>
+<div class="card"><h3>Unconditional</h3><p>별도 조건 없이 데이터셋의 이미지 분포 p<sub>data</sub>(x)를 학습해 그럴듯한 새 이미지를 생성합니다. 이번 차시의 초점입니다.</p></div>
 </div>
-<div class="formula">E<sub>x₀~q(x₀)</sub>[log p<sub>θ</sub>(x₀)]<br>≥ E<sub>x₀:T~q(x₀:T)</sub>[ log { p<sub>θ</sub>(x₀:T) / q(x<sub>1:T</sub>|x₀) }
- ] = <span class="hi">ELBO</span></div>
-<p><b>왜 하한이면 충분할까?</b> 직접 계산하기 어려운 로그우도(Log-likelihood: 우도에 로그를 취한 값)의 아래쪽 값을 끌어올립니다. q가 모델의 posterior와 잘 맞을수록 이 하한은 실제 로그우도에 가까워집니다.</p>
-
-<h3>2. ELBO 안에서 실제로 비교하는 두 분포</h3>
-<div class="loss-stack"><div><b>계산 가능한 정답 역할</b><div class="formula">q(x<sub>t-1</sub>|x<sub>t</sub>,x₀)</div><p>x₀와 xₜ를 모두 알고 있을 때 이전 상태가 어디였는지 계산한 posterior</p></div><div class="equals">VS</div><div><b>학습해야 하는 모델</b><div class="formula">p<sub>θ</sub>(x<sub>t-1</sub>|x<sub>t</sub>)</div><p>실제 생성 때 x₀ 없이 xₜ만 보고 이전 상태를 예측하는 reverse model</p></div></div>
-<div class="formula" style="margin-top:12px">ELBO = -Σ<sub>t=2</sub><sup>T</sup> KL( q(x<sub>t-1</sub>|x<sub>t</sub>,x₀) || p<sub>θ</sub>(x<sub>t-1</sub>|x<sub>t</sub>) ) + 경계항들</div>
-<p>강의 슬라이드의 “Can we compute this?”는 왼쪽 q를 뜻하고, “We want to learn θ”는 오른쪽 p<sub>θ</sub>를 뜻합니다. 모델은 계산 가능한 q의 한 걸음 복원을 따라가도록 배웁니다.</p>
-
-<h3>3. Bayes를 쓰면 ‘정답 역방향 한 걸음’이 Gaussian이 된다</h3>
-<div class="formula">q(x<sub>t-1</sub>|x<sub>t</sub>,x₀)<br>= q(x<sub>t</sub>|x<sub>t-1</sub>)q(x<sub>t-1</sub>|x₀) / q(x<sub>t</sub>|x₀)<br>= N(x<sub>t-1</sub>; μ̃<sub>t</sub>(x<sub>t</sub>,x₀), β̃<sub>t</sub>I)</div>
-<div class="equation-anatomy"><div class="equation-piece"><b>현재 관측</b><p>x<sub>t</sub>: 지금 보고 있는 noisy image</p></div><div class="equation-piece"><b>원본 단서</b><p>x₀: 학습 때만 알고 있는 clean image</p></div><div class="equation-piece"><b>정답 노이즈</b><p>ε: x₀에서 xₜ를 만들 때 실제로 섞은 noise</p></div></div>
-<div class="formula">μ̃<sub>t</sub> = 1/√α<sub>t</sub> · [x<sub>t</sub> - (1-α<sub>t</sub>)/√(1-ᾱ<sub>t</sub>) · ε]<br>β̃<sub>t</sub> = (1-ᾱ<sub>t-1</sub>)/(1-ᾱ<sub>t</sub>) · β<sub>t</sub></div>
-<p>학습 중에는 x₀와 ε를 알고 있으므로 μ̃<sub>t</sub>를 계산할 수 있습니다. 생성할 때는 둘을 모르므로 신경망 ε<sub>θ</sub>(x<sub>t</sub>,t)가 ε를 대신 예측합니다.</p>
-
-<h3>4. 그래서 최종 학습 레시피가 이렇게 짧아진다</h3>
-<div class="mini-chain"><span>x₀~q(x₀)</span><i>+</i><span>ε~N(0,I)</span><i>+</i><span>t~U{1,T}
-</span><i>→</i><span>xₜ 만들기</span><i>→</i><span>ε<sub>θ</sub> 예측</span><i>→</i><span>MSE</span></div>
-<div class="formula">x<sub>t</sub>=√ᾱ<sub>t</sub>x₀+√(1-ᾱ<sub>t</sub>)ε<br>L<sub>DDPM</sub>=E<sub>t,x₀,ε</sub>[ || ε<sub>θ</sub>(x<sub>t</sub>,t)-ε ||² ]</div>
-<p><b>직관:</b> 모델에게 “이 사진을 복원해”라고 직접 시키는 대신, “내가 방금 섞은 노이즈가 무엇이었는지 맞혀봐”라고 시킵니다. t를 균등하게 뽑으므로 약한 오염부터 거의 순수 노이즈까지 한 모델이 모두 연습합니다.</p>
-
+<div class="flow" style="margin-top:14px">
+<div class="node" style="background:var(--mint)"><b>x₀</b><small>clean image</small></div><div class="arrow">q, noise 추가 →</div>
+<div class="node" style="background:var(--blue)"><b>xₜ</b><small>noisy image</small></div><div class="arrow">→</div>
+<div class="node" style="background:#4156a5"><b>xT</b><small>pure noise</small></div><div class="arrow">pθ, denoise →</div>
+<div class="node" style="background:var(--pink)"><b>새 x₀</b><small>generated image</small></div>
+</div>
+<p><b>Trajectory</b>(트라젝터리, /trəˈdʒektəri/)는 x₀에서 xT까지 또는 그 반대로 이어지는 전체 경로입니다. Forward는 우리가 정한 확률과정 q, reverse는 학습해야 하는 모델 분포 p<sub>θ</sub>입니다. Reverse를 “backward propagation”이라고 부르지 않는 이유는 gradient 역전파가 아니라 확산 시간의 방향을 되돌리는 생성과정이기 때문입니다.</p>
+</article>
+<article class="pdf-deep" style="margin-top:16px">
+<span class="lecture-tag">PART B · 고차원 Gaussian</span>
+<h3>이미지는 숫자 하나가 아니라 수십만 차원의 한 점</h3>
+<p>H×W×C 이미지의 모든 픽셀·채널을 펼치면 하나의 고차원 벡터 x가 됩니다. 1차원 Gaussian에는 평균 μ와 분산 σ²가 있고, 고차원 Gaussian에는 평균벡터 μ와 공분산행렬 Σ가 있습니다.</p>
+<div class="formula">x ~ 𝒩(μ, Σ)</div>
+<div class="grid g3" style="margin-top:14px">
+<div class="card"><h3>μ · 뮤</h3><p>분포의 중심을 나타내는 평균벡터입니다.</p></div>
+<div class="card"><h3>Σ · 시그마</h3><p>각 방향의 퍼짐과 차원 간 함께 변하는 정도를 담는 공분산행렬입니다.</p></div>
+<div class="card"><h3>~ · 틸드</h3><p>“오른쪽 확률분포에서 왼쪽 값을 샘플링한다”라고 읽습니다.</p></div>
+</div>
+<div class="formula" style="margin-top:14px">ε ~ 𝒩(0, I)</div>
+<p><b>Isotropic Gaussian</b>(아이소트로픽 가우시안)은 Σ=σ²I처럼 모든 방향의 분산이 같고 비대각 원소가 0인 단순한 Gaussian입니다. 표준 노이즈에서는 σ²=1이므로 Σ=I입니다. 픽셀 차원의 노이즈 성분을 독립이고 동일한 분포(i.i.d.)에서 뽑는다고 가정해 밀도와 샘플링을 쉽게 계산합니다.</p>
+<div class="why"><b>정확한 표현:</b> “이미지 픽셀 자체가 독립”이라는 뜻은 아닙니다. 데이터 이미지의 픽셀은 강하게 연관됩니다. 독립 가정은 우리가 추가하는 Gaussian noise ε의 성분에 적용됩니다.</div>
+</article>
+</div>
+</section>
+<section class="section" id="forward">
+<div class="lecture-shell">
+<span class="lecture-tag">STEP 2 · 사람이 정한 Gaussian 오염 과정</span>
+<h2>2. Forward Process: 원하는 xₜ를 한 번에 만든다</h2>
+<article class="pdf-deep" style="margin-top:16px">
+<span class="lecture-tag">PART C · Forward Process</span>
+<h3>한 칸씩 노이즈를 더하는 식</h3>
+<div class="formula">q(x<sub>t</sub> | x<sub>t−1</sub>) = 𝒩(√α<sub>t</sub>x<sub>t−1</sub>, β<sub>t</sub>I)<br>α<sub>t</sub> = 1 − β<sub>t</sub></div>
+<div class="formula-read"><b>문장으로 읽기:</b> 이전 이미지 x<sub>t−1</sub>의 신호를 √α<sub>t</sub>만큼 남기고, 분산 β<sub>t</sub>인 Gaussian noise를 더해 x<sub>t</sub>를 만듭니다.</div>
+<div class="grid g2" style="margin-top:14px">
+<div class="card"><h3>βₜ · 베타 티</h3><p>t번째 단계에 새로 추가하는 노이즈의 분산입니다. 사람이 미리 정한 noise schedule의 일부이며 학습 대상이 아닙니다.</p></div>
+<div class="card"><h3>αₜ · 알파 티</h3><p>1−βₜ로 정의한 신호 보존율입니다. 표기를 단순하게 만들기 위한 값입니다.</p></div>
+</div>
+<h3>x₀에서 원하는 xₜ로 한 번에 점프</h3>
+<div class="formula">ᾱ<sub>t</sub> = ∏<sub>s=1</sub><sup>t</sup> α<sub>s</sub><br>x<sub>t</sub> = √ᾱ<sub>t</sub>x₀ + √(1−ᾱ<sub>t</sub>)ε, &nbsp; ε~𝒩(0,I)</div>
+<p>서로 독립인 Gaussian들의 선형결합은 다시 Gaussian이고 분산은 합쳐집니다. 그래서 x₁,x₂,…를 실제로 차례대로 만들지 않아도 x₀에서 임의의 xₜ를 직접 샘플링할 수 있습니다.</p>
+<div class="why"><b>학습 속도의 핵심:</b> 매 학습 iteration마다 1→2→…→t를 실행하지 않습니다. t 하나를 무작위로 뽑고 closed form으로 xₜ 한 장만 즉시 만듭니다.</div>
+</article>
+</div>
+</section>
+<section class="section" id="reverse">
+<div class="lecture-shell">
+<span class="lecture-tag">STEP 3 · q posterior와 pθ의 역할</span>
+<h2>3. Reverse Process: 정답 역방향을 모델이 배운다</h2>
+<article class="pdf-deep" style="margin-top:16px">
+<span class="lecture-tag">PART D · Reverse Process</span>
+<h3>알 수 없는 복원 분포를 신경망으로 근사한다</h3>
+<div class="formula">p<sub>θ</sub>(x<sub>t−1</sub>|x<sub>t</sub>) = 𝒩(μ<sub>θ</sub>(x<sub>t</sub>,t), Σ<sub>θ</sub>(x<sub>t</sub>,t))</div>
+<p>Forward q는 우리가 설계했으므로 압니다. 하지만 순수 노이즈에서 자연스러운 이미지로 돌아오는 실제 분포는 알 수 없습니다. 따라서 신경망 파라미터 θ로 평균과 분산을 근사합니다. 기본 DDPM 설명에서는 분산을 고정하거나 정해진 형태로 두고 평균에 해당하는 정보를 학습하는 관점으로 단순화합니다.</p>
+<div class="grid g2">
+<div class="card"><h3>우리가 원하는 것</h3><div class="formula">q(x<sub>t−1</sub>|x<sub>t</sub>,x₀)</div><p>x₀와 xₜ를 알고 있을 때의 정확한 한 단계 역방향 posterior입니다. Forward Gaussian과 Bayes rule 덕분에 평균 μ̃ₜ와 분산 β̃ₜ를 가진 Gaussian으로 계산할 수 있습니다.</p></div>
+<div class="card"><h3>모델이 배우는 것</h3><div class="formula">p<sub>θ</sub>(x<sub>t−1</sub>|x<sub>t</sub>)</div><p>생성 시에는 x₀를 모르므로 xₜ와 t만 보고 덜 noisy한 x<sub>t−1</sub>의 분포를 예측합니다.</p></div>
+</div>
+<div class="callout"><b>GT 역할:</b> 학습 중에는 x₀를 알고 있으므로 계산 가능한 q(x<sub>t−1</sub>|x<sub>t</sub>,x₀)가 teacher 역할을 합니다. 모델 p<sub>θ</sub>가 이 역방향 한 걸음을 닮게 만드는 것이 핵심입니다.</div>
+</article>
+</div>
+</section>
+<section class="section" id="elbo">
+<div class="lecture-shell">
+<span class="lecture-tag">STEP 4 · 긴 수식 유도를 하나의 계단으로</span>
+<h2>4. Maximum Likelihood → ELBO → Noise MSE</h2>
+<article class="pdf-deep" style="margin-top:16px">
+<span class="lecture-tag">PART E · Maximum Likelihood에서 ELBO까지</span>
+<h3>직접 풀 수 없는 우도를 계산 가능한 아래 경계로 바꾼다</h3>
+<div class="formula">θ* = argmax<sub>θ</sub> 𝔼<sub>x₀~q<sub>data</sub></sub>[ log p<sub>θ</sub>(x₀) ]</div>
+<p>모델이 실제 training image x₀에 높은 확률을 주도록 θ를 찾고 싶습니다. 그러나 중간 잠재변수 x₁:T의 모든 가능한 경로를 적분해야 하므로 p<sub>θ</sub>(x₀)는 직접 계산하기 어렵습니다.</p>
+<div class="formula">p<sub>θ</sub>(x₀) = ∫ p<sub>θ</sub>(x₀:T) dx₁:T</div>
+<h3>교수님이 강조한 ELBO 유도 세 동작</h3>
+<div class="derivation-road">
+<div class="derivation-step"><b>① 1을 곱한다</b><span>q(x₁:T|x₀) / q(x₁:T|x₀)</span><small>값은 바꾸지 않고 계산하기 좋은 분포 q를 끼워 넣습니다.</small></div>
+<div class="derivation-step"><b>② 기대값으로 바꾼다</b><span>𝔼<sub>q</sub>[p<sub>θ</sub>/q]</span><small>∫q(z)f(z)dz = 𝔼<sub>q</sub>[f(z)] 정의를 사용합니다.</small></div>
+<div class="derivation-step"><b>③ Jensen을 적용한다</b><span>log 𝔼[Z] ≥ 𝔼[log Z]</span><small>log는 concave이므로 log를 기대값 안으로 넣으면 lower bound가 됩니다.</small></div>
+</div>
+<div class="formula">log p<sub>θ</sub>(x₀) ≥ 𝔼<sub>q(x₁:T|x₀)</sub>[ log p<sub>θ</sub>(x₀:T) − log q(x₁:T|x₀) ] = ELBO</div>
+<div class="formula-read"><b>문장으로 읽기:</b> 직접 계산하기 어려운 데이터 log-likelihood 대신, 항상 그보다 작거나 같은 계산 가능한 ELBO를 최대화합니다.</div>
+<div class="why"><b>Lower bound의 논리:</b> ELBO를 높이면 log-likelihood의 보장되는 하한이 올라갑니다. 둘이 항상 같은 폭으로 움직인다는 뜻은 아니며, 둘의 차이는 variational posterior와 true posterior 사이 KL입니다.</div>
+</article>
+<article class="pdf-deep" style="margin-top:16px">
+<span class="lecture-tag">PART F · ELBO를 KL로 분해</span>
+<h3>복잡한 한 덩어리가 “분포를 닮게 하는 문제”로 바뀐다</h3>
+<div class="formula">D<sub>KL</sub>(q || p) = 𝔼<sub>x~q</sub>[ log q(x) − log p(x) ] ≥ 0</div>
+<p><b>KL Divergence</b>(케이엘 다이버전스)는 두 분포의 차이를 측정합니다. 일반적으로 대칭이 아니므로 거리(metric)와 완전히 같지는 않습니다. q를 teacher, p<sub>θ</sub>를 student로 보면 “teacher가 자주 만드는 영역에서 student의 확률도 높여라”라는 의미입니다.</p>
+<div class="loss-stack">
+<div class="card"><b>L<sub>T</sub> · Prior matching</b><p>q(xT|x₀)가 p(xT)=𝒩(0,I)에 가까운지 봅니다. 보통 학습 파라미터와 무관한 항입니다.</p></div>
+<div class="equals">＋</div>
+<div class="card"><b>L<sub>t−1</sub> · Denoising matching</b><p>D<sub>KL</sub>(q(x<sub>t−1</sub>|xₜ,x₀) || p<sub>θ</sub>(x<sub>t−1</sub>|xₜ)). 핵심 학습 항입니다.</p></div>
+<div class="equals">＋</div>
+<div class="card"><b>L₀ · Reconstruction</b><p>마지막 x₁에서 실제 x₀를 복원할 확률을 높이는 항입니다.</p></div>
+</div>
+<p>핵심 중간항은 정확히 계산 가능한 true reverse posterior q와 모델의 reverse transition p<sub>θ</sub> 사이 KL입니다. 둘 다 Gaussian으로 두면 평균과 분산 비교를 닫힌식으로 계산할 수 있습니다.</p>
+</article>
+<article class="pdf-deep" style="margin-top:16px">
+<span class="lecture-tag">PART G · Mean Matching → Noise Matching</span>
+<h3>왜 이미지를 직접 맞히지 않고 노이즈를 맞힐까?</h3>
+<p>Gaussian KL에서 분산을 고정하면 모델이 학습해야 할 핵심은 두 Gaussian의 평균을 맞추는 일이 됩니다.</p>
+<div class="formula">|| μ̃<sub>t</sub>(xₜ,x₀) − μ<sub>θ</sub>(xₜ,t) ||²</div>
+<p>그런데 xₜ = √ᾱₜx₀ + √(1−ᾱₜ)ε 관계를 이용해 x₀를 ε로 다시 표현하면 평균 예측을 noise 예측으로 재매개변수화할 수 있습니다.</p>
+<div class="formula">L<sub>simple</sub>(θ) = 𝔼<sub>x₀,t,ε</sub>[ || ε − ε<sub>θ</sub>(xₜ,t) ||² ]</div>
+<div class="grid g3" style="margin-top:14px">
+<div class="card"><h3>ε</h3><p>우리가 𝒩(0,I)에서 직접 뽑아 x₀에 섞은 실제 노이즈. 따라서 정답을 정확히 압니다.</p></div>
+<div class="card"><h3>εθ(xₜ,t)</h3><p>노이즈 이미지 xₜ와 timestep t를 보고 신경망이 예측한 노이즈입니다.</p></div>
+<div class="card"><h3>||·||²</h3><p>실제 노이즈와 예측 노이즈의 성분별 차이를 제곱해 더하는 L2/MSE 형태입니다.</p></div>
+</div>
+<div class="callout"><b>수업 전체의 결론:</b> 최대우도 → ELBO → KL → Gaussian mean matching이라는 긴 확률론이, 구현 단계에서는 “내가 섞은 노이즈를 모델이 맞히게 한다”는 supervised regression 문제로 바뀝니다.</div>
+</article>
+</div>
+</section>
+<section class="section" id="training">
+<div class="lecture-shell">
+<span class="lecture-tag">STEP 5 · 실제 구현 알고리즘</span>
+<h2>5. DDPM Training: 무작위 한 장면으로 노이즈를 학습한다</h2>
+<article class="pdf-deep" style="margin-top:16px">
+<span class="lecture-tag">PART H · 실제 Training Recipe</span>
+<h3>모든 timestep을 순서대로 학습하지 않는다</h3>
+<div class="derivation-road">
+<div class="derivation-step"><b>① 데이터</b><span>x₀ ~ q<sub>data</sub></span><small>미니배치에서 깨끗한 이미지를 뽑습니다.</small></div>
+<div class="derivation-step"><b>② 시간</b><span>t ~ Uniform({1,…,T})</span><small>연습할 노이즈 강도를 하나 뽑습니다.</small></div>
+<div class="derivation-step"><b>③ 노이즈</b><span>ε ~ 𝒩(0,I)</span><small>정답으로 사용할 Gaussian noise를 뽑습니다.</small></div>
+<div class="derivation-step"><b>④ 오염</b><span>xₜ=√ᾱₜx₀+√(1−ᾱₜ)ε</span><small>중간 단계를 거치지 않고 xₜ를 만듭니다.</small></div>
+<div class="derivation-step"><b>⑤ 예측</b><span>ε̂=εθ(xₜ,t)</span><small>모델이 섞인 노이즈를 추정합니다.</small></div>
+<div class="derivation-step"><b>⑥ 갱신</b><span>||ε−ε̂||²</span><small>loss를 backpropagation해 θ를 업데이트합니다.</small></div>
+</div>
+<div class="formula">repeat:<br>&nbsp; x₀ ~ data, &nbsp; t ~ Uniform(1,T), &nbsp; ε ~ 𝒩(0,I)<br>&nbsp; xₜ ← √ᾱₜx₀ + √(1−ᾱₜ)ε<br>&nbsp; loss ← ||ε − ε<sub>θ</sub>(xₜ,t)||²<br>&nbsp; θ ← optimizer.step(∇<sub>θ</sub> loss)</div>
+<div class="why"><b>Forward와 backpropagation 구분:</b> q의 forward diffusion은 이미지에 노이즈를 넣는 확률과정입니다. 마지막 줄의 backpropagation은 loss gradient로 신경망 파라미터를 갱신하는 학습 알고리즘입니다. 서로 다른 “방향”을 말합니다.</div>
+</article>
+</div>
+</section>
+<section class="section" id="inference">
+<div class="lecture-shell">
+<span class="lecture-tag">STEP 6 · 학습한 εθ를 반복 호출</span>
+<h2>6. DDPM 생성: 순수 노이즈에서 T번 복원</h2>
 <h3>5. 생성에서는 같은 신경망을 T번 호출한다</h3>
 <div class="formula">x<sub>T</sub>~N(0,I)<br>x<sub>t-1</sub>=1/√α<sub>t</sub>[x<sub>t</sub>-(1-α<sub>t</sub>)/√(1-ᾱ<sub>t</sub>) ε<sub>θ</sub>(x<sub>t</sub>,t)] + σ<sub>t</sub>z</div>
 <div class="equation-anatomy"><div class="equation-piece"><b>① 현재 xₜ</b><p>아직 노이즈가 섞인 상태</p></div><div class="equation-piece"><b>② ε<sub>θ</sub> 제거</b><p>모델이 예측한 불필요한 성분을 뺌</p></div><div class="equation-piece"><b>③ σₜz 추가</b><p>다음 샘플의 확률성을 유지하는 새 Gaussian</p></div></div>
 <p>좋은 품질의 대가로 신경망 평가를 반복해야 합니다. 강의자료는 DDPM이 VAE/GAN보다 생성 비용이 훨씬 크고, 대표 설정에서는 샘플 하나에 긴 시간이 들 수 있다는 한계를 짚습니다.</p>
 
+
+</div>
+</section>
+
+<section class="section" id="ddim">
+<div class="lecture-shell">
+<span class="lecture-tag">STEP 7 · 빠른 sampling의 논리</span>
+<h2>7. DDIM: 같은 모델로 복원 계단을 건너뛴다</h2>
 <h3>6. 빠르게 만들려다 왜 두 번 막히는가</h3>
 <div class="attempts"><div class="attempt" data-result="실패"><h3>시도 A · 여러 식을 대입해 한 번에 계산</h3><p>x<sub>t-1</sub> 식 안에 x<sub>t-2</sub> 식을 계속 대입합니다.</p><div class="formula">x<sub>τᵢ₋₁</sub>=A<sub>i</sub>x<sub>τᵢ</sub>+Σ B<sub>s</sub>ε<sub>θ</sub>(x<sub>s</sub>,s)+C<sub>i</sub>z</div><p><b>막힌 이유:</b> 중간 시점마다 ε<sub>θ</sub>를 여전히 평가해야 해서 신경망 호출 수가 줄지 않습니다.</p></div><div class="attempt" data-result="실패"><h3>시도 B · DDPM 식에서 timestep을 바로 건너뛰기</h3><p>τ₀&lt;τ₁&lt;…&lt;τ<sub>S</sub>=T만 선택해 큰 점프를 합니다.</p><div class="formula">큰 점프 + 단계별 확률성 σ<sub>τᵢ</sub>z</div><p><b>막힌 이유:</b> 한 번의 근사 오차가 커진 상황에서 새 랜덤성까지 섞여 품질이 크게 무너질 수 있습니다.</p></div></div>
 
@@ -464,347 +578,6 @@ body{word-break:keep-all;overflow-wrap:break-word;margin:0;background:radial-gra
 
 <div class="callout"><b>PDF 한 줄 결론:</b> DDPM 최적화와 호환되는 편리한 분포 가정을 유지하고 → 단계 사이 확률성을 제거해 DDIM 경로를 만들고 → 필요한 시점만 골라 건너뛴다.</div>
 </div>
-</section>
-
-<section class="section" id="distribution">
-<h2>1. 이미지 한 장은 고차원 공간의 점 하나</h2>
-<p class="lead">컴퓨터에게 H×W 컬러 이미지는 H×W×3개의 숫자로 이루어진 벡터입니다. 자연스러운 이미지들은 이 거대한 공간 전체가 아니라 특정 영역에 몰려 있습니다.</p>
-<div class="grid g2">
-<article class="card">
-<h3>RGB 픽셀</h3>
-<div class="pixel">
-<div class="channel" style="background:#dd4c5e">R</div>
-<div class="channel" style="background:#2aa977">G</div>
-<div class="channel" style="background:#397cda">B</div>
-</div>
-<div class="formula" style="margin-top:12px">x ∈ R<sup>H×W×3</sup>
-<br>64×64 RGB → 12,288차원</div>
-</article>
-<article class="card">
-<h3>확률분포 p<sub>data</sub>(x)</h3>
-<div class="dist">
-<div class="bar" style="height:10%">
-</div>
-<div class="bar" style="height:22%">
-</div>
-<div class="bar" style="height:48%">
-</div>
-<div class="bar" style="height:85%">
-</div>
-<div class="bar" style="height:100%">
-</div>
-<div class="bar" style="height:76%">
-</div>
-<div class="bar" style="height:38%">
-</div>
-<div class="bar" style="height:15%">
-</div>
-</div>
-<p>봉우리가 높은 곳일수록 자연 이미지다운 조합이 많습니다.</p>
-</article>
-</div>
-<div class="grid g3" style="margin-top:14px">
-<article class="card">
-<h3>평균 μ</h3>
-<p>분포가 중심을 두는 위치</p>
-</article>
-<article class="card">
-<h3>공분산 Σ</h3>
-<p>각 방향으로 얼마나 퍼지고 함께 변하는지</p>
-</article>
-<article class="card">
-<h3>등방 Gaussian</h3>
-<div class="formula">N(0, I)</div>
-<p>모든 축이 독립이고 분산이 같아 쉽게 샘플링합니다.</p>
-</article>
-</div>
-</section>
-
-<section class="section" id="forward">
-<h2>2. Forward Process: 우리가 정한 규칙으로 이미지를 지운다</h2>
-<p class="lead">각 단계에서 이전 이미지 일부를 남기고 새로운 Gaussian noise를 섞습니다. βₜ는 t단계에서 얼마나 망가뜨릴지를 정하는 Noise Schedule입니다.</p>
-<div class="gallery">
-<div class="frame" style="background:#31b99d;--grain:.02">
-<b>x₀</b>
-<small>깨끗함</small>
-</div>
-<div class="frame" style="background:#50aeaa;--grain:.12">
-<b>x₁</b>
-<small>약한 노이즈</small>
-</div>
-<div class="frame" style="background:#5799ac;--grain:.24">
-<b>x₂</b>
-</div>
-<div class="frame" style="background:#577fa7;--grain:.4">
-<b>xₜ</b>
-<small>형태가 흐림</small>
-</div>
-<div class="frame" style="background:#526593;--grain:.65">
-<b>xT-1</b>
-</div>
-<div class="frame" style="background:#43496d;--grain:.9">
-<b>xT</b>
-<small>거의 순수 노이즈</small>
-</div>
-</div>
-<div class="formula" style="margin-top:14px">
-<span class="hi">한 단계</span>
-<br>q(x<sub>t</sub>|x<sub>t-1</sub>) = N(√(1-β<sub>t</sub>)x<sub>t-1</sub>, β<sub>t</sub>I)<br>x<sub>t</sub> = √α<sub>t</sub>x<sub>t-1</sub> + √(1-α<sub>t</sub>)ε, &nbsp; α<sub>t</sub>=1-β<sub>t</sub>
-</div>
-<div class="callout">
-<b>가장 중요한 지름길:</b> x₁부터 순서대로 만들지 않아도, 누적 신호량 ᾱₜ를 쓰면 x₀에서 임의의 xₜ를 한 번에 만들 수 있습니다.</div>
-<div class="formula">ᾱ<sub>t</sub> = ∏<sub>s=1</sub>
-<sup>t</sup> α<sub>s</sub>
-<br>
-<span class="hi">q(x<sub>t</sub>|x₀)</span> = N(√ᾱ<sub>t</sub>x₀, (1-ᾱ<sub>t</sub>)I)<br>x<sub>t</sub> = √ᾱ<sub>t</sub>x₀ + √(1-ᾱ<sub>t</sub>)ε</div>
-<p>√ᾱₜ는 남아 있는 원본 신호, √(1-ᾱₜ)는 섞인 노이즈의 양입니다.</p>
-</section>
-
-<section class="section" id="reverse">
-<h2>3. Reverse Process: 알 수 없는 복원 규칙을 학습한다</h2>
-<p class="lead">Forward q는 우리가 만들었지만, xₜ에서 xₜ₋₁로 돌아가는 진짜 역조건부 분포는 직접 알 수 없습니다. 신경망이 평균 또는 노이즈를 예측해 pθ를 근사합니다.</p>
-<div class="joint">
-<div class="tile" style="background:var(--blue)">
-<b>q(xₜ|xₜ₋₁)</b>
-<br>정방향<br>
-<small>알려진 Gaussian</small>
-</div>
-<div class="arrow">⇄</div>
-<div class="tile" style="background:var(--violet)">
-<b>pθ(xₜ₋₁|xₜ)</b>
-<br>역방향<br>
-<small>신경망으로 학습</small>
-</div>
-</div>
-<div class="formula" style="margin-top:14px">p<sub>θ</sub>(x<sub>t-1</sub>|x<sub>t</sub>) = N( μ<sub>θ</sub>(x<sub>t</sub>,t), σ<sub>t</sub>²I )<br>
-<br>실전 재매개화: μ<sub>θ</sub>를 직접 맞히는 대신 ε<sub>θ</sub>(x<sub>t</sub>,t)로 <span class="hi">섞였던 노이즈</span>를 예측</div>
-<div class="callout">
-<b>왜 Gaussian으로 가정할 수 있나?</b> Forward step을 매우 작게 만들면 연속된 두 시점의 역조건부 분포도 근사적으로 Gaussian이 됩니다. 복잡한 전체 생성 문제를 작은 Gaussian 복원들의 연쇄로 바꾸는 핵심입니다.</div>
-</section>
-
-<section class="section" id="elbo">
-<h2>4. ELBO 계단: 최대우도(실제 데이터를 가장 잘 설명하는 모델 찾기)가 노이즈 MSE가 되기까지</h2>
-<p class="lead">목표는 훈련 이미지 x₀의 log pθ(x₀)를 크게 만드는 것입니다. 하지만 모든 중간 상태를 적분해야 해서 직접 계산할 수 없습니다.</p>
-<div class="ladder">
-<article class="rung">
-<div class="num">①</div>
-<h3>Lower Bound</h3>
-<p>Jensen 부등식으로 직접 계산하기 어려운 로그우도(Log-likelihood: 모델의 데이터 설명 점수에 로그를 취한 값) 아래에 계산 가능한 ELBO를 놓습니다.</p>
-</article>
-<article class="rung">
-<div class="num">②</div>
-<h3>KL로 분해</h3>
-<p>ELBO를 각 단계의 진짜 역분포와 모델 역분포 사이 차이로 펼칩니다.</p>
-</article>
-<article class="rung">
-<div class="num">③</div>
-<h3>Gaussian 계산</h3>
-<p>Bayes 법칙·Markov 성질·Gaussian 성질로 각 KL 항을 닫힌 형태로 계산합니다.</p>
-</article>
-<article class="rung">
-<div class="num">④</div>
-<h3>Noise MSE</h3>
-<p>상수와 가중치를 단순화하면 실제 학습은 예측 노이즈와 실제 노이즈의 제곱오차가 됩니다.</p>
-</article>
-</div>
-<div class="formula" style="margin-top:14px">log p<sub>θ</sub>(x₀) ≥ <span class="hi">ELBO</span>
-<br>
-<br>-ELBO ≈ Σ<sub>t</sub> KL(q(x<sub>t-1</sub>|x<sub>t</sub>,x₀) || p<sub>θ</sub>(x<sub>t-1</sub>|x<sub>t</sub>)) + other terms<br>
-<br>
-<span class="hi">L<sub>simple</sub>
-</span> = E<sub>x₀,t,ε</sub> || ε - ε<sub>θ</sub>(x<sub>t</sub>,t) ||²</div>
-<div class="grid g2" style="margin-top:14px">
-<article class="card">
-<h3>KL Divergence</h3>
-<p>두 확률분포가 얼마나 다른지 측정합니다. 대칭 거리가 아니며 KL(q||p)와 KL(p||q)는 다릅니다.</p>
-</article>
-<article class="card">
-<h3>ELBO</h3>
-<p>Evidence Lower Bound. 직접 최대화하기 어려운 log evidence의 계산 가능한 하한입니다.</p>
-</article>
-</div>
-</section>
-
-<section class="section" id="training">
-<h2>5. DDPM 학습: 긴 영화를 한 장면씩 무작위로 연습</h2>
-<div class="train">
-<div class="step" style="background:var(--mint)">
-<b>① x₀</b>
-<small>이미지 선택</small>
-</div>
-<div class="arrow">+</div>
-<div class="step" style="background:var(--amber)">
-<b>② t, ε</b>
-<small>시간·노이즈 선택</small>
-</div>
-<div class="arrow">→</div>
-<div class="step" style="background:var(--blue)">
-<b>③ xₜ</b>
-<small>한 번에 오염</small>
-</div>
-<div class="arrow">→</div>
-<div class="step" style="background:var(--violet)">
-<b>④ εθ</b>
-<small>노이즈 예측</small>
-</div>
-</div>
-<div class="formula" style="margin-top:14px">1. x₀~p<sub>data</sub>, t~Uniform{1,…,T}
-
-, ε~N(0,I)<br>2. xₜ = √ᾱₜx₀ + √(1-ᾱₜ)ε<br>3. ε̂ = ε<sub>θ</sub>(xₜ,t)<br>4. loss = ||ε - ε̂||² → backpropagation</div>
-<div class="callout">
-<b>왜 T단계를 모두 돌지 않나?</b> t를 매번 무작위로 뽑으면 각 미니배치가 서로 다른 난이도의 노이즈 제거 문제를 담당합니다. 충분히 반복하면 신경망은 전 시간대를 학습합니다.</div>
-</section>
-
-<section class="section" id="inference">
-<h2>6. DDPM 생성: 순수 노이즈에서 T번 복원</h2>
-<div class="process">
-<div class="step" style="background:#444d75">
-<b>xT</b>
-<small>N(0,I)</small>
-</div>
-<div class="arrow">→</div>
-<div class="step" style="background:var(--violet)">
-<b>εθ 예측</b>
-<small>제거할 노이즈</small>
-</div>
-<div class="arrow">→</div>
-<div class="step" style="background:var(--blue)">
-<b>xₜ₋₁</b>
-<small>조금 더 선명</small>
-</div>
-<div class="arrow">↻</div>
-<div class="step" style="background:var(--mint)">
-<b>x₀</b>
-<small>최종 이미지</small>
-</div>
-</div>
-<div class="formula" style="margin-top:14px">x<sub>t-1</sub> = 1/√α<sub>t</sub> · [x<sub>t</sub> - (1-α<sub>t</sub>)/√(1-ᾱ<sub>t</sub>) · ε<sub>θ</sub>(x<sub>t</sub>,t)] + σ<sub>t</sub>z</div>
-<p>대괄호는 예측한 노이즈를 제거하는 평균 방향, σₜz는 샘플 다양성을 만드는 새로운 랜덤성입니다. 이 과정을 T→1까지 반복합니다.</p>
-<div class="callout">
-<b>DDPM의 약점:</b> 매 단계마다 신경망을 한 번 호출하므로 수백~수천 단계는 VAE·GAN보다 생성이 훨씬 느립니다. 이 병목이 DDIM의 출발점입니다.</div>
-</section>
-
-<section class="section" id="ddim">
-<h2>7. DDIM: 같은 학습 모델로 계단을 건너뛴다</h2>
-<p class="lead">DDPM 학습 손실은 각 시점의 marginal q(xₜ|x₀)에 의존합니다. DDIM은 이 marginal은 유지하면서 단계 사이의 확률성을 조절할 수 있는 다른 생성 경로를 구성합니다.</p>
-<div class="speed">
-<article class="card">
-<h3>DDPM: 모든 계단</h3>
-<div class="track">
-<span class="tick">
-</span>
-<span class="tick">
-</span>
-<span class="tick">
-</span>
-<span class="tick">
-</span>
-<span class="tick">
-</span>
-<span class="tick">
-</span>
-<span class="tick">
-</span>
-<span class="tick">
-</span>
-<span class="tick">
-</span>
-<span class="tick">
-</span>
-<span class="tick">
-</span>
-<span class="tick">
-</span>
-<span class="tick">
-</span>
-<span class="tick">
-</span>
-<span class="tick">
-</span>
-<span class="tick">
-</span>
-<span class="tick">
-</span>
-<span class="tick">
-</span>
-<span class="tick">
-</span>
-<span class="tick">
-</span>
-</div>
-<p>확률적 Markov chain · 다양성 높음 · 느림</p>
-</article>
-<article class="card">
-<h3>DDIM: 큰 보폭</h3>
-<div class="track">
-<span class="tick skip">
-</span>
-<span class="tick skip">
-</span>
-<span class="tick skip">
-</span>
-<span class="tick skip">
-</span>
-<span class="tick skip">
-</span>
-<span class="tick skip">
-</span>
-</div>
-<p>η=0이면 결정론적 · step skipping 가능 · 빠름</p>
-</article>
-</div>
-<div class="formula" style="margin-top:14px">
-<span class="hi">x̂₀ 예측</span> = (xₜ - √(1-ᾱₜ) ε<sub>θ</sub>(xₜ,t)) / √ᾱₜ<br>
-<br>x<sub>t-1</sub> = √ᾱ<sub>t-1</sub>x̂₀ + √(1-ᾱ<sub>t-1</sub>-σₜ²) ε<sub>θ</sub> + σₜz<br>η=0 → σₜ=0 → 결정론적 DDIM</div>
-<h3>속도와 품질의 교환</h3>
-<div class="card">
-<div class="trade">
-<span style="width:75%">
-</span>
-</div>
-<p>
-<b>적당한 step 감소:</b> 큰 속도 향상에 비해 품질 저하가 작을 수 있습니다.<br>
-<b>과도한 step 감소:</b> 한 번에 너무 멀리 뛰어 복원 오차가 커집니다.</p>
-</div>
-<table class="compare" style="margin-top:14px">
-<thead>
-<tr>
-<th>
-</th>
-<th>DDPM</th>
-<th>DDIM</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<b>경로</b>
-</td>
-<td>Markov, 확률적</td>
-<td>비-Markov 구성 가능, η=0 결정론적</td>
-</tr>
-<tr>
-<td>
-<b>Step</b>
-</td>
-<td>보통 많음</td>
-<td>부분 timestep 선택 가능</td>
-</tr>
-<tr>
-<td>
-<b>같은 학습 모델?</b>
-</td>
-<td colspan="2">예. DDPM 방식으로 학습한 εθ 재사용 가능</td>
-</tr>
-<tr>
-<td>
-<b>장점</b>
-</td>
-<td>다양성·안정적 품질</td>
-<td>속도·재현 가능한 경로·편집 활용</td>
-</tr>
-</tbody>
-</table>
 </section>
 
 <section class="section" id="practice">
@@ -830,131 +603,8 @@ body{word-break:keep-all;overflow-wrap:break-word;margin:0;background:radial-gra
 
 <section class="section" id="week2-deep">
 <div class="lecture-shell">
-<span class="lecture-tag">🎙️ 2026-09-12 · 2차시 녹취 심층 복습</span>
-<h2>9. Denoising 학습은 왜 결국 “노이즈 맞히기”가 되는가</h2>
-<p class="lead">수업의 긴 수식 전개를 하나의 목적 아래 다시 정리합니다. 목표는 복잡한 생성확률 p<sub>θ</sub>(x₀)를 직접 최대화하는 것이고, 실제 구현은 놀랍게도 Gaussian noise ε와 모델 예측 ε<sub>θ</sub>의 제곱오차를 줄이는 것입니다.</p>
-<div class="callout"><b>먼저 결론:</b> 깨끗한 이미지 x₀, 무작위 timestep t, 우리가 직접 뽑은 Gaussian noise ε로 xₜ를 만든 뒤, 모델이 xₜ와 t만 보고 ε를 맞히게 학습합니다.</div>
-
-<article class="pdf-deep" style="margin-top:16px">
-<span class="lecture-tag">PART A · 문제 설정</span>
-<h3>오늘은 Text-to-Image가 아니라 Unconditional Generation</h3>
-<div class="grid g2">
-<div class="card"><h3>Conditional</h3><p>텍스트·클래스·다른 이미지 같은 조건 c를 받아 p(x|c)를 학습합니다. “책을 읽는 곰 인형”처럼 원하는 결과를 지시합니다.</p></div>
-<div class="card"><h3>Unconditional</h3><p>별도 조건 없이 데이터셋의 이미지 분포 p<sub>data</sub>(x)를 학습해 그럴듯한 새 이미지를 생성합니다. 이번 차시의 초점입니다.</p></div>
-</div>
-<div class="flow" style="margin-top:14px">
-<div class="node" style="background:var(--mint)"><b>x₀</b><small>clean image</small></div><div class="arrow">q, noise 추가 →</div>
-<div class="node" style="background:var(--blue)"><b>xₜ</b><small>noisy image</small></div><div class="arrow">→</div>
-<div class="node" style="background:#4156a5"><b>xT</b><small>pure noise</small></div><div class="arrow">pθ, denoise →</div>
-<div class="node" style="background:var(--pink)"><b>새 x₀</b><small>generated image</small></div>
-</div>
-<p><b>Trajectory</b>(트라젝터리, /trəˈdʒektəri/)는 x₀에서 xT까지 또는 그 반대로 이어지는 전체 경로입니다. Forward는 우리가 정한 확률과정 q, reverse는 학습해야 하는 모델 분포 p<sub>θ</sub>입니다. Reverse를 “backward propagation”이라고 부르지 않는 이유는 gradient 역전파가 아니라 확산 시간의 방향을 되돌리는 생성과정이기 때문입니다.</p>
-</article>
-
-<article class="pdf-deep" style="margin-top:16px">
-<span class="lecture-tag">PART B · 고차원 Gaussian</span>
-<h3>이미지는 숫자 하나가 아니라 수십만 차원의 한 점</h3>
-<p>H×W×C 이미지의 모든 픽셀·채널을 펼치면 하나의 고차원 벡터 x가 됩니다. 1차원 Gaussian에는 평균 μ와 분산 σ²가 있고, 고차원 Gaussian에는 평균벡터 μ와 공분산행렬 Σ가 있습니다.</p>
-<div class="formula">x ~ 𝒩(μ, Σ)</div>
-<div class="grid g3" style="margin-top:14px">
-<div class="card"><h3>μ · 뮤</h3><p>분포의 중심을 나타내는 평균벡터입니다.</p></div>
-<div class="card"><h3>Σ · 시그마</h3><p>각 방향의 퍼짐과 차원 간 함께 변하는 정도를 담는 공분산행렬입니다.</p></div>
-<div class="card"><h3>~ · 틸드</h3><p>“오른쪽 확률분포에서 왼쪽 값을 샘플링한다”라고 읽습니다.</p></div>
-</div>
-<div class="formula" style="margin-top:14px">ε ~ 𝒩(0, I)</div>
-<p><b>Isotropic Gaussian</b>(아이소트로픽 가우시안)은 Σ=σ²I처럼 모든 방향의 분산이 같고 비대각 원소가 0인 단순한 Gaussian입니다. 표준 노이즈에서는 σ²=1이므로 Σ=I입니다. 픽셀 차원의 노이즈 성분을 독립이고 동일한 분포(i.i.d.)에서 뽑는다고 가정해 밀도와 샘플링을 쉽게 계산합니다.</p>
-<div class="why"><b>정확한 표현:</b> “이미지 픽셀 자체가 독립”이라는 뜻은 아닙니다. 데이터 이미지의 픽셀은 강하게 연관됩니다. 독립 가정은 우리가 추가하는 Gaussian noise ε의 성분에 적용됩니다.</div>
-</article>
-
-<article class="pdf-deep" style="margin-top:16px">
-<span class="lecture-tag">PART C · Forward Process</span>
-<h3>한 칸씩 노이즈를 더하는 식</h3>
-<div class="formula">q(x<sub>t</sub> | x<sub>t−1</sub>) = 𝒩(√α<sub>t</sub>x<sub>t−1</sub>, β<sub>t</sub>I)<br>α<sub>t</sub> = 1 − β<sub>t</sub></div>
-<div class="formula-read"><b>문장으로 읽기:</b> 이전 이미지 x<sub>t−1</sub>의 신호를 √α<sub>t</sub>만큼 남기고, 분산 β<sub>t</sub>인 Gaussian noise를 더해 x<sub>t</sub>를 만듭니다.</div>
-<div class="grid g2" style="margin-top:14px">
-<div class="card"><h3>βₜ · 베타 티</h3><p>t번째 단계에 새로 추가하는 노이즈의 분산입니다. 사람이 미리 정한 noise schedule의 일부이며 학습 대상이 아닙니다.</p></div>
-<div class="card"><h3>αₜ · 알파 티</h3><p>1−βₜ로 정의한 신호 보존율입니다. 표기를 단순하게 만들기 위한 값입니다.</p></div>
-</div>
-<h3>x₀에서 원하는 xₜ로 한 번에 점프</h3>
-<div class="formula">ᾱ<sub>t</sub> = ∏<sub>s=1</sub><sup>t</sup> α<sub>s</sub><br>x<sub>t</sub> = √ᾱ<sub>t</sub>x₀ + √(1−ᾱ<sub>t</sub>)ε, &nbsp; ε~𝒩(0,I)</div>
-<p>서로 독립인 Gaussian들의 선형결합은 다시 Gaussian이고 분산은 합쳐집니다. 그래서 x₁,x₂,…를 실제로 차례대로 만들지 않아도 x₀에서 임의의 xₜ를 직접 샘플링할 수 있습니다.</p>
-<div class="why"><b>학습 속도의 핵심:</b> 매 학습 iteration마다 1→2→…→t를 실행하지 않습니다. t 하나를 무작위로 뽑고 closed form으로 xₜ 한 장만 즉시 만듭니다.</div>
-</article>
-
-<article class="pdf-deep" style="margin-top:16px">
-<span class="lecture-tag">PART D · Reverse Process</span>
-<h3>알 수 없는 복원 분포를 신경망으로 근사한다</h3>
-<div class="formula">p<sub>θ</sub>(x<sub>t−1</sub>|x<sub>t</sub>) = 𝒩(μ<sub>θ</sub>(x<sub>t</sub>,t), Σ<sub>θ</sub>(x<sub>t</sub>,t))</div>
-<p>Forward q는 우리가 설계했으므로 압니다. 하지만 순수 노이즈에서 자연스러운 이미지로 돌아오는 실제 분포는 알 수 없습니다. 따라서 신경망 파라미터 θ로 평균과 분산을 근사합니다. 기본 DDPM 설명에서는 분산을 고정하거나 정해진 형태로 두고 평균에 해당하는 정보를 학습하는 관점으로 단순화합니다.</p>
-<div class="grid g2">
-<div class="card"><h3>우리가 원하는 것</h3><div class="formula">q(x<sub>t−1</sub>|x<sub>t</sub>,x₀)</div><p>x₀와 xₜ를 알고 있을 때의 정확한 한 단계 역방향 posterior입니다. Forward Gaussian과 Bayes rule 덕분에 평균 μ̃ₜ와 분산 β̃ₜ를 가진 Gaussian으로 계산할 수 있습니다.</p></div>
-<div class="card"><h3>모델이 배우는 것</h3><div class="formula">p<sub>θ</sub>(x<sub>t−1</sub>|x<sub>t</sub>)</div><p>생성 시에는 x₀를 모르므로 xₜ와 t만 보고 덜 noisy한 x<sub>t−1</sub>의 분포를 예측합니다.</p></div>
-</div>
-<div class="callout"><b>GT 역할:</b> 학습 중에는 x₀를 알고 있으므로 계산 가능한 q(x<sub>t−1</sub>|x<sub>t</sub>,x₀)가 teacher 역할을 합니다. 모델 p<sub>θ</sub>가 이 역방향 한 걸음을 닮게 만드는 것이 핵심입니다.</div>
-</article>
-
-<article class="pdf-deep" style="margin-top:16px">
-<span class="lecture-tag">PART E · Maximum Likelihood에서 ELBO까지</span>
-<h3>직접 풀 수 없는 우도를 계산 가능한 아래 경계로 바꾼다</h3>
-<div class="formula">θ* = argmax<sub>θ</sub> 𝔼<sub>x₀~q<sub>data</sub></sub>[ log p<sub>θ</sub>(x₀) ]</div>
-<p>모델이 실제 training image x₀에 높은 확률을 주도록 θ를 찾고 싶습니다. 그러나 중간 잠재변수 x₁:T의 모든 가능한 경로를 적분해야 하므로 p<sub>θ</sub>(x₀)는 직접 계산하기 어렵습니다.</p>
-<div class="formula">p<sub>θ</sub>(x₀) = ∫ p<sub>θ</sub>(x₀:T) dx₁:T</div>
-<h3>교수님이 강조한 ELBO 유도 세 동작</h3>
-<div class="derivation-road">
-<div class="derivation-step"><b>① 1을 곱한다</b><span>q(x₁:T|x₀) / q(x₁:T|x₀)</span><small>값은 바꾸지 않고 계산하기 좋은 분포 q를 끼워 넣습니다.</small></div>
-<div class="derivation-step"><b>② 기대값으로 바꾼다</b><span>𝔼<sub>q</sub>[p<sub>θ</sub>/q]</span><small>∫q(z)f(z)dz = 𝔼<sub>q</sub>[f(z)] 정의를 사용합니다.</small></div>
-<div class="derivation-step"><b>③ Jensen을 적용한다</b><span>log 𝔼[Z] ≥ 𝔼[log Z]</span><small>log는 concave이므로 log를 기대값 안으로 넣으면 lower bound가 됩니다.</small></div>
-</div>
-<div class="formula">log p<sub>θ</sub>(x₀) ≥ 𝔼<sub>q(x₁:T|x₀)</sub>[ log p<sub>θ</sub>(x₀:T) − log q(x₁:T|x₀) ] = ELBO</div>
-<div class="formula-read"><b>문장으로 읽기:</b> 직접 계산하기 어려운 데이터 log-likelihood 대신, 항상 그보다 작거나 같은 계산 가능한 ELBO를 최대화합니다.</div>
-<div class="why"><b>Lower bound의 논리:</b> ELBO를 높이면 log-likelihood의 보장되는 하한이 올라갑니다. 둘이 항상 같은 폭으로 움직인다는 뜻은 아니며, 둘의 차이는 variational posterior와 true posterior 사이 KL입니다.</div>
-</article>
-
-<article class="pdf-deep" style="margin-top:16px">
-<span class="lecture-tag">PART F · ELBO를 KL로 분해</span>
-<h3>복잡한 한 덩어리가 “분포를 닮게 하는 문제”로 바뀐다</h3>
-<div class="formula">D<sub>KL</sub>(q || p) = 𝔼<sub>x~q</sub>[ log q(x) − log p(x) ] ≥ 0</div>
-<p><b>KL Divergence</b>(케이엘 다이버전스)는 두 분포의 차이를 측정합니다. 일반적으로 대칭이 아니므로 거리(metric)와 완전히 같지는 않습니다. q를 teacher, p<sub>θ</sub>를 student로 보면 “teacher가 자주 만드는 영역에서 student의 확률도 높여라”라는 의미입니다.</p>
-<div class="loss-stack">
-<div class="card"><b>L<sub>T</sub> · Prior matching</b><p>q(xT|x₀)가 p(xT)=𝒩(0,I)에 가까운지 봅니다. 보통 학습 파라미터와 무관한 항입니다.</p></div>
-<div class="equals">＋</div>
-<div class="card"><b>L<sub>t−1</sub> · Denoising matching</b><p>D<sub>KL</sub>(q(x<sub>t−1</sub>|xₜ,x₀) || p<sub>θ</sub>(x<sub>t−1</sub>|xₜ)). 핵심 학습 항입니다.</p></div>
-<div class="equals">＋</div>
-<div class="card"><b>L₀ · Reconstruction</b><p>마지막 x₁에서 실제 x₀를 복원할 확률을 높이는 항입니다.</p></div>
-</div>
-<p>핵심 중간항은 정확히 계산 가능한 true reverse posterior q와 모델의 reverse transition p<sub>θ</sub> 사이 KL입니다. 둘 다 Gaussian으로 두면 평균과 분산 비교를 닫힌식으로 계산할 수 있습니다.</p>
-</article>
-
-<article class="pdf-deep" style="margin-top:16px">
-<span class="lecture-tag">PART G · Mean Matching → Noise Matching</span>
-<h3>왜 이미지를 직접 맞히지 않고 노이즈를 맞힐까?</h3>
-<p>Gaussian KL에서 분산을 고정하면 모델이 학습해야 할 핵심은 두 Gaussian의 평균을 맞추는 일이 됩니다.</p>
-<div class="formula">|| μ̃<sub>t</sub>(xₜ,x₀) − μ<sub>θ</sub>(xₜ,t) ||²</div>
-<p>그런데 xₜ = √ᾱₜx₀ + √(1−ᾱₜ)ε 관계를 이용해 x₀를 ε로 다시 표현하면 평균 예측을 noise 예측으로 재매개변수화할 수 있습니다.</p>
-<div class="formula">L<sub>simple</sub>(θ) = 𝔼<sub>x₀,t,ε</sub>[ || ε − ε<sub>θ</sub>(xₜ,t) ||² ]</div>
-<div class="grid g3" style="margin-top:14px">
-<div class="card"><h3>ε</h3><p>우리가 𝒩(0,I)에서 직접 뽑아 x₀에 섞은 실제 노이즈. 따라서 정답을 정확히 압니다.</p></div>
-<div class="card"><h3>εθ(xₜ,t)</h3><p>노이즈 이미지 xₜ와 timestep t를 보고 신경망이 예측한 노이즈입니다.</p></div>
-<div class="card"><h3>||·||²</h3><p>실제 노이즈와 예측 노이즈의 성분별 차이를 제곱해 더하는 L2/MSE 형태입니다.</p></div>
-</div>
-<div class="callout"><b>수업 전체의 결론:</b> 최대우도 → ELBO → KL → Gaussian mean matching이라는 긴 확률론이, 구현 단계에서는 “내가 섞은 노이즈를 모델이 맞히게 한다”는 supervised regression 문제로 바뀝니다.</div>
-</article>
-
-<article class="pdf-deep" style="margin-top:16px">
-<span class="lecture-tag">PART H · 실제 Training Recipe</span>
-<h3>모든 timestep을 순서대로 학습하지 않는다</h3>
-<div class="derivation-road">
-<div class="derivation-step"><b>① 데이터</b><span>x₀ ~ q<sub>data</sub></span><small>미니배치에서 깨끗한 이미지를 뽑습니다.</small></div>
-<div class="derivation-step"><b>② 시간</b><span>t ~ Uniform({1,…,T})</span><small>연습할 노이즈 강도를 하나 뽑습니다.</small></div>
-<div class="derivation-step"><b>③ 노이즈</b><span>ε ~ 𝒩(0,I)</span><small>정답으로 사용할 Gaussian noise를 뽑습니다.</small></div>
-<div class="derivation-step"><b>④ 오염</b><span>xₜ=√ᾱₜx₀+√(1−ᾱₜ)ε</span><small>중간 단계를 거치지 않고 xₜ를 만듭니다.</small></div>
-<div class="derivation-step"><b>⑤ 예측</b><span>ε̂=εθ(xₜ,t)</span><small>모델이 섞인 노이즈를 추정합니다.</small></div>
-<div class="derivation-step"><b>⑥ 갱신</b><span>||ε−ε̂||²</span><small>loss를 backpropagation해 θ를 업데이트합니다.</small></div>
-</div>
-<div class="formula">repeat:<br>&nbsp; x₀ ~ data, &nbsp; t ~ Uniform(1,T), &nbsp; ε ~ 𝒩(0,I)<br>&nbsp; xₜ ← √ᾱₜx₀ + √(1−ᾱₜ)ε<br>&nbsp; loss ← ||ε − ε<sub>θ</sub>(xₜ,t)||²<br>&nbsp; θ ← optimizer.step(∇<sub>θ</sub> loss)</div>
-<div class="why"><b>Forward와 backpropagation 구분:</b> q의 forward diffusion은 이미지에 노이즈를 넣는 확률과정입니다. 마지막 줄의 backpropagation은 loss gradient로 신경망 파라미터를 갱신하는 학습 알고리즘입니다. 서로 다른 “방향”을 말합니다.</div>
-</article>
-
+<span class="lecture-tag">2차시 마무리 · 틀리기 쉬운 표현과 한 문단 요약</span>
+<h2>9. 용어 교정과 시험·면접용 최종 설명</h2>
 <article class="pdf-deep" style="margin-top:16px">
 <span class="lecture-tag">PART I · 자주 틀리는 녹취·개념 교정</span>
 <h3>음성 인식 표현을 정확한 용어로 복원하기</h3>
@@ -969,7 +619,6 @@ body{word-break:keep-all;overflow-wrap:break-word;margin:0;background:radial-gra
 <tr><td>mean만 맞추면 된다</td><td>기본 유도에서 reverse variance를 고정·특정 형태로 둘 때 mean matching으로 단순화됩니다. 분산을 학습하는 변형도 있습니다.</td></tr>
 </tbody></table>
 </article>
-
 <article class="pdf-deep" style="margin-top:16px">
 <span class="lecture-tag">PART J · 면접·시험 30초 설명</span>
 <h3>내 말로 설명하는 최종 답안</h3>
