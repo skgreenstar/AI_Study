@@ -9,7 +9,7 @@
 </style><style>.material{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:18px;padding:18px 20px;border-radius:18px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}.material h3,.material p{margin:0}.material p{color:var(--muted);font-size:14px}.download{flex:none;text-decoration:none;background:#283e79;color:#fff;border-radius:99px;padding:11px 17px;font-weight:900}.scope{margin-top:18px;padding:18px 20px;border-radius:18px;background:linear-gradient(110deg,#fff5d7,#fff);border:1px solid #f2d58e}.scope b{color:#8b5d00}.lecture-note{border-left:7px solid var(--violet);background:linear-gradient(110deg,#f1efff,#fff)}.concept-ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.concept-ladder>div{padding:17px;border-radius:17px;background:#fff;border:1px solid var(--line)}.concept-ladder b{display:block;color:#5943b5;margin-bottom:4px}.preview-label{display:block;margin:48px 0 -28px;padding:13px 16px;border:2px dashed #cfd7e6;border-radius:16px;background:#f7f8fb;color:#667386;font-size:13px;font-weight:900}@media(max-width:620px){.concept-ladder{grid-template-columns:1fr}.material{align-items:flex-start;flex-direction:column}}</style></head><body><main class="wrap"><a class="back" href="index.html">← 산업 AI의 기초 · 강의별 학습 자료</a>
 <header class="hero"><div class="kicker">GITA407 · LECTURE 03 · VISUAL NOTE</div><h1>정답을 주면 예측하고,<br>정답이 없으면 구조를 찾는다</h1><p>머신러닝을 “알고리즘 이름 모음”이 아니라 데이터·목적함수·최적화·일반화의 연결로 체계화합니다. 입문 흐름 뒤에는 선형회귀·K-means·PCA의 심화 원리까지 이어집니다.</p><div class="badges"><span class="badge">지도학습</span><span class="badge">비지도학습</span><span class="badge">데이터 표현</span><span class="badge">수식 쉬운 해부</span><span class="badge">2026-09-17 본수업 반영</span><span class="badge">심화 수식·실패 조건</span></div></header>
 <aside class="material"><div><h3>📎 오늘 강의자료·녹취 반영 범위</h3><p>GITA407 Lecture 03 · 50쪽 전체와 2026-09-17 실제 수업 녹취를 교차 대조했습니다.</p></div><span class="download" aria-label="첨부 원본을 바탕으로 정리함">PDF + 녹취</span></aside><div class="scope"><b>실제 수업 기준 진도 · 00:08–58:43</b><br>머신러닝 적용 조건부터 <b>지도·비지도·준지도·강화학습 → 회귀·분류 → 데이터 표현과 스케일링 → 일반화와 데이터 분할 → 모델·손실·최적화 → 경사하강법 → K-means → PCA·Eigenface</b>까지 Lecture 03 전체를 진행했습니다. 아래 자료는 예습 표시를 제거하고 오늘 교수님의 판서·비유·산업 사례를 본수업 흐름으로 통합한 버전입니다.</div>
-<nav class="nav"><a href="#shift">① 관점 전환</a><a href="#choose">② 학습 선택</a><a href="#dataset">③ 데이터 해부</a><a href="#pipeline">④ 일반화·분할</a><a href="#formula">⑤ 손실·경사하강</a><a href="#unsup">⑥ K-means·PCA</a><a href="#deep">⑦ 심화 원리</a><a href="#industry">⑧ 산업 적용</a><a href="#check">⑨ 복습</a></nav>
+<nav class="nav"><a href="#shift">① 관점 전환</a><a href="#choose">② 학습 선택</a><a href="#dataset">③ 데이터 해부</a><a href="#data-types">④ 데이터 유형</a><a href="#pipeline">⑤ 일반화·분할</a><a href="#formula">⑥ 손실·경사하강</a><a href="#unsup">⑦ K-means·PCA</a><a href="#deep">⑧ 심화 원리</a><a href="#industry">⑨ 산업 적용</a><a href="#check">⑩ 복습</a></nav>
 
 <section class="section" id="shift"><h2>🔄 프로그래밍의 관점이 뒤집힌다</h2><p class="lead">규칙을 사람이 쓸 수 있으면 전통 프로그래밍, 규칙을 말로 쓰기 어렵지만 정답 예시는 많으면 머신러닝이 잘 맞습니다.</p><div class="program"><div class="side rule"><h3>🧑‍💻 전통 프로그래밍</h3><p><b>데이터 + 사람이 쓴 규칙 → 정답</b></p><p>짧고 안정적인 규칙을 정확히 반복합니다.</p></div><div class="swap">⇄</div><div class="side ml"><h3>🧠 머신러닝</h3><p><b>데이터 + 예시 정답 → 모델(배운 규칙)</b></p><p>손글씨 7처럼 규칙을 직접 쓰기 어려운 패턴을 예시로 학습합니다.</p></div></div><div class="callout" style="margin-top:15px"><b>선택 기준 한 문장</b><br>정답 규칙이 “설명하기보다 보여주기 쉬울 때” 머신러닝의 가치가 큽니다. 단, 미래가 과거와 너무 다르거나 한 번의 오류도 허용할 수 없고 사람이 확인할 수도 없다면 적합성을 다시 검토해야 합니다.</div></section>
 <section class="section"><h2>🎙️ 교수님 설명으로 잡는 머신러닝의 본질</h2><div class="card lecture-note"><h3>머신러닝은 결국 “곱하고 더할 숫자”를 데이터로 찾는 과정</h3><p>입력 숫자들을 어떤 비율로 곱하고 더해야 원하는 출력이 나오는지 모델이 학습합니다. 딥러닝이 GPU에서 빠른 이유도 거대한 행렬의 곱셈과 덧셈을 병렬로 반복하기 때문입니다. 다만 이것은 계산의 모습이고, 학습의 목적은 <b>새 데이터에도 통하는 관계</b>를 찾는 것입니다.</p></div><div class="concept-ladder" style="margin-top:14px"><div><b>Rule-based</b><span>사람이 특징과 판단 규칙을 모두 작성</span></div><div><b>Classical ML</b><span>사람이 특징을 만들고 모델이 경계를 학습</span></div><div><b>Representation Learning</b><span>쓸 만한 특징 표현도 데이터에서 학습</span></div><div><b>Deep Learning</b><span>여러 층에서 표현을 목적에 맞게 변환</span></div></div><div class="callout" style="margin-top:14px"><b>김치찌개·밀키트 비유</b><br>원재료를 바로 완성품으로 바꾸는 것이 아니라 손질하고 볶고 끓이면서 요리에 알맞은 상태로 바꿉니다. 딥러닝의 각 층도 원시 입력을 문제 해결에 알맞은 <b>feature representation(피처 레프리젠테이션·특징 표현)</b>으로 단계적으로 바꿉니다.</div></section>
@@ -31,6 +31,65 @@
 <div class="grid g2" style="margin-top:15px"><div class="formula"><code>z = (x − μ) / σ</code><p><b>Standardization</b>: 평균을 0, 표준편차를 1에 가깝게 맞춰 서로 다른 단위의 feature가 공정하게 학습에 참여하게 합니다.</p><div class="symbol"><span>μ(뮤): 평균</span><span>σ(시그마): 표준편차</span><span>z(지): 표준화 값</span></div></div><div class="formula"><code>x′ = (x − min) / (max − min)</code><p><b>Min-max normalization</b>: 최솟값을 0, 최댓값을 1로 옮깁니다. 범위는 명확하지만 outlier에 민감합니다.</p><div class="symbol"><span>min: 최솟값</span><span>max: 최댓값</span><span>x′: 0~1 값</span></div></div></div>
 <div class="warn" style="margin-top:15px"><b>전처리에서 가장 위험한 실수</b><br>전체 데이터로 평균·표준편차를 계산한 뒤 split하면 test 정보가 training에 스며듭니다. scaler는 training set에만 fit하고 validation·test에는 같은 통계를 transform해야 합니다.</div></section>
 
+
+<section class="section" id="data-types"><h2>🧬 데이터 유형: 숫자로 보인다고 모두 수치형은 아니다</h2>
+<p class="lead">데이터 유형은 단순한 이름표가 아닙니다. 어떤 연산이 의미 있는지, 어떤 인코딩과 스케일링을 해야 하는지, 어떤 모델을 선택할지를 결정합니다.</p>
+<div class="callout"><b>가장 중요한 판별 질문</b><br>두 값의 <b>차이·평균·비율</b>을 계산했을 때 현실적인 뜻이 있으면 수치형일 가능성이 큽니다. 계산 결과보다 <b>같은 그룹인지</b>가 중요하면 범주형입니다. 예를 들어 설비 ID 101과 102는 숫자로 저장되어도 102가 101보다 “1만큼 큰 설비”가 아니므로 범주형입니다.</div>
+
+<div class="grid g2" style="margin-top:16px">
+<div class="card"><h3>📏 수치형 데이터 · Quantitative / Numerical</h3><p>크기와 차이가 실제 양을 나타내며 산술 연산에 의미가 있습니다.</p>
+<table class="compare"><thead><tr><th>하위 유형</th><th>뜻</th><th>산업 예시</th></tr></thead><tbody>
+<tr><td><b>연속형</b><br>Continuous</td><td>구간 안에서 이론상 어떤 실수값도 가능</td><td>온도 73.4℃, 압력 2.18 bar, 진동 RMS, 순도 99.2%</td></tr>
+<tr><td><b>이산형</b><br>Discrete</td><td>하나씩 셀 수 있는 정수값</td><td>불량 개수, 정지 횟수, 작업자 수, 주문 건수</td></tr>
+<tr><td><b>등간척도</b><br>Interval</td><td>차이는 의미 있지만 0이 ‘없음’을 뜻하지 않음</td><td>섭씨온도: 20℃가 10℃의 두 배로 뜨겁다는 뜻은 아님</td></tr>
+<tr><td><b>비율척도</b><br>Ratio</td><td>절대적 0이 있어 차이와 비율 모두 의미 있음</td><td>질량, 길이, 작업시간, 압력, 생산량</td></tr>
+</tbody></table>
+<p class="small"><b>전처리:</b> 거리 기반 모델과 경사하강을 쓰는 모델은 Standardization 또는 Min-max scaling의 영향을 크게 받습니다. 트리 계열은 보통 스케일에 덜 민감하지만 결측치·이상치 처리는 여전히 필요합니다.</p></div>
+
+<div class="card"><h3>🏷️ 범주형 데이터 · Qualitative / Categorical</h3><p>값의 핵심은 양이 아니라 소속 그룹입니다. 숫자 코드는 계산값이 아닌 이름표일 수 있습니다.</p>
+<table class="compare"><thead><tr><th>하위 유형</th><th>뜻</th><th>산업 예시</th></tr></thead><tbody>
+<tr><td><b>명목형</b><br>Nominal</td><td>순서가 없는 구분</td><td>공장, 제품군, 색상, 설비 ID, 공정 레시피</td></tr>
+<tr><td><b>순서형</b><br>Ordinal</td><td>순서는 있지만 단계 간 간격은 보장되지 않음</td><td>위험도 낮음·중간·높음, 품질 A·B·C, 숙련도</td></tr>
+<tr><td><b>이진형</b><br>Binary</td><td>두 범주만 존재</td><td>정상/불량, 가동/정지, 알람 있음/없음</td></tr>
+<tr><td><b>고유값이 많은 범주</b><br>High-cardinality</td><td>범주 수가 매우 많음</td><td>수천 개 설비 ID, LOT ID, 부품 번호</td></tr>
+</tbody></table>
+<p class="small"><b>전처리:</b> 명목형은 One-hot encoding이 기본이고 범주가 많으면 embedding·frequency encoding 등을 검토합니다. 순서형은 순서를 보존하되 1→2와 2→3의 간격이 같다고 성급히 가정하지 않습니다.</p></div>
+</div>
+
+<h3 style="margin-top:22px">🔍 헷갈리기 쉬운 열을 판별하는 법</h3>
+<table class="compare"><thead><tr><th>원본 값</th><th>올바른 유형</th><th>왜 그런가?</th><th>권장 표현</th></tr></thead><tbody>
+<tr><td>설비 ID: 101, 102, 103</td><td>명목형 범주</td><td>빼기·평균·대소 비교가 무의미한 식별자</td><td>One-hot/embedding. 행 식별용 ID라면 feature에서 제외 검토</td></tr>
+<tr><td>불량 개수: 0, 1, 2</td><td>이산 수치형</td><td>2개는 1개보다 정확히 1개 많음</td><td>수치로 사용하며 분포가 치우치면 log 변환 검토</td></tr>
+<tr><td>등급: 1, 2, 3</td><td>순서형 범주</td><td>순서는 있지만 등급 간 품질 차이가 동일하다고 할 수 없음</td><td>Ordinal encoding 또는 모델에 따라 One-hot</td></tr>
+<tr><td>우편번호: 06236</td><td>명목형 범주</td><td>숫자 모양의 지역 코드이며 평균 우편번호는 의미 없음</td><td>범주화하거나 지역·좌표 feature로 재설계</td></tr>
+<tr><td>측정 시각: 08:30</td><td>시간/주기형</td><td>23시와 0시는 숫자상 멀지만 실제로는 이웃</td><td>sin·cos 주기 인코딩, 날짜 파생변수, 시간순 분할</td></tr>
+</tbody></table>
+
+<div class="grid g2" style="margin-top:16px">
+<div class="card"><h3>🧰 유형별 전처리 선택표</h3>
+<table class="compare"><thead><tr><th>상황</th><th>우선 검토</th><th>주의점</th></tr></thead><tbody>
+<tr><td>연속형·이산형 수치</td><td>결측치 대체, 이상치 확인, scaling</td><td>평균 대체는 분산과 관계를 왜곡할 수 있음</td></tr>
+<tr><td>소수의 명목 범주</td><td>One-hot encoding</td><td>새 범주 처리 규칙을 미리 정할 것</td></tr>
+<tr><td>순서가 있는 범주</td><td>Ordinal encoding</td><td>코드 간 거리가 실제 간격이라는 보장은 없음</td></tr>
+<tr><td>범주가 수백~수천 개</td><td>Embedding, hashing, frequency encoding</td><td>Target encoding은 반드시 train 내부에서 계산해 누수 방지</td></tr>
+<tr><td>시간·날짜</td><td>요일·시간·경과시간·주기형 feature</td><td>미래 데이터가 학습에 섞이지 않도록 시간순 split</td></tr>
+</tbody></table></div>
+<div class="card"><h3>🏭 한 행을 실제로 분류해 보기</h3>
+<table class="data-table"><thead><tr><th>열</th><th>예시</th><th>유형</th></tr></thead><tbody>
+<tr><td>측정시각</td><td>2026-09-17 08:30</td><td>시간형</td></tr>
+<tr><td>반응기 온도</td><td>73.4℃</td><td>연속 수치형</td></tr>
+<tr><td>불량 개수</td><td>2</td><td>이산 수치형</td></tr>
+<tr><td>설비 ID</td><td>M-204</td><td>명목 범주형</td></tr>
+<tr><td>위험 등급</td><td>높음</td><td>순서 범주형</td></tr>
+<tr><td>알람</td><td>ON</td><td>이진 범주형</td></tr>
+<tr><td>품질 판정</td><td>불량</td><td>분류 label</td></tr>
+</tbody></table>
+<p class="small">같은 행 안에서도 데이터 유형이 섞여 있습니다. 먼저 각 열의 의미를 판별한 뒤 <b>열별 전처리 파이프라인</b>을 구성해야 합니다.</p></div>
+</div>
+
+<div class="mini-flow" style="margin-top:16px"><span>① 산술 연산이 의미 있나?</span><i>→</i><span>② 순서가 있나?</span><i>→</i><span>③ 범주 수가 많은가?</span><i>→</i><span>④ 시간 순서가 있나?</span><i>→</i><b>인코딩·분할 결정</b></div>
+<div class="warn" style="margin-top:16px"><b>실무 함정: 타입 추론을 파일 형식에 맡기지 말기</b><br>CSV를 읽으면 0/1, 등급 코드, 우편번호, ID가 모두 정수형으로 보일 수 있습니다. 그러나 모델링 유형은 저장 형식이 아니라 <b>업무적 의미와 허용 가능한 연산</b>으로 결정합니다. 또한 text·image·time-series도 모델에 들어갈 때는 결국 숫자 tensor가 되지만, 원자료의 구조에 맞는 표현 방법이 각각 다릅니다.</div>
+</section>
 <section class="section" id="pipeline"><h2>🚂 지도학습 파이프라인</h2><div class="pipe"><div class="step"><i>🧺</i><b>Data</b><small>수집·정제·인코딩</small></div><div class="step"><i>✂️</i><b>Split</b><small>학습·검증·테스트 분리</small></div><div class="step"><i>🏋️</i><b>Train</b><small>학습셋으로 파라미터 조정</small></div><div class="step"><i>🧪</i><b>Evaluate</b><small>보지 못한 데이터 평가</small></div><div class="step"><i>🚀</i><b>Deploy</b><small>새 입력을 실제로 예측</small></div></div>
 <div class="grid g3" style="margin-top:15px"><div class="card"><h3>60% · Training</h3><p>모델 내부 파라미터를 배웁니다.</p></div><div class="card"><h3>20% · Validation</h3><p>설정과 모델을 고릅니다. 여기에도 조금씩 맞춰지므로 테스트와 분리합니다.</p></div><div class="card"><h3>20% · Test</h3><p>마지막에 한 번만 열어 최종 일반화 성능을 추정합니다.</p></div></div><div class="callout" style="margin-top:15px"><b>산업 시계열 주의</b><br>시간 데이터는 미래가 과거로 새어 들어가지 않도록 무작위로 섞지 않고, 과거로 학습하고 미래로 테스트하는 분할이 기본입니다.</div>
 <div class="section"><h3>🎯 진짜 목표는 Training Accuracy가 아니라 Generalization</h3><div class="grid g2"><div class="card"><h3>암기한 모델</h3><p>훈련 데이터의 작은 틈까지 따라가 Training 성능은 높지만, 새로운 공정 조건이나 조금 흔들린 입력에서 무너집니다.</p></div><div class="card"><h3>일반화한 모델</h3><p>두 클래스 사이에 충분한 <b>margin</b>을 두고 핵심 패턴을 배워, 보지 못한 데이터에도 판단이 유지됩니다.</p></div></div>
