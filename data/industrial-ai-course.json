@@ -67,16 +67,17 @@
     {
       "week": 3,
       "title": "머신러닝 기초: 지도·비지도학습",
-      "subtitle": "실제 3차시 전체 진도 · 데이터 표현·일반화·분할·경사하강법·K-means·PCA·Eigenface",
+      "subtitle": "3차시 전체 진도 + 심화 원리 · 일반화·경사하강법·K-means 목적함수·PCA 고유벡터 유도",
       "icon": "🧠",
       "color": "#745ad8",
       "href": "week3.html",
-      "status": "3차시 수업·PDF 반영",
+      "status": "수업·PDF·심화 반영",
       "topics": [
-        "지도·비지도·준지도학습",
-        "일반화·과적합",
+        "지도·비지도학습",
+        "일반화·Bias-Variance",
         "Gradient Descent",
-        "K-means·PCA"
+        "K-means 목적함수",
+        "PCA 고유벡터"
       ],
       "classWeeks": [
         2,
