@@ -18,78 +18,81 @@
 <div class="grid g2" style="margin-top:15px"><div class="card"><h3>📈 Regression · 회귀</h3><p>온도, 가격, 배터리 잔여 수명처럼 <b>연속적인 숫자</b>를 예측합니다.</p></div><div class="card"><h3>🗂️ Classification · 분류</h3><p>정상/불량, 불량 종류처럼 <b>이산적인 범주</b>를 예측합니다. 회귀 결과에 문턱값을 적용해 분류할 수도 있지만 그 문턱값은 설계자가 책임져야 합니다.</p></div></div></section>
 <section class="section"><h2>📏 교수님이 그린 직선의 의미</h2><div class="grid g2"><div class="formula"><code>회귀: ŷ = wx + b</code><p>키 x와 발 크기 y처럼 연속적인 관계를 가장 잘 설명하는 직선을 찾습니다. w는 직선의 기울기, b는 위아래 위치를 정하는 절편입니다.</p><div class="symbol"><span>x 새 입력</span><span>ŷ 예측값</span><span>w 기울기</span><span>b 절편</span></div></div><div class="formula"><code>분류: wx + b = 0</code><p>두 종류의 점을 가장 잘 나누는 경계선을 찾습니다. 새 점이 선의 어느 쪽에 있는지 보고 정상/불량 같은 범주를 결정합니다.</p><div class="symbol"><span>연속 출력 → 회귀</span><span>범주 출력 → 분류</span></div></div></div><p class="lead" style="margin-top:12px">둘 다 입력과 정답 예시를 보고 관계를 찾으므로 지도학습입니다. 달라지는 것은 정답 y의 형태와 그에 맞는 손실함수·평가지표입니다.</p></section>
 
-<section class="section" id="dataset"><h2>🧱 데이터 표를 해부하면</h2><p class="lead">한 행은 한 사례, 입력 열은 특징, 마지막 정답 열은 라벨입니다.</p><div class="card"><table class="data-table"><thead><tr><th colspan="4">Features · 입력 x</th><th>Label · 정답 y</th></tr><tr><th>나이</th><th>소득</th><th>방문</th><th>지역</th><th>구매?</th></tr></thead><tbody><tr><td>32</td><td>4,100</td><td>7</td><td>서울</td><td>예</td></tr><tr><td>47</td><td>6,800</td><td>2</td><td>부산</td><td>아니오</td></tr><tr><td>25</td><td>2,900</td><td>12</td><td>서울</td><td>예</td></tr></tbody></table><div class="grid g3" style="margin-top:15px"><div><b>Sample (샘플)</b><p>행 하나, 즉 고객 1명·이미지 1장·기계 1사이클</p></div><div><b>Feature (피처)</b><p>입력 열 하나. 행 전체 입력은 특징 벡터 x</p></div><div><b>Label (레이블)</b><p>예측하려는 정답 y. 지도학습 데이터에만 존재</p></div></div></div>
-<div class="grid g2" style="margin-top:15px"><div class="card"><h3>범주를 1·2·3으로 쓰면 생기는 착각</h3><p>부산=1, 대구=2, 서울=3이면 모델은 서울이 부산보다 “더 멀다”고 오해합니다. 순서가 없는 범주는 <b>One-hot encoding</b>으로 [1,0,0], [0,1,0], [0,0,1]처럼 독립적으로 표현합니다.</p></div><div class="card"><h3>숫자 크기를 맞춰야 하는 이유</h3><p>소득 수백만 원과 방문 수 0~20을 그대로 비교하면 큰 단위가 거리와 기울기를 지배합니다.</p><div class="scale"><span>소득</span><div class="bar" style="width:78%"></div></div><div class="scale"><span>방문</span><div class="bar" style="width:12%"></div></div></div></div>
-<div class="section"><h3>📚 입력 데이터 유형과 올바른 표현</h3><table class="compare"><thead><tr><th>유형</th><th>예시</th><th>모델에 넣는 방식</th><th>주의점</th></tr></thead><tbody>
-<tr><td><b>Numerical</b></td><td>온도·압력·수입</td><td>수치 그대로 사용하되 scale 조정</td><td>단위가 큰 feature가 학습을 지배할 수 있음</td></tr>
-<tr><td><b>Categorical</b></td><td>지역·색상·Machine ID</td><td>One-hot encoding 또는 embedding</td><td>1·2·3은 존재하지 않는 순서와 거리를 만듦</td></tr>
-<tr><td><b>Ordinal</b></td><td>낮음·중간·높음</td><td>순서를 보존하는 encoding</td><td>순서와 실제 간격은 다른 개념</td></tr>
-<tr><td><b>Text</b></td><td>정비 기록·작업 일지</td><td>tokenization 후 embedding</td><td>문맥을 보존할 표현이 필요</td></tr>
-<tr><td><b>Image</b></td><td>외관 검사 영상</td><td>H×W×C tensor</td><td>예: Full HD는 1080×1920×3</td></tr>
-<tr><td><b>Time-series</b></td><td>센서·진동·전류</td><td>시간 순서 또는 주파수 표현</td><td>무작위 분할 시 미래 정보가 샐 수 있음</td></tr>
-</tbody></table></div>
-<div class="grid g2" style="margin-top:15px"><div class="formula"><code>z = (x − μ) / σ</code><p><b>Standardization</b>: 평균을 0, 표준편차를 1에 가깝게 맞춰 서로 다른 단위의 feature가 공정하게 학습에 참여하게 합니다.</p><div class="symbol"><span>μ(뮤): 평균</span><span>σ(시그마): 표준편차</span><span>z(지): 표준화 값</span></div></div><div class="formula"><code>x′ = (x − min) / (max − min)</code><p><b>Min-max normalization</b>: 최솟값을 0, 최댓값을 1로 옮깁니다. 범위는 명확하지만 outlier에 민감합니다.</p><div class="symbol"><span>min: 최솟값</span><span>max: 최댓값</span><span>x′: 0~1 값</span></div></div></div>
-<div class="warn" style="margin-top:15px"><b>전처리에서 가장 위험한 실수</b><br>전체 데이터로 평균·표준편차를 계산한 뒤 split하면 test 정보가 training에 스며듭니다. scaler는 training set에만 fit하고 validation·test에는 같은 통계를 transform해야 합니다.</div></section>
-
-
-<section class="section" id="data-types"><h2>🧬 데이터 유형: 숫자로 보인다고 모두 수치형은 아니다</h2>
-<p class="lead">데이터 유형은 단순한 이름표가 아닙니다. 어떤 연산이 의미 있는지, 어떤 인코딩과 스케일링을 해야 하는지, 어떤 모델을 선택할지를 결정합니다.</p>
-<div class="callout"><b>가장 중요한 판별 질문</b><br>두 값의 <b>차이·평균·비율</b>을 계산했을 때 현실적인 뜻이 있으면 수치형일 가능성이 큽니다. 계산 결과보다 <b>같은 그룹인지</b>가 중요하면 범주형입니다. 예를 들어 설비 ID 101과 102는 숫자로 저장되어도 102가 101보다 “1만큼 큰 설비”가 아니므로 범주형입니다.</div>
-
-<div class="grid g2" style="margin-top:16px">
-<div class="card"><h3>📏 수치형 데이터 · Quantitative / Numerical</h3><p>크기와 차이가 실제 양을 나타내며 산술 연산에 의미가 있습니다.</p>
-<table class="compare"><thead><tr><th>하위 유형</th><th>뜻</th><th>산업 예시</th></tr></thead><tbody>
-<tr><td><b>연속형</b><br>Continuous</td><td>구간 안에서 이론상 어떤 실수값도 가능</td><td>온도 73.4℃, 압력 2.18 bar, 진동 RMS, 순도 99.2%</td></tr>
-<tr><td><b>이산형</b><br>Discrete</td><td>하나씩 셀 수 있는 정수값</td><td>불량 개수, 정지 횟수, 작업자 수, 주문 건수</td></tr>
-<tr><td><b>등간척도</b><br>Interval</td><td>차이는 의미 있지만 0이 ‘없음’을 뜻하지 않음</td><td>섭씨온도: 20℃가 10℃의 두 배로 뜨겁다는 뜻은 아님</td></tr>
-<tr><td><b>비율척도</b><br>Ratio</td><td>절대적 0이 있어 차이와 비율 모두 의미 있음</td><td>질량, 길이, 작업시간, 압력, 생산량</td></tr>
-</tbody></table>
-<p class="small"><b>전처리:</b> 거리 기반 모델과 경사하강을 쓰는 모델은 Standardization 또는 Min-max scaling의 영향을 크게 받습니다. 트리 계열은 보통 스케일에 덜 민감하지만 결측치·이상치 처리는 여전히 필요합니다.</p></div>
-
-<div class="card"><h3>🏷️ 범주형 데이터 · Qualitative / Categorical</h3><p>값의 핵심은 양이 아니라 소속 그룹입니다. 숫자 코드는 계산값이 아닌 이름표일 수 있습니다.</p>
-<table class="compare"><thead><tr><th>하위 유형</th><th>뜻</th><th>산업 예시</th></tr></thead><tbody>
-<tr><td><b>명목형</b><br>Nominal</td><td>순서가 없는 구분</td><td>공장, 제품군, 색상, 설비 ID, 공정 레시피</td></tr>
-<tr><td><b>순서형</b><br>Ordinal</td><td>순서는 있지만 단계 간 간격은 보장되지 않음</td><td>위험도 낮음·중간·높음, 품질 A·B·C, 숙련도</td></tr>
-<tr><td><b>이진형</b><br>Binary</td><td>두 범주만 존재</td><td>정상/불량, 가동/정지, 알람 있음/없음</td></tr>
-<tr><td><b>고유값이 많은 범주</b><br>High-cardinality</td><td>범주 수가 매우 많음</td><td>수천 개 설비 ID, LOT ID, 부품 번호</td></tr>
-</tbody></table>
-<p class="small"><b>전처리:</b> 명목형은 One-hot encoding이 기본이고 범주가 많으면 embedding·frequency encoding 등을 검토합니다. 순서형은 순서를 보존하되 1→2와 2→3의 간격이 같다고 성급히 가정하지 않습니다.</p></div>
-</div>
-
-<h3 style="margin-top:22px">🔍 헷갈리기 쉬운 열을 판별하는 법</h3>
-<table class="compare"><thead><tr><th>원본 값</th><th>올바른 유형</th><th>왜 그런가?</th><th>권장 표현</th></tr></thead><tbody>
-<tr><td>설비 ID: 101, 102, 103</td><td>명목형 범주</td><td>빼기·평균·대소 비교가 무의미한 식별자</td><td>One-hot/embedding. 행 식별용 ID라면 feature에서 제외 검토</td></tr>
-<tr><td>불량 개수: 0, 1, 2</td><td>이산 수치형</td><td>2개는 1개보다 정확히 1개 많음</td><td>수치로 사용하며 분포가 치우치면 log 변환 검토</td></tr>
-<tr><td>등급: 1, 2, 3</td><td>순서형 범주</td><td>순서는 있지만 등급 간 품질 차이가 동일하다고 할 수 없음</td><td>Ordinal encoding 또는 모델에 따라 One-hot</td></tr>
-<tr><td>우편번호: 06236</td><td>명목형 범주</td><td>숫자 모양의 지역 코드이며 평균 우편번호는 의미 없음</td><td>범주화하거나 지역·좌표 feature로 재설계</td></tr>
-<tr><td>측정 시각: 08:30</td><td>시간/주기형</td><td>23시와 0시는 숫자상 멀지만 실제로는 이웃</td><td>sin·cos 주기 인코딩, 날짜 파생변수, 시간순 분할</td></tr>
-</tbody></table>
-
-<div class="grid g2" style="margin-top:16px">
-<div class="card"><h3>🧰 유형별 전처리 선택표</h3>
-<table class="compare"><thead><tr><th>상황</th><th>우선 검토</th><th>주의점</th></tr></thead><tbody>
-<tr><td>연속형·이산형 수치</td><td>결측치 대체, 이상치 확인, scaling</td><td>평균 대체는 분산과 관계를 왜곡할 수 있음</td></tr>
-<tr><td>소수의 명목 범주</td><td>One-hot encoding</td><td>새 범주 처리 규칙을 미리 정할 것</td></tr>
-<tr><td>순서가 있는 범주</td><td>Ordinal encoding</td><td>코드 간 거리가 실제 간격이라는 보장은 없음</td></tr>
-<tr><td>범주가 수백~수천 개</td><td>Embedding, hashing, frequency encoding</td><td>Target encoding은 반드시 train 내부에서 계산해 누수 방지</td></tr>
-<tr><td>시간·날짜</td><td>요일·시간·경과시간·주기형 feature</td><td>미래 데이터가 학습에 섞이지 않도록 시간순 split</td></tr>
-</tbody></table></div>
-<div class="card"><h3>🏭 한 행을 실제로 분류해 보기</h3>
-<table class="data-table"><thead><tr><th>열</th><th>예시</th><th>유형</th></tr></thead><tbody>
-<tr><td>측정시각</td><td>2026-09-17 08:30</td><td>시간형</td></tr>
-<tr><td>반응기 온도</td><td>73.4℃</td><td>연속 수치형</td></tr>
-<tr><td>불량 개수</td><td>2</td><td>이산 수치형</td></tr>
-<tr><td>설비 ID</td><td>M-204</td><td>명목 범주형</td></tr>
-<tr><td>위험 등급</td><td>높음</td><td>순서 범주형</td></tr>
-<tr><td>알람</td><td>ON</td><td>이진 범주형</td></tr>
-<tr><td>품질 판정</td><td>불량</td><td>분류 label</td></tr>
-</tbody></table>
-<p class="small">같은 행 안에서도 데이터 유형이 섞여 있습니다. 먼저 각 열의 의미를 판별한 뒤 <b>열별 전처리 파이프라인</b>을 구성해야 합니다.</p></div>
-</div>
-
-<div class="mini-flow" style="margin-top:16px"><span>① 산술 연산이 의미 있나?</span><i>→</i><span>② 순서가 있나?</span><i>→</i><span>③ 범주 수가 많은가?</span><i>→</i><span>④ 시간 순서가 있나?</span><i>→</i><b>인코딩·분할 결정</b></div>
-<div class="warn" style="margin-top:16px"><b>실무 함정: 타입 추론을 파일 형식에 맡기지 말기</b><br>CSV를 읽으면 0/1, 등급 코드, 우편번호, ID가 모두 정수형으로 보일 수 있습니다. 그러나 모델링 유형은 저장 형식이 아니라 <b>업무적 의미와 허용 가능한 연산</b>으로 결정합니다. 또한 text·image·time-series도 모델에 들어갈 때는 결국 숫자 tensor가 되지만, 원자료의 구조에 맞는 표현 방법이 각각 다릅니다.</div>
+<section class="section" id="dataset"><h2>🧱 데이터 표를 먼저 해부하면</h2>
+<p class="lead">모델이 보는 표는 <b>행=사례, 입력 열=특징, 정답 열=레이블</b>의 구조입니다. 데이터 유형을 판단하기 전에 각 열이 어떤 역할을 하는지 먼저 구분합니다.</p>
+<div class="card"><table class="data-table"><thead><tr><th colspan="4">Features · 입력 x</th><th>Label · 정답 y</th></tr><tr><th>나이</th><th>소득</th><th>방문</th><th>지역</th><th>구매?</th></tr></thead><tbody><tr><td>32</td><td>4,100</td><td>7</td><td>서울</td><td>예</td></tr><tr><td>47</td><td>6,800</td><td>2</td><td>부산</td><td>아니오</td></tr><tr><td>25</td><td>2,900</td><td>12</td><td>서울</td><td>예</td></tr></tbody></table>
+<div class="grid g3" style="margin-top:15px"><div><b>Sample (샘플)</b><p>행 하나. 고객 1명·이미지 1장·기계 1사이클처럼 관측 단위 하나입니다.</p></div><div><b>Feature (피처)</b><p>예측에 사용하는 입력 열입니다. 한 행의 입력 전체는 특징 벡터 x가 됩니다.</p></div><div><b>Label (레이블)</b><p>모델이 맞혀야 하는 정답 y입니다. 지도학습에는 있고 비지도학습에는 없습니다.</p></div></div></div>
+<div class="callout" style="margin-top:15px"><b>다음 질문</b><br>열의 역할을 나눴다면 이제 각 feature가 “양을 재는 값”인지 “그룹을 구분하는 이름표”인지 판별해야 합니다. 이 판단이 인코딩·스케일링·분할 방법을 결정합니다.</div>
 </section>
+
+<section class="section" id="data-types"><h2>🧬 데이터 유형: 의미를 판별하고 알맞게 표현하기</h2>
+<p class="lead">파일에 저장된 자료형이 아니라 <b>현실에서 그 값에 어떤 연산이 가능한지</b>가 기준입니다. 아래 순서대로 보면 대부분의 열을 빠르게 분류할 수 있습니다.</p>
+<div class="mini-flow"><span>① 평균·차이가 의미 있나?</span><i>→</i><span>② 순서가 있나?</span><i>→</i><span>③ 범주 수가 많은가?</span><i>→</i><span>④ 시간·공간 구조가 있나?</span><i>→</i><b>표현 방법 결정</b></div>
+<div class="callout" style="margin-top:15px"><b>핵심 기준</b><br><b>산술 연산</b>이 현실적인 의미를 가지면 수치형, <b>어느 그룹에 속하는지</b>가 핵심이면 범주형입니다. 따라서 설비 ID 101과 102는 숫자로 저장돼도 “102가 101보다 1만큼 큰 설비”가 아니므로 범주형입니다.</div>
+
+<h3 style="margin-top:22px">1. 핵심 유형: 수치형과 범주형</h3>
+<div class="grid g2">
+<div class="card"><h3>📏 수치형 · Numerical</h3><p>크기와 차이가 실제 양을 나타냅니다.</p>
+<table class="compare"><thead><tr><th>구분</th><th>판별 기준</th><th>산업 예시</th></tr></thead><tbody>
+<tr><td><b>연속형</b><br>Continuous</td><td>구간 안에서 실수값을 가질 수 있음</td><td>온도 73.4℃, 압력 2.18 bar, 순도 99.2%</td></tr>
+<tr><td><b>이산형</b><br>Discrete</td><td>하나씩 셀 수 있는 정수값</td><td>불량 개수, 정지 횟수, 주문 건수</td></tr>
+<tr><td><b>등간척도</b><br>Interval</td><td>차이는 의미 있지만 0이 ‘없음’은 아님</td><td>섭씨온도: 20℃는 10℃의 두 배가 아님</td></tr>
+<tr><td><b>비율척도</b><br>Ratio</td><td>절대적 0이 있어 비율도 의미 있음</td><td>질량, 길이, 작업시간, 생산량</td></tr>
+</tbody></table></div>
+<div class="card"><h3>🏷️ 범주형 · Categorical</h3><p>양보다 소속 그룹이나 상태가 중요합니다.</p>
+<table class="compare"><thead><tr><th>구분</th><th>판별 기준</th><th>산업 예시</th></tr></thead><tbody>
+<tr><td><b>명목형</b><br>Nominal</td><td>범주 사이에 순서가 없음</td><td>공장, 제품군, 색상, 설비 ID</td></tr>
+<tr><td><b>순서형</b><br>Ordinal</td><td>순서는 있지만 단계 간 간격은 모름</td><td>위험도 낮음·중간·높음, 품질 A·B·C</td></tr>
+<tr><td><b>이진형</b><br>Binary</td><td>가능한 범주가 두 개</td><td>정상/불량, 가동/정지, 알람 ON/OFF</td></tr>
+<tr><td><b>고카디널리티</b><br>High-cardinality</td><td>고유 범주가 수백~수천 개</td><td>설비 ID, LOT ID, 부품 번호</td></tr>
+</tbody></table></div>
+</div>
+
+<h3 style="margin-top:22px">2. 숫자 모양 때문에 헷갈리는 사례</h3>
+<table class="compare"><thead><tr><th>값</th><th>실제 유형</th><th>판단 근거</th><th>모델 표현</th></tr></thead><tbody>
+<tr><td>설비 ID 101, 102</td><td>명목형</td><td>대소·차이·평균이 무의미한 이름표</td><td>One-hot/embedding. 단순 행 ID면 제외 검토</td></tr>
+<tr><td>불량 개수 0, 1, 2</td><td>이산 수치형</td><td>2개는 1개보다 정확히 1개 많음</td><td>수치 사용, 심하게 치우치면 log 변환 검토</td></tr>
+<tr><td>품질 등급 1, 2, 3</td><td>순서형</td><td>순서는 있지만 1→2와 2→3의 차이가 같지 않을 수 있음</td><td>Ordinal encoding 또는 모델에 따라 One-hot</td></tr>
+<tr><td>우편번호 06236</td><td>명목형</td><td>숫자 모양의 지역 코드</td><td>범주화하거나 지역·좌표 feature로 재설계</td></tr>
+<tr><td>측정 시각 23:00, 00:00</td><td>시간·주기형</td><td>숫자상 멀어도 실제 시간상 이웃</td><td>sin·cos 주기 인코딩과 시간순 split</td></tr>
+</tbody></table>
+
+<h3 style="margin-top:22px">3. 표 밖의 구조화되지 않은 데이터</h3>
+<table class="compare"><thead><tr><th>원자료</th><th>예시</th><th>모델 입력으로 바꾸는 법</th><th>보존해야 할 구조</th></tr></thead><tbody>
+<tr><td><b>Text</b></td><td>정비 기록·작업 일지</td><td>Tokenization 후 embedding</td><td>단어의 순서와 문맥</td></tr>
+<tr><td><b>Image</b></td><td>외관 검사 영상</td><td>H×W×C tensor 또는 patch</td><td>공간적 인접성과 패턴</td></tr>
+<tr><td><b>Time-series</b></td><td>센서·진동·전류</td><td>시간 구간, lag, rolling 또는 주파수 특징</td><td>시간 순서와 주기성</td></tr>
+</tbody></table>
+<p class="small">이 데이터도 모델에 들어갈 때는 결국 숫자 tensor가 됩니다. 하지만 숫자로 변환됐다고 모두 같은 수치형 feature처럼 다루면 원래의 문맥·공간·시간 구조가 사라집니다.</p>
+
+<h3 style="margin-top:22px">4. 유형을 정했으면 전처리를 선택한다</h3>
+<table class="compare"><thead><tr><th>유형·상황</th><th>우선 적용</th><th>왜 필요한가?</th><th>주의점</th></tr></thead><tbody>
+<tr><td>연속형·이산형 수치</td><td>결측치·이상치 확인 후 scaling</td><td>큰 단위가 거리와 기울기를 지배하는 현상 방지</td><td>트리 계열은 scale에 덜 민감하며 평균 대체는 분포를 왜곡할 수 있음</td></tr>
+<tr><td>소수의 명목 범주</td><td>One-hot encoding</td><td>부산=1, 서울=3 같은 가짜 순서 제거</td><td>운영 중 처음 보는 범주의 처리 규칙 필요</td></tr>
+<tr><td>순서형 범주</td><td>Ordinal encoding</td><td>낮음&lt;중간&lt;높음 순서 보존</td><td>코드 간 숫자 간격까지 같다고 가정하지 말 것</td></tr>
+<tr><td>고카디널리티 범주</td><td>Embedding·hashing·frequency encoding</td><td>One-hot 차원 폭증 방지</td><td>Target encoding은 train 내부에서 계산해 누수 차단</td></tr>
+<tr><td>날짜·시간</td><td>요일·시간·경과시간·주기형 feature</td><td>주기성과 시간 흐름 표현</td><td>미래가 과거 학습에 섞이지 않도록 시간순 분할</td></tr>
+</tbody></table>
+
+<div class="grid g2" style="margin-top:15px">
+<div class="formula"><code>z = (x − μ) / σ</code><p><b>Standardization</b>: 평균을 0, 표준편차를 1에 가깝게 맞춥니다. 단위가 다른 수치 feature가 학습에 공정하게 참여합니다.</p><div class="symbol"><span>μ(뮤): 평균</span><span>σ(시그마): 표준편차</span><span>z(지): 표준화 값</span></div></div>
+<div class="formula"><code>x′ = (x − min) / (max − min)</code><p><b>Min-max normalization</b>: 최솟값을 0, 최댓값을 1로 옮깁니다. 범위가 명확하지만 outlier에 민감합니다.</p><div class="symbol"><span>min: 최솟값</span><span>max: 최댓값</span><span>x′: 0~1 값</span></div></div>
+</div>
+
+<h3 style="margin-top:22px">5. 산업 데이터 한 행에 적용하기</h3>
+<div class="card"><table class="data-table"><thead><tr><th>열</th><th>예시</th><th>유형</th><th>처리 방향</th></tr></thead><tbody>
+<tr><td>측정시각</td><td>2026-09-17 08:30</td><td>시간형</td><td>시간 파생변수·시간순 분할</td></tr>
+<tr><td>반응기 온도</td><td>73.4℃</td><td>연속 수치형</td><td>이상치 확인·필요시 scaling</td></tr>
+<tr><td>불량 개수</td><td>2</td><td>이산 수치형</td><td>수치 사용·분포 확인</td></tr>
+<tr><td>설비 ID</td><td>M-204</td><td>명목 범주형</td><td>One-hot 또는 embedding</td></tr>
+<tr><td>위험 등급</td><td>높음</td><td>순서 범주형</td><td>Ordinal encoding</td></tr>
+<tr><td>알람</td><td>ON</td><td>이진 범주형</td><td>0/1 encoding</td></tr>
+<tr><td>품질 판정</td><td>불량</td><td>분류 label</td><td>모델이 예측할 정답 y</td></tr>
+</tbody></table></div>
+
+<div class="warn" style="margin-top:15px"><b>두 가지 실무 함정</b><br><b>① 저장 형식 착각:</b> CSV에서 0/1·등급·우편번호·ID가 모두 정수로 읽혀도 업무적 의미는 서로 다릅니다.<br><b>② 데이터 누수:</b> scaler·encoder·결측치 대체기의 통계는 training set에만 fit하고 validation·test에는 그 값을 그대로 transform해야 합니다.</div>
+</section>
+
 <section class="section" id="pipeline"><h2>🚂 지도학습 파이프라인</h2><div class="pipe"><div class="step"><i>🧺</i><b>Data</b><small>수집·정제·인코딩</small></div><div class="step"><i>✂️</i><b>Split</b><small>학습·검증·테스트 분리</small></div><div class="step"><i>🏋️</i><b>Train</b><small>학습셋으로 파라미터 조정</small></div><div class="step"><i>🧪</i><b>Evaluate</b><small>보지 못한 데이터 평가</small></div><div class="step"><i>🚀</i><b>Deploy</b><small>새 입력을 실제로 예측</small></div></div>
 <div class="grid g3" style="margin-top:15px"><div class="card"><h3>60% · Training</h3><p>모델 내부 파라미터를 배웁니다.</p></div><div class="card"><h3>20% · Validation</h3><p>설정과 모델을 고릅니다. 여기에도 조금씩 맞춰지므로 테스트와 분리합니다.</p></div><div class="card"><h3>20% · Test</h3><p>마지막에 한 번만 열어 최종 일반화 성능을 추정합니다.</p></div></div><div class="callout" style="margin-top:15px"><b>산업 시계열 주의</b><br>시간 데이터는 미래가 과거로 새어 들어가지 않도록 무작위로 섞지 않고, 과거로 학습하고 미래로 테스트하는 분할이 기본입니다.</div>
 <div class="section"><h3>🎯 진짜 목표는 Training Accuracy가 아니라 Generalization</h3><div class="grid g2"><div class="card"><h3>암기한 모델</h3><p>훈련 데이터의 작은 틈까지 따라가 Training 성능은 높지만, 새로운 공정 조건이나 조금 흔들린 입력에서 무너집니다.</p></div><div class="card"><h3>일반화한 모델</h3><p>두 클래스 사이에 충분한 <b>margin</b>을 두고 핵심 패턴을 배워, 보지 못한 데이터에도 판단이 유지됩니다.</p></div></div>
