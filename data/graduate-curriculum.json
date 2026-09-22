@@ -43,9 +43,9 @@
           "title": "머신러닝 기초",
           "icon": "📐",
           "color": "#447ce8",
-          "description": "벡터·행렬부터 고유값·대각화·SVD까지, 머신러닝 수학의 기반",
+          "description": "교재 장별 머신러닝 개념과 선형대수 선수지식을 체계적으로 정리",
           "href": "../graduate/ml-foundations/index.html",
-          "status": "기초 보강 · 선형대수 1개 학습 자료"
+          "status": "1장 + 선형대수 · 2개 학습 자료"
         }
       ],
       "period": "2026-09-05 ~ 2026-12-19"
