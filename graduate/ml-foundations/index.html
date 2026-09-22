@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="머신러닝을 위한 선형대수 기초: 벡터, 행렬, 내적, 노름, 선형독립, rank, 고유값·고유벡터, 대각화와 SVD">
+<title>머신러닝 기초 · 선형대수 | AI Study</title>
+<style>
+:root{--bg:#f6f8fc;--ink:#172a42;--muted:#65748a;--blue:#447ce8;--violet:#745ad8;--mint:#24aa8e;--amber:#eea832;--rose:#e86676;--line:#dfe6f0;--shadow:0 15px 42px rgba(38,64,105,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 5% 0,#e6ecff,transparent 30%),radial-gradient(circle at 100% 80%,#e7fbf5,transparent 25%),var(--bg);color:var(--ink);font-family:Pretendard,"Noto Sans KR",system-ui,sans-serif;line-height:1.7;word-break:keep-all;overflow-wrap:break-word}
+.wrap{max-width:1160px;margin:auto;padding:24px 20px 90px}.back{display:inline-flex;color:var(--muted);font-weight:850;text-decoration:none;margin-bottom:18px}.hero{position:relative;overflow:hidden;padding:48px;border-radius:30px;background:linear-gradient(135deg,#162f62,#5547bd 58%,#2aa78f);color:#fff;box-shadow:var(--shadow)}.hero:after{content:"∑";position:absolute;right:28px;bottom:-100px;font-size:300px;font-weight:950;opacity:.07}.kicker{font-size:13px;font-weight:950;letter-spacing:1.5px;color:#dce5ff}.hero h1{font-size:clamp(35px,6vw,61px);line-height:1.08;letter-spacing:-2px;margin:10px 0 16px}.hero p{max-width:790px;font-size:18px;margin:0;color:#f1f4ff}.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}.badge{border-radius:99px;padding:6px 11px;font-size:12px;font-weight:850;background:#ffffff1c;border:1px solid #ffffff35}
+.nav{position:sticky;top:8px;z-index:5;display:flex;gap:7px;overflow:auto;margin:18px 0;padding:9px;border:1px solid var(--line);border-radius:16px;background:#f6f8fce8;backdrop-filter:blur(10px)}.nav a{white-space:nowrap;text-decoration:none;color:#455970;background:#fff;border:1px solid var(--line);border-radius:99px;padding:6px 11px;font-size:13px;font-weight:850}
+.section{margin-top:48px}.section h2{font-size:clamp(27px,4vw,40px);line-height:1.2;letter-spacing:-1px;margin:0 0 8px}.lead{color:var(--muted);margin:0 0 17px}.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow)}.grid{display:grid;gap:15px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.flow{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}.step{position:relative;padding:17px;border-radius:18px;background:#fff;border:1px solid var(--line);min-height:135px}.step:not(:last-child):after{content:"→";position:absolute;right:-14px;top:48px;color:var(--violet);font-weight:950;font-size:20px;z-index:2}.step b{display:block;color:var(--violet);margin:6px 0}.step i{font-style:normal;font-size:26px}
+.formula{padding:18px;border-radius:18px;background:#172f52;color:#fff;overflow:auto}.formula code{display:block;font-size:clamp(17px,2.4vw,24px);color:#c9ddff;margin-bottom:8px}.formula p{margin:0;color:#e4ebf7}.callout{padding:18px 20px;border-radius:17px;background:#fff6dc;border-left:6px solid var(--amber)}.ml{padding:18px 20px;border-radius:17px;background:#edf8f5;border-left:6px solid var(--mint)}.warn{padding:18px 20px;border-radius:17px;background:#fff0f2;border-left:6px solid var(--rose)}
+table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:17px;overflow:hidden;background:#fff}th,td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:#eef2ff}tr:last-child td{border-bottom:0}.mini{font-size:13px;color:var(--muted)}
+.axis{display:grid;grid-template-columns:90px 1fr;gap:10px;align-items:center}.bar{height:17px;border-radius:99px;background:linear-gradient(90deg,var(--blue),var(--violet))}.bar.alt{background:linear-gradient(90deg,var(--mint),#7fd6c6)}
+.quiz label{display:flex;gap:10px;padding:11px 0;border-bottom:1px dashed var(--line)}details{margin-top:10px;background:#fff;border:1px solid var(--line);border-radius:15px;padding:12px 16px}summary{cursor:pointer;font-weight:900}.footer{text-align:center;color:var(--muted);font-size:13px;margin-top:50px}
+@media(max-width:900px){.flow{grid-template-columns:repeat(3,1fr)}.step:nth-child(3n):after{display:none}.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:680px){.wrap{padding:14px 14px 60px}.hero{padding:34px 24px}.g2,.g3,.g4,.flow{grid-template-columns:1fr}.step:after{display:none!important}.hero:after{font-size:190px}.axis{grid-template-columns:70px 1fr}}
+</style>
+</head>
+<body><main class="wrap">
+<a class="back" href="../index.html">← 대학원 학습 공간</a>
+<header class="hero"><div class="kicker">MACHINE LEARNING FOUNDATIONS · LINEAR ALGEBRA</div><h1>머신러닝의 숫자를<br>벡터와 행렬로 읽기</h1><p>스칼라·벡터·행렬부터 내적, 노름, 선형독립과 rank, 고유값·고유벡터, 대각화, 스펙트럼 분해와 SVD까지. “왜 머신러닝에서 이 수학이 필요한가?”를 연결해서 정리합니다.</p><div class="badges"><span class="badge">벡터·행렬</span><span class="badge">내적·노름</span><span class="badge">선형독립·Rank</span><span class="badge">Eigen</span><span class="badge">Diagonalization</span><span class="badge">SVD</span></div></header>
+<nav class="nav"><a href="#map">① 전체 지도</a><a href="#representation">② 데이터 표현</a><a href="#vector">③ 벡터 연산</a><a href="#space">④ 벡터공간·Rank</a><a href="#matrix">⑤ 행렬 연산</a><a href="#eigen">⑥ 고유값</a><a href="#diag">⑦ 대각화</a><a href="#svd">⑧ SVD</a><a href="#ml">⑨ ML 연결</a><a href="#check">⑩ 복습</a></nav>
+
+<section class="section" id="map"><h2>🗺️ 먼저 전체 구조</h2><p class="lead">강의자료의 큰 흐름은 벡터/행렬 → 고유값과 고유벡터 → 행렬의 대각화 → 스펙트럼 분해/특이값 분해 순서입니다.</p><div class="flow">
+<div class="step"><i>•</i><b>Scalar</b><span>숫자 하나</span></div><div class="step"><i>→</i><b>Vector</b><span>특징 한 묶음</span></div><div class="step"><i>▦</i><b>Matrix</b><span>여러 샘플</span></div><div class="step"><i>λ</i><b>Eigen</b><span>변환의 핵심 방향</span></div><div class="step"><i>◇</i><b>Diagonalize</b><span>복잡한 변환 단순화</span></div><div class="step"><i>Σ</i><b>SVD</b><span>일반 행렬의 핵심 구조</span></div></div>
+<div class="ml" style="margin-top:15px"><b>ML 연결</b><br>머신러닝 데이터는 결국 숫자 배열입니다. 한 샘플을 벡터로, 여러 샘플을 행렬로 표현하고, 모델 학습은 이 배열의 곱·합·거리·방향을 계산하는 과정으로 볼 수 있습니다.</div></section>
+
+<section class="section" id="representation"><h2>🧱 데이터는 어떻게 벡터와 행렬이 되나?</h2><p class="lead">강의자료는 Iris 데이터를 이용해 한 꽃의 네 특징을 하나의 feature vector로, 150개 샘플 전체를 design matrix로 표현합니다.</p>
+<div class="grid g3"><div class="card"><h3>Scalar · 스칼라</h3><p>숫자 하나. 예: 온도 95.2, 학습률 0.001.</p></div><div class="card"><h3>Vector · 벡터</h3><p>한 샘플의 여러 특징을 묶은 1차원 배열. 크기와 방향을 가집니다.</p></div><div class="card"><h3>Matrix · 행렬</h3><p>여러 벡터를 행/열로 쌓은 2차원 배열. 훈련집합을 담으면 design matrix가 됩니다.</p></div></div>
+<div class="formula" style="margin-top:15px"><code>x = [5.1, 3.5, 1.4, 0.2]ᵀ ∈ R⁴</code><p>Iris 샘플 하나 = 꽃받침 길이·너비 + 꽃잎 길이·너비의 4차원 특징 벡터</p></div>
+<div class="formula" style="margin-top:10px"><code>X ∈ Rⁿˣᵈ</code><p>n개 샘플 × d개 특징. 머신러닝에서 가장 자주 보는 데이터 행렬 형태입니다.</p></div>
+<div class="callout" style="margin-top:15px"><b>Tensor · 텐서</b><br>강의자료는 3차원 이상의 숫자 배열을 텐서로 소개하고, 스칼라=0차원 텐서, 벡터=1차원, 행렬=2차원으로 포괄해 설명합니다. RGB 이미지는 높이×너비×채널의 3차원 예가 됩니다.</div></section>
+
+<section class="section" id="vector"><h2>📐 벡터에서 꼭 잡아야 할 3개</h2><div class="grid g3">
+<div class="card"><h3>① 내적 · Dot Product</h3><div class="formula"><code>aᵀb = Σ aᵢbᵢ</code><p>두 벡터의 대응 성분을 곱해 모두 더합니다.</p></div><p>방향이 얼마나 비슷한지, 한 벡터가 다른 방향으로 얼마나 놓였는지 측정하는 핵심 연산입니다.</p></div>
+<div class="card"><h3>② 노름 · Norm</h3><div class="formula"><code>||x||₂ = √Σxᵢ²</code><p>벡터의 길이. 2-norm은 Euclidean norm입니다.</p></div><p>벡터를 길이 1로 나누면 unit vector가 됩니다.</p></div>
+<div class="card"><h3>③ 코사인 유사도</h3><div class="formula"><code>cos θ = aᵀb /(||a||·||b||)</code><p>길이 효과를 제거하고 방향의 유사도를 봅니다.</p></div><p>문서·임베딩 유사도에서 자주 만나는 형태입니다.</p></div></div>
+<div class="ml" style="margin-top:15px"><b>ML 연결</b><br>거리 기반 모델은 노름, 임베딩 검색은 코사인 유사도, 선형모델·신경망은 내적을 반복적으로 사용합니다. “벡터 연산”은 실제 모델 계산 그 자체와 연결됩니다.</div></section>
+
+<section class="section" id="space"><h2>🧭 선형독립 · 기저 · Rank</h2><p class="lead">“이 벡터가 정말 새로운 방향을 추가하는가?”를 판단하는 개념들입니다.</p>
+<div class="grid g2"><div class="card"><h3>Linear Combination · 선형결합</h3><div class="formula"><code>c = α₁a + α₂b</code><p>기존 벡터에 계수를 곱해 더해서 새 벡터를 만듭니다.</p></div><p>기저벡터의 선형결합으로 만들어지는 전체 영역이 vector space입니다.</p></div>
+<div class="card"><h3>Linear Independence · 선형독립</h3><p>어떤 벡터도 나머지 벡터들의 선형결합으로 만들 수 없다면 서로 선형독립입니다. 반대로 하나라도 나머지 조합으로 표현되면 선형종속입니다.</p></div></div>
+<div class="grid g3" style="margin-top:15px"><div class="card"><h3>Basis · 기저</h3><p>공간을 만드는 최소한의 독립 방향들.</p></div><div class="card"><h3>Orthonormal Basis</h3><p>서로 직교하고 각 길이가 1인 기저.</p></div><div class="card"><h3>Rank · 계수</h3><p>행렬 안에서 선형독립인 행(또는 열) 벡터의 수.</p></div></div>
+<div class="ml" style="margin-top:15px"><b>ML 연결</b><br>특징 열들이 서로 거의 중복되면 실제 정보 차원은 낮아집니다. Rank는 “독립적인 정보 방향이 몇 개인가”를 보는 출발점이고, 차원축소와 다중공선성 이해로 이어집니다.</div></section>
+
+<section class="section" id="matrix"><h2>▦ 행렬: 모델 계산의 작업대</h2>
+<table><thead><tr><th>개념</th><th>핵심</th><th>머신러닝에서 보는 장면</th></tr></thead><tbody>
+<tr><td><b>Transpose Aᵀ</b></td><td>행과 열을 뒤집음</td><td>XᵀX, covariance, gradient 계산</td></tr>
+<tr><td><b>Matrix Multiplication AB</b></td><td>A의 열 수 = B의 행 수</td><td>Dense layer: XW+b</td></tr>
+<tr><td><b>Identity I</b></td><td>곱해도 원래 행렬 유지</td><td>역행렬·고유값 식</td></tr>
+<tr><td><b>Determinant det(A)</b></td><td>정방행렬을 하나의 값으로 요약</td><td>역행렬 존재 여부와 연결</td></tr>
+<tr><td><b>Inverse A⁻¹</b></td><td>AA⁻¹=I</td><td>선형방정식 해석, 정규방정식의 이론적 형태</td></tr>
+<tr><td><b>Frobenius Norm</b></td><td>행렬 원소 제곱합의 제곱근</td><td>행렬 크기·오차·regularization</td></tr>
+</tbody></table>
+<div class="warn" style="margin-top:15px"><b>중요:</b> 행렬곱은 일반적으로 교환법칙이 성립하지 않습니다. 즉 AB ≠ BA입니다. 딥러닝의 shape 오류 대부분은 이 차원 규칙을 놓쳤을 때 생깁니다.</div></section>
+
+<section class="section" id="eigen"><h2>λ 고유값과 고유벡터: 변환 후에도 방향이 유지되는 축</h2><p class="lead">행렬 A로 변환했을 때 방향은 그대로이고 길이만 λ배 되는 특별한 벡터가 고유벡터입니다.</p>
+<div class="formula"><code>Ax = λx</code><p>x: eigenvector(고유벡터), λ: eigenvalue(고유값). x는 0이 아닌 벡터입니다.</p></div>
+<div class="grid g2" style="margin-top:15px"><div class="card"><h3>Eigenvector</h3><p>행렬 변환이 작용해도 <b>방향이 유지되는 축</b>. 상수배도 같은 방향의 고유벡터가 되므로 보통 길이 1로 정규화합니다.</p></div><div class="card"><h3>Eigenvalue</h3><p>그 특별한 방향이 변환 후 <b>얼마나 늘거나 줄어드는지</b>를 나타내는 값입니다.</p></div></div>
+<div class="formula" style="margin-top:15px"><code>det(A - λI) = 0</code><p>특성방정식을 풀어 고유값을 구하고, 각 λ에 대해 (A-λI)x=0을 풀어 고유벡터를 찾습니다.</p></div>
+<div class="ml" style="margin-top:15px"><b>ML 연결 · PCA</b><br>공분산 행렬의 고유벡터는 데이터가 퍼지는 주요 방향이 되고, 대응 고유값은 그 방향의 분산 크기를 나타냅니다. 큰 고유값의 방향부터 선택하면 PCA의 주성분이 됩니다.</div></section>
+
+<section class="section" id="diag"><h2>◇ 대각화: 복잡한 변환을 축별 스케일링으로 바꾸기</h2><p class="lead">강의자료는 정방행렬·대칭행렬의 대각화를 다루며, 모든 행렬이 대각화 가능한 것은 아니라고 설명합니다.</p>
+<div class="formula"><code>A = C D C⁻¹</code><p>D는 대각행렬, C의 열에는 고유벡터들이 들어갑니다. 즉 좌표계를 고유벡터 축으로 바꾸면 변환을 대각 성분별 독립적인 스케일링으로 볼 수 있습니다.</p></div>
+<div class="grid g3" style="margin-top:15px"><div class="card"><h3>① Change Basis</h3><p>고유벡터 좌표계로 이동</p></div><div class="card"><h3>② Scale</h3><p>각 축을 λ만큼 확대·축소</p></div><div class="card"><h3>③ Return</h3><p>원래 좌표계로 복원</p></div></div>
+<div class="callout" style="margin-top:15px"><b>대칭행렬의 좋은 성질</b><br>실수 대칭행렬은 서로 직교하는 고유벡터를 가질 수 있어 직교대각화가 가능하며, 이 성질이 covariance matrix와 PCA를 다룰 때 특히 중요합니다.</div></section>
+
+<section class="section" id="svd"><h2>Σ SVD: 정방행렬이 아니어도 분해한다</h2><p class="lead">강의자료는 고유값 분해가 정사각행렬에만 적용된다는 한계를 짚고, 일반적인 n×m 행렬에는 특이값 분해(SVD)를 사용합니다.</p>
+<div class="formula"><code>A = U Σ Vᵀ</code><p>U와 V는 직교 방향, Σ는 중요도를 나타내는 singular value(특이값)를 대각에 담습니다.</p></div>
+<div class="grid g3" style="margin-top:15px"><div class="card"><h3>U</h3><p>출력 공간의 핵심 방향 · left singular vectors</p></div><div class="card"><h3>Σ</h3><p>각 방향의 중요도 · singular values</p></div><div class="card"><h3>V</h3><p>입력 공간의 핵심 방향 · right singular vectors</p></div></div>
+<div class="axis" style="margin-top:18px"><b>σ₁</b><div class="bar" style="width:100%"></div><b>σ₂</b><div class="bar alt" style="width:72%"></div><b>σ₃</b><div class="bar" style="width:38%"></div><b>σ₄</b><div class="bar alt" style="width:14%"></div></div>
+<div class="ml" style="margin-top:15px"><b>ML 연결</b><br>큰 특이값 몇 개만 남기면 원래 행렬의 중요한 구조를 보존하면서 저랭크 근사를 만들 수 있습니다. 차원축소, 압축, 잡음 제거, 잠재구조 분석의 수학적 기반으로 이어집니다.</div></section>
+
+<section class="section" id="ml"><h2>🤖 그래서 머신러닝 어디에 쓰이나?</h2>
+<div class="grid g4"><div class="card"><h3>Linear Model</h3><p><b>Xw</b>는 데이터 행렬과 가중치 벡터의 곱입니다.</p></div><div class="card"><h3>Neural Network</h3><p>각 층은 본질적으로 <b>XW+b</b>와 비선형 변환을 반복합니다.</p></div><div class="card"><h3>Embedding / RAG</h3><p>벡터 간 내적·cosine similarity로 가까운 의미를 찾습니다.</p></div><div class="card"><h3>PCA / Compression</h3><p>고유벡터·고유값·SVD로 중요한 정보 방향만 남깁니다.</p></div></div>
+<table style="margin-top:15px"><thead><tr><th>수학 개념</th><th>직관</th><th>ML에서 기억할 한 문장</th></tr></thead><tbody>
+<tr><td>Vector</td><td>한 점·한 방향·한 샘플</td><td>feature와 embedding은 벡터다.</td></tr>
+<tr><td>Matrix</td><td>벡터의 묶음</td><td>dataset과 weight는 행렬이다.</td></tr>
+<tr><td>Dot Product</td><td>방향 정렬 정도</td><td>linear layer와 similarity의 핵심이다.</td></tr>
+<tr><td>Norm</td><td>길이·거리</td><td>거리, 정규화, regularization으로 이어진다.</td></tr>
+<tr><td>Rank</td><td>독립 정보 방향 수</td><td>중복 특징과 압축 가능성을 본다.</td></tr>
+<tr><td>Eigen</td><td>변환의 고유 축</td><td>PCA의 핵심 방향을 설명한다.</td></tr>
+<tr><td>SVD</td><td>행렬의 중요한 축 분해</td><td>일반 행렬을 압축·근사할 수 있다.</td></tr>
+</tbody></table></section>
+
+<section class="section" id="check"><h2>✅ 이해했는지 확인</h2><div class="card quiz">
+<label><input type="checkbox"> 샘플 하나와 데이터셋 전체를 각각 벡터와 행렬로 설명할 수 있다.</label>
+<label><input type="checkbox"> 내적, 노름, 코사인 유사도의 차이를 설명할 수 있다.</label>
+<label><input type="checkbox"> 선형독립과 rank가 왜 “독립 정보 수”와 연결되는지 말할 수 있다.</label>
+<label><input type="checkbox"> Ax=λx를 그림 없이 말로 해석할 수 있다.</label>
+<label><input type="checkbox"> PCA에서 왜 공분산 행렬의 고유벡터를 보는지 설명할 수 있다.</label>
+<label><input type="checkbox"> SVD가 고유값 분해보다 일반적인 상황에 적용되는 이유를 말할 수 있다.</label></div>
+<details><summary>Q. 벡터와 행렬을 가장 짧게 구분하면?</summary><p>벡터는 한 샘플의 특징 묶음, 행렬은 여러 벡터를 쌓은 구조라고 기억하면 머신러닝 문맥에서 가장 직관적입니다.</p></details>
+<details><summary>Q. 고유벡터가 왜 중요한가?</summary><p>복잡한 선형변환에서도 방향이 바뀌지 않는 축이기 때문입니다. 그 축을 기준으로 변환을 보면 구조가 단순해지고, PCA처럼 중요한 데이터 방향을 찾는 데 활용됩니다.</p></details>
+<details><summary>Q. SVD는 한 문장으로?</summary><p>어떤 행렬이든 입력 방향(V), 중요도(Σ), 출력 방향(U)으로 분해해 핵심 구조를 드러내는 방법입니다.</p></details></section>
+
+<section class="section"><h2>📚 강의자료 근거</h2><div class="card mini"><b>강의자료: 선형대수 · 제4장 벡터와 행렬 / 제5장 벡터공간</b><p>자료의 목차와 예제를 기준으로 벡터·행렬, 고유값·고유벡터, 대각화, 스펙트럼 분해·특이값 분해의 흐름을 재구성했습니다. Iris feature vector/design matrix 예시, 내적·norm·cosine similarity, 선형독립·rank, 행렬 연산·역행렬, eigenvalue/eigenvector와 SVD를 머신러닝 입문 관점으로 연결했습니다.</p><p><b>작성일:</b> 2026-09-22 · <b>상태:</b> 강의자료 기반 학습 노트</p></div></section>
+<div class="footer">AI Study · 머신러닝 기초 · Linear Algebra Visual Note · Updated 2026-09-22</div>
+</main></body></html>
