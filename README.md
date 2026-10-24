@@ -196,3 +196,8 @@ AI_Study/
 - 사실과 수치에는 출처와 확인일을 남깁니다.
 
 에이전트 공통 규칙은 [AGENTS.md](AGENTS.md), 사람의 협업 규칙은 [CONTRIBUTING.md](CONTRIBUTING.md)를 확인하세요.
+
+
+## 중간고사 복습 자료
+
+- [트랜스포머와 거대언어모델 중간고사 복원·해설](graduate/transformer-llm/midterm-review.html): 교수님 해설 녹취 기반 5대문항·10소문항, 모범 답안, 시각 개념, 채점 포인트. 원문 복원 불확실성과 Top-p 계산 정정 포함 (2026-10-24).

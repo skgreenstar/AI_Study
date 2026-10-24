@@ -11,7 +11,7 @@
       "url": "https://cme295.stanford.edu/"
     },
     "description": "토큰과 Attention에서 Transformer 구조, LLM 학습·튜닝·추론과 Agentic LLM까지 연결합니다.",
-    "updated": "2026-09-12"
+    "updated": "2026-10-24"
   },
   "weeks": [
     {
@@ -27,6 +27,25 @@
         "Transformer",
         "LLM Training",
         "Agentic LLM"
+      ]
+    },
+    {
+      "week": "MIDTERM REVIEW",
+      "title": "중간고사 복원·해설과 개념 재정리",
+      "subtitle": "교수님 해설 기반 5대문항·10소문항 · 모범 답안 · 시각 개념 · 채점 포인트 · Top-p 계산 정정",
+      "icon": "📝",
+      "color": "#ef6797",
+      "href": "midterm-review.html",
+      "status": "복습하기",
+      "topics": [
+        "OOV·Embedding",
+        "Attention·MoE",
+        "BERT",
+        "Top-k·Top-p"
+      ],
+      "classWeeks": [
+        7,
+        8
       ]
     },
     {
@@ -232,7 +251,7 @@
       "type": "exam",
       "lecture": null,
       "slides": null,
-      "href": null
+      "href": "midterm-review.html"
     },
     {
       "week": 8,
@@ -241,7 +260,7 @@
       "type": "review",
       "lecture": null,
       "slides": null,
-      "href": null
+      "href": "midterm-review.html"
     },
     {
       "week": 9,
