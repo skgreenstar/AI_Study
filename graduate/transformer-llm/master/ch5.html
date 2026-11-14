@@ -99,9 +99,9 @@
 <div class="formula-read"><b>문장으로 읽기:</b> 이긴 답이 실제로 이길 확률은 두 점수의 <b>차이</b>로 정해진다. 그 확률이 낮으면 벌점.<br><b>숫자 예제.</b> r<sub>w</sub>=0.8, r<sub>l</sub>=−2 → 차이 2.8 → σ(2.8) ≈ 0.943 → 손실 ≈ 0.059 (잘 맞힘).<br>반대로 r<sub>w</sub>=−2, r<sub>l</sub>=0.8 → σ(−2.8) ≈ 0.057 → 손실 ≈ 2.86 (크게 틀림).</div></div>
 
 <div class="formula-box"><span class="tag p">수식 2</span><h3>RLHF의 목적 함수</h3>
-<div class="equation">max<sub>π</sub> &nbsp; E[ <span class="c3">r(x, y)</span> ] − <span class="c4">β</span> · <span class="c1">KL</span>( π ‖ <span class="c2">π<sub>ref</sub></span> )</div>
-<div class="decode"><span><b>π</b><i>파이</i>지금 학습 중인 정책(LLM)</span><span><b>r(x,y)</b><i>알</i>프롬프트 x에 대한 답 y의 보상 점수</span><span><b>π<sub>ref</sub></b><i>파이 레프</i>기준 모델(SFT 모델), 고정</span><span><b>KL</b><i>케이엘</i>두 분포가 얼마나 다른지</span><span><b>β</b><i>베타</i>"멀어지지 마" 항의 세기</span><span><b>E[·]</b><i>기댓값</i>여러 프롬프트·답에 대한 평균</span></div>
-<div class="formula-read"><b>문장으로 읽기:</b> 평균 보상을 높이되, 기준 모델과 달라진 만큼 감점한다.</div></div>
+<div class="equation">max<sub>π</sub> &nbsp; E[ <span class="c3">r(x, ŷ)</span> − <span class="c4">λ</span> · <span class="c1">KL</span>( π(ŷ|x) ‖ <span class="c2">π<sub>ref</sub></span>(ŷ|x) ) ]<br><small>KL(P‖Q) = Σ<sub>i</sub> p<sub>i</sub> log(p<sub>i</sub>/q<sub>i</sub>)</small></div>
+<div class="decode"><span><b>π</b><i>파이</i>지금 학습 중인 정책(LLM)</span><span><b>r(x,y)</b><i>알</i>프롬프트 x에 대한 답 y의 보상 점수</span><span><b>π<sub>ref</sub></b><i>파이 레프</i>기준 모델(SFT 모델), 고정</span><span><b>KL</b><i>케이엘</i>두 분포가 얼마나 다른지</span><span><b>λ</b><i>람다</i>"멀어지지 마" 항의 세기</span><span><b>E[·]</b><i>기댓값</i>여러 프롬프트·답에 대한 평균</span></div>
+<div class="formula-read"><b>문장으로 읽기:</b> 평균 보상을 높이되, 기준 모델과 달라진 만큼 감점한다.<br><b>PPO-KL 형태:</b> L<sup>KLPEN</sup> = E[ ρ · Â − β · KL(π<sub>old</sub> ‖ π<sub>θ</sub>) ]. 원래는 직전 반복의 정책(old)과 비교했고, 요즘은 기준(ref) 모델과 비교한다.</div></div>
 
 <div class="formula-box"><span class="tag y">수식 3</span><h3>PPO-Clip</h3>
 <div class="equation">L<sup>clip</sup> = E[ min( <span class="c2">ρ</span> · <span class="c3">A</span> , clip(<span class="c2">ρ</span>, 1−<span class="c4">ε</span>, 1+<span class="c4">ε</span>) · <span class="c3">A</span> ) ]<br><span class="c2">ρ</span> = π<sub>new</sub>(a|s) / π<sub>old</sub>(a|s)</div>
@@ -160,7 +160,7 @@
 <li>Rafailov et al., <a href="https://arxiv.org/abs/2305.18290">Direct Preference Optimization</a>, 2023 · Xu et al., Is DPO Superior to PPO for LLM Alignment?, 2024</li>
 <li>Bradley &amp; Terry, The rank analysis of incomplete block designs, 1952 · Lambert et al., <a href="https://arxiv.org/abs/2403.13787">RewardBench</a>, 2024</li>
 </ul>
-<div class="meta">id: transformer-llm-master-ch5 · area: LLM · level: 중급 · prerequisites: transformer-llm-master-ch4 · next: transformer-llm-master-ch6 · related: week5 · author: Claude · reviewer: 미지정 · status: draft · updated: 2026-11-14<br>수식은 원 논문의 표준 표기입니다. 보상 점수 0.8 / −2 / 0.2는 슬라이드의 예시이고, 나머지 숫자 예제는 설명을 위해 만든 것입니다.</div>
+<div class="meta">id: transformer-llm-master-ch5 · area: LLM · level: 중급 · prerequisites: transformer-llm-master-ch4 · next: transformer-llm-master-ch6 · related: week5 · author: Claude · reviewer: 미지정 · status: draft · updated: 2026-11-14<br>수식은 슬라이드와 대조했습니다. 보상 점수 0.8 / −2 / 0.2는 슬라이드의 예시이고, 나머지 숫자 예제는 설명을 위해 만든 것입니다.</div>
 </section>
 
 <label class="done"><input type="checkbox" data-chapter="ch5"> 이 장을 이해했다 (전체 지도에 표시됩니다)</label>

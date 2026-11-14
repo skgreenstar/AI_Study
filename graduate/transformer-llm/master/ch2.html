@@ -109,7 +109,7 @@
 <div class="formula-box"><span class="tag p">수식 2</span><h3>RoPE — 회전으로 넣는 위치</h3>
 <div class="equation">R(<span class="c1">m</span><span class="c2">θ</span>) = [ cos <span class="c1">m</span><span class="c2">θ</span>, −sin <span class="c1">m</span><span class="c2">θ</span> ; sin <span class="c1">m</span><span class="c2">θ</span>, cos <span class="c1">m</span><span class="c2">θ</span> ]<br>(R(<span class="c1">m</span><span class="c2">θ</span>) q) · (R(<span class="c3">n</span><span class="c2">θ</span>) k) = q · R((<span class="c3">n</span>−<span class="c1">m</span>)<span class="c2">θ</span>) k</div>
 <div class="decode"><span><b>m, n</b><i>엠, 엔</i>질문 토큰과 색인 토큰의 자리</span><span><b>θ</b><i>세타</i>한 칸당 회전 각도 (차원 쌍마다 다름)</span><span><b>R(·)</b><i>알</i>그 각도만큼 돌리는 2×2 회전 행렬</span></div>
-<div class="formula-read"><b>문장으로 읽기:</b> 둘을 각자 자리만큼 돌린 뒤 내적하면, 결과는 두 자리의 차이(n−m)에만 달려 있다.<br><b>숫자 예제:</b> q=k=[1,0], θ=30°. 자리 (2,5)면 내적 = cos(90°) = 0. 자리 (10,13)도 cos(90°) = 0. 자리 (2,3)이면 cos(30°) ≈ 0.87. 차원이 2보다 크면 2개씩 묶어 각각 돌린다.</div></div>
+<div class="formula-read"><b>문장으로 읽기:</b> 둘을 각자 자리만큼 돌린 뒤 내적하면, 결과는 두 자리의 차이(n−m)에만 달려 있다.<br><b>숫자 예제:</b> q=k=[1,0], θ=30°. 자리 (2,5)면 내적 = cos(90°) = 0. 자리 (10,13)도 cos(90°) = 0. 자리 (2,3)이면 cos(30°) ≈ 0.87. 차원이 2보다 크면 2개씩 묶어 각각 돌린다.<br><b>장거리 감쇠:</b> 여러 속도의 회전이 합쳐지면서, Attention 점수의 상한이 두 토큰의 거리 |m−n|가 멀수록 작아진다. 먼 토큰일수록 자연스럽게 덜 본다.</div></div>
 
 <div class="formula-box"><span class="tag y">수식 3</span><h3>LayerNorm과 RMSNorm</h3>
 <div class="equation">LN(x) = <span class="c3">γ</span> · (x − <span class="c1">μ</span>) / <span class="c2">σ</span> + <span class="c3">β</span><br>RMSNorm(x) = <span class="c3">γ</span> · x / √( (1/d) Σ x<sub>i</sub>² )</div>
@@ -167,7 +167,7 @@
 <li>Beltagy et al., <a href="https://arxiv.org/abs/2004.05150">Longformer</a>, 2020 · Ainslie et al., <a href="https://arxiv.org/abs/2305.13245">GQA</a>, 2023</li>
 <li>Devlin et al., <a href="https://arxiv.org/abs/1810.04805">BERT</a>, 2018 · Sanh et al., <a href="https://arxiv.org/abs/1910.01108">DistilBERT</a>, 2019 · Liu et al., <a href="https://arxiv.org/abs/1907.11692">RoBERTa</a>, 2019</li>
 </ul>
-<div class="meta">id: transformer-llm-master-ch2 · area: LLM · level: 기초 · prerequisites: transformer-llm-master-ch1 · next: transformer-llm-master-ch3 · related: week2 · author: Claude · reviewer: 미지정 · status: draft · updated: 2026-11-14<br>수식은 슬라이드가 인용한 원 논문의 표준 표기입니다. RoPE 숫자 예제의 값은 설명을 위해 만든 것입니다.</div>
+<div class="meta">id: transformer-llm-master-ch2 · area: LLM · level: 기초 · prerequisites: transformer-llm-master-ch1 · next: transformer-llm-master-ch3 · related: week2 · author: Claude · reviewer: 미지정 · status: draft · updated: 2026-11-14<br>수식(위치 인코딩, RoPE 회전 행렬, LayerNorm)은 슬라이드와 대조했습니다. RMSNorm 식은 원 논문 표기입니다. RoPE 숫자 예제의 값은 설명을 위해 만든 것입니다.</div>
 </section>
 
 <label class="done"><input type="checkbox" data-chapter="ch2"> 이 장을 이해했다 (전체 지도에 표시됩니다)</label>

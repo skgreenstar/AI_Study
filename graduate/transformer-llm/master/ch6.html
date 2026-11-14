@@ -69,10 +69,15 @@
 
 <article class="card along"><span class="tag y">보충 ⑤</span><h3>"출력이 계속 길어지는" 현상</h3>
 <p>RL 학습이 진행될수록 응답 길이가 늘어납니다. 원인 하나는 GRPO가 응답마다 토큰 수로 나눠 평균하는 것입니다.</p>
-<div class="tablewrap"><table class="cmp"><tr><th>응답</th><th>토큰당 신호</th><th>결과</th></tr>
-<tr><td>틀린 답 · 짧음</td><td>크다 (세게 벌점)</td><td>짧게 틀리는 것은 빨리 줄어듦</td></tr>
-<tr><td>틀린 답 · 김</td><td>작다 (벌점이 희석)</td><td><b>길게 틀리는 것은 덜 혼남</b> → 나쁜 유인</td></tr></table></div>
-<p><b>해법.</b> 토큰 단위 기여를 고르게: <b>DAPO</b>, <b>Dr. GRPO</b>. 그 밖에 문제 난이도에 따른 편향 보정, 다양성 장려 같은 조정이 연구됩니다.</p></article>
+<div class="tablewrap"><table class="cmp"><tr><th></th><th>맞은 답 (A &gt; 0)</th><th>틀린 답 (A &lt; 0)</th></tr>
+<tr><td>짧은 출력 (|o| 작음)</td><td>크게 칭찬</td><td>크게 벌점</td></tr>
+<tr><td>긴 출력 (|o| 큼)</td><td>조금 칭찬</td><td><b>조금만 벌점</b> → 나쁜 유인</td></tr></table></div>
+<p>틀릴 바에는 길게 쓰는 편이 덜 혼나므로, 틀린 답의 길이가 계속 늘어납니다.</p>
+<div class="tablewrap"><table class="cmp"><tr><th>해법</th><th>평균 내는 방식</th></tr>
+<tr><td>원래 GRPO</td><td>(1/G) Σ<sub>i</sub> <b>(1/|o<sub>i</sub>|)</b> Σ<sub>t</sub> — 답마다 길이로 나눔</td></tr>
+<tr><td>DAPO</td><td>1/(Σ<sub>i</sub>|o<sub>i</sub>|) Σ<sub>i</sub> Σ<sub>t</sub> — 조 전체 토큰 수로 나눔</td></tr>
+<tr><td>Dr. GRPO</td><td>(1/G) Σ<sub>i</sub> Σ<sub>t</sub> — 길이로 나누지 않음</td></tr></table></div>
+<p><b>그 밖의 조정.</b> 난이도 편향: 어드밴티지를 표준편차로 나누면 문제 난이도에 따라 신호 크기가 왜곡되어, 이 나눗셈을 빼는 방법이 있습니다. 다양성 장려: 클리핑 범위를 [1−ε, 1+ε]에서 [1−ε<sub>low</sub>, 1+ε<sub>high</sub>]로 위아래를 따로 둡니다(DAPO).</p></article>
 
 <article class="card along"><span class="tag y">보충 ⑥</span><h3>추론 시 "생각량" 조절</h3>
 <p>모든 질문이 같은 양의 생각을 필요로 하지 않습니다.</p>
@@ -109,9 +114,9 @@
 <div class="formula-read"><b>문장으로 읽기:</b> PPO-Clip과 같은 모양인데, 어드밴티지는 조 평균으로 구하고 KL은 따로 뺀다.<br><b>길이 문제의 출처:</b> 1/|o<sub>i</sub>|. 긴 답일수록 토큰 하나가 받는 신호가 작아진다. DAPO·Dr. GRPO는 이 나눗셈을 바꾼다.</div></div>
 
 <div class="formula-box"><span class="tag y">수식 3</span><h3>Pass@k</h3>
-<div class="equation">Pass@<span class="c4">k</span> = 1 − (1 − <span class="c1">p</span>)<sup><span class="c4">k</span></sup> &nbsp; <small>(시도가 독립일 때)</small></div>
-<div class="decode"><span><b>p</b><i>피</i>한 번 시도해 성공할 확률</span><span><b>k</b><i>케이</i>시도 횟수</span><span><b>(1−p)<sup>k</sup></b><i>전부 실패</i>k번 모두 실패할 확률</span></div>
-<div class="formula-read"><b>숫자 예제.</b> p = 0.3 → Pass@1 = 0.30, Pass@5 = 1 − 0.7⁵ ≈ <b>0.83</b>, Pass@10 ≈ 0.97.<br>한 번에 30%밖에 못 푸는 모델도 5번 기회를 주면 83%가 된다. Pass@k만 보고 "잘한다"고 판단하면 안 되는 이유. 실제 평가에서는 n번 생성해 그중 c번 성공한 표본으로 추정한다. <a href="ch8.html">8장</a>의 Pass^k(전부 성공)와 대비해 보자.</div></div>
+<div class="equation">Pass@<span class="c4">k</span> = 1 − C(<span class="c1">n</span>−<span class="c3">c</span>, <span class="c4">k</span>) / C(<span class="c1">n</span>, <span class="c4">k</span>) &nbsp; ≈ &nbsp; 1 − (1 − <span class="c2">p</span>)<sup><span class="c4">k</span></sup></div>
+<div class="decode"><span><b>n, c</b><i>엔, 시</i>시도 횟수와 그중 성공 횟수</span><span><b>C(n−c, k)</b><i>조합</i>실패한 것들에서만 k개를 뽑는 경우의 수</span><span><b>p</b><i>피</i>한 번 시도의 성공 확률 (≈ c/n)</span></div>
+<div class="formula-read"><b>문장으로 읽기:</b> n개 답안에서 k개를 뽑았을 때 전부 실패작일 확률을 1에서 뺀다.<br><b>숫자 예제.</b> 10번 중 3번 성공(n=10, c=3), k=5 → 1 − C(7,5)/C(10,5) = 1 − 21/252 ≈ <b>0.92</b>. 독립 어림 1 − 0.7⁵ ≈ 0.83.<br>한 번에 30%밖에 못 푸는 모델도 5번 기회를 주면 80~90%가 된다. Pass@k만 보고 "잘한다"고 판단하면 안 되는 이유. <a href="ch8.html">8장</a>의 Pass^k(전부 성공)와 대비해 보자.</div></div>
 
 <div class="formula-box"><span class="tag g">수식 4</span><h3>R1 보상의 조립</h3>
 <div class="equation">r = <span class="c4">r<sub>형식</sub></span> + <span class="c3">r<sub>정확도</sub></span> (+ <span class="c2">r<sub>언어 일관성</sub></span>)</div>
@@ -168,7 +173,7 @@
 <li>Yu et al., <a href="https://arxiv.org/abs/2503.14476">DAPO</a>, 2025 · Liu et al., Understanding R1-Zero-Like Training (Dr. GRPO), 2025</li>
 <li>Chen et al., <a href="https://arxiv.org/abs/2107.03374">Evaluating Large Language Models Trained on Code (Pass@k)</a>, 2021 · Muennighoff et al., <a href="https://arxiv.org/abs/2501.19393">s1: Simple test-time scaling</a>, 2025 · Hao et al., <a href="https://arxiv.org/abs/2412.06769">Reasoning in a Continuous Latent Space</a>, 2024</li>
 </ul>
-<div class="meta">id: transformer-llm-master-ch6 · area: LLM · level: 중급 · prerequisites: transformer-llm-master-ch5 · next: transformer-llm-master-ch7 · related: week6 · author: Claude · reviewer: 미지정 · status: draft · updated: 2026-11-14<br>모델 공개일과 데이터 규모는 슬라이드 기준(2025년 11월)입니다. 수식은 원 논문의 표준 표기이고, 숫자 예제는 설명을 위해 만든 것입니다.</div>
+<div class="meta">id: transformer-llm-master-ch6 · area: LLM · level: 중급 · prerequisites: transformer-llm-master-ch5 · next: transformer-llm-master-ch7 · related: week6 · author: Claude · reviewer: 미지정 · status: draft · updated: 2026-11-14<br>모델 공개일과 데이터 규모는 슬라이드 기준(2025년 11월)입니다. 수식(Pass@k, GRPO 목적 함수, 어드밴티지, 길이 정규화)은 슬라이드와 대조했고, 숫자 예제는 설명을 위해 만든 것입니다.</div>
 </section>
 
 <label class="done"><input type="checkbox" data-chapter="ch6"> 이 장을 이해했다 (전체 지도에 표시됩니다)</label>
