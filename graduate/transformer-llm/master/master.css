@@ -100,3 +100,29 @@ table.cmp td{padding:9px 11px;border-top:1px solid var(--line);vertical-align:to
 .progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--violet),var(--mint));transition:.3s}
 @media(max-width:760px){.hero{padding:26px 22px}.goals,.grid,.grid.g3,.links,.chapgrid,.myth,.ctrl{grid-template-columns:1fr}.decode{grid-template-columns:1fr 1fr}.usecase{grid-template-columns:1fr}.usecase .icon{width:66px}.route{position:static}.node{min-width:86px}}
 @media print{body{background:#fff}.route,.pager,.done{display:none}.card,.formula-box{box-shadow:none;break-inside:avoid}}
+
+/* 용어를 사용하는 자리에서 뜻·예·연결을 함께 읽는다. */
+.memory-piece{margin:12px 0 18px;padding:15px 17px;border:1px solid var(--line);border-left:4px solid var(--pink);border-radius:14px;background:#fff8fc;font-size:15px;line-height:1.75}
+.memory-piece p{margin:8px 0}.memory-piece p>b{color:#893357;margin-right:6px}
+.memory-plain{font-weight:750}.memory-plain>b{display:block;font-size:12px;letter-spacing:.02em}
+.memory-piece details{margin-top:10px;border-top:1px solid #eadfea;padding-top:8px}
+.memory-piece summary,.puzzle-check summary{cursor:pointer;font-weight:750;color:#593aac}
+.memory-piece summary:focus-visible,.puzzle-check summary:focus-visible,.puzzle-steps a:focus-visible{outline:3px solid var(--violet);outline-offset:4px}
+.memory-recall p{padding:10px;background:#e9fbf6;border-radius:10px}
+.puzzle-bridge{margin:18px 0 24px;padding:20px;border:1px solid var(--line);border-radius:20px;background:#fff}
+.puzzle-label{margin:0 0 12px;color:#593aac;font-weight:850}
+.puzzle-context{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.puzzle-context>div{padding:14px;border-radius:14px;background:#f4f1ff;border-top:4px solid var(--pink)}
+.puzzle-context>div:nth-child(2){background:#fff8df;border-color:var(--yellow)}
+.puzzle-context>div:nth-child(3){background:#e9fbf6;border-color:var(--mint)}
+.puzzle-context p{margin:8px 0 0}
+.puzzle-steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;list-style:none;padding:0;margin:18px 0}
+.puzzle-steps li{padding:14px;border:1px solid var(--line);border-radius:14px;background:#faf9ff}
+.puzzle-steps p{margin:8px 0 0;font-size:14px}
+.memory-scope{font-size:13px;color:var(--muted)}
+.puzzle-check,.puzzle-comparison{margin:20px 0;padding:20px;border:1px solid var(--line);border-radius:18px;background:#fff}
+.puzzle-check details p{margin:12px 0}
+h3[id]{scroll-margin-top:90px}
+table caption{text-align:left;font-weight:750;padding:10px 0}
+@media(max-width:760px){.puzzle-context,.puzzle-steps{grid-template-columns:1fr}.puzzle-bridge,.puzzle-comparison{padding:16px}.memory-piece{padding:13px}}
+@media print{.memory-piece,.puzzle-steps li{break-inside:avoid}.puzzle-context{grid-template-columns:1fr}.memory-recall{display:none}}

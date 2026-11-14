@@ -19,6 +19,15 @@
 <nav class="route"><a href="#big">큰 그림</a><a href="#analogy">비유</a><a href="#concepts">핵심 개념</a><a href="#lab">계산기</a><a href="#math">수식 해부</a><a href="#cases">활용 사례</a><a href="#myths">오해</a><a href="#quiz">퀴즈</a><a href="#links">연결</a></nav>
 
 <section class="section" id="big"><h2>한눈에 보는 큰 그림</h2>
+<div class="puzzle-bridge">
+<p class="puzzle-label">앞에서 가져온 조각 → 여기서 해결 → 다음 질문</p>
+<div class="puzzle-context"><div><b><a href="ch7.html#concepts">앞 조각 · 7장</a></b><p>7장의 시스템은 검색·생성·도구 실행이 결합되어 있다. 최종 답 하나만 보면 실패 원인을 놓친다.</p></div><div><b>지금 맞출 조각</b><p>무엇을 잘해야 하는지 정하고, 기준별로 측정해 개선 위치를 찾는다.</p></div><div><b><a href="ch9.html#big">다음 조각 · 9장</a></b><p>이 평가 기준을 글뿐 아니라 이미지·새 생성 방식에도 적용해 장단점을 비교한다.</p></div></div>
+<ol class="puzzle-steps" aria-label="이 장의 개념이 이어지는 이유"><li><a href="#piece-8-1"><b>1. 사람이 원하는 품질 기준을 정한다</b></a><p><b>왜 필요한가</b> 모호한 ‘좋은 답’ 대신 정확성·근거·작업 성공 등으로 나눈다.</p></li>
+<li><a href="#piece-8-2"><b>2. 자동으로 셀 수 있는 부분을 잰다</b></a><p><b>왜 필요한가</b> 단어 겹침이나 정답 일치만으로도 빠른 반복 비교가 가능하다.</p></li>
+<li><a href="#piece-8-3"><b>3. 복잡한 기준은 모델 심판으로 보조한다</b></a><p><b>왜 필요한가</b> 규칙이 못 잡는 의미를 평가하되 심판 편향을 따로 점검한다.</p></li>
+<li><a href="#piece-8-6"><b>4. 측정 조건을 함께 해석한다</b></a><p><b>왜 필요한가</b> 점수 하나보다 데이터 오염·시도 횟수·비용·실제 업무 차이를 봐야 한다.</p></li></ol>
+<p class="memory-scope">화살표는 이해를 위한 연결입니다. 모두를 반드시 순서대로 적용하는 시스템 구성도는 아닙니다.</p>
+</div>
 <p class="lead">"평가"에는 출력 품질(지시 이행, 일관성, 사실성)과 시스템 성능(지연, 요금, 안정성)이 있습니다. 이 장은 출력 품질입니다.</p>
 <div class="big-picture">
 <div class="flow"><div class="node p">사람 평가<br><small>가장 믿을 만함<br>느리고 비쌈, 주관적</small></div><div class="arrow">→</div><div class="node y">규칙 기반 지표<br><small>BLEU·ROUGE·METEOR<br>빠름, 정답 문장 필요</small></div><div class="arrow">→</div><div class="node g">LLM-as-a-Judge<br><small>정답 없이 채점 + 이유<br>편향 관리 필요</small></div></div>
@@ -39,11 +48,23 @@
 <section class="section" id="concepts"><h2>핵심 개념 카드</h2>
 <div class="grid">
 
-<article class="card must"><span class="tag p">필수 ①</span><h3>사람 평가와 평가자 간 일치도</h3>
+<article class="card must"><span class="tag p">필수 ①</span><h3 id="piece-8-1">사람 평가와 평가자 간 일치도</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>평가자 일치도 = 같은 답을 본 사람들이 얼마나 같은 판단을 했나</p>
+<p><b>작은 예</b> 두 사람이 모두 합격이라 해도 우연히 같을 몫을 고려해야 한다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>Cohen의 카파는 관측 일치율을 우연 일치율로 보정한 지표다.</p><p><b>비유의 경계</b> 일치도가 높다고 두 사람의 판단이 사실에 맞다는 뜻은 아니다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>평가자끼리 기준이 맞나</b> — 평가자 일치도 = 같은 답을 본 사람들이 얼마나 같은 판단을 했나</p></details>
+</div>
 <p>사람 평가는 진실에 가장 가까운 "금" 기준이지만, 과제가 주관적입니다. 예: "생일 선물로 뭘 살까?"에 "곰 인형은 거의 항상 좋은 선물이에요. 마음에 드는 걸 고르세요."라는 답의 <b>유용성</b>을 두 평가자가 다르게 매길 수 있습니다.</p>
 <p>단순 일치율(관측 일치)은 "둘 다 찍었어도 우연히 맞는 경우"를 포함합니다. 그래서 <b>우연보다 얼마나 더 일치하는가</b>를 봅니다: Cohen's kappa(2명), Fleiss' kappa(여러 명), Krippendorff's alpha.</p></article>
 
-<article class="card along"><span class="tag y">보충 ②</span><h3>규칙 기반 지표</h3>
+<article class="card along"><span class="tag y">보충 ②</span><h3 id="piece-8-2">규칙 기반 지표</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>규칙 지표 = 정해진 계산법으로 답을 재는 숫자</p>
+<p><b>작은 예</b> 번역 답안과 모범 답안의 단어 묶음이 얼마나 겹치는지 셀 수 있다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>BLEU는 n-gram 정밀도 중심, ROUGE는 겹침 기반 지표군이다. n-gram은 연속된 n개 토큰 묶음이다.</p><p><b>비유의 경계</b> 뜻이 같은 다른 표현도 낮게 채점할 수 있고, 단어가 겹쳐도 틀린 답일 수 있다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>셀 수 있는 기준으로 비교</b> — 규칙 지표 = 정해진 계산법으로 답을 재는 숫자</p></details>
+</div>
 <p>사람이 정답(참조) 문장을 한 번 써 두고, 출력과 규칙으로 비교합니다.</p>
 <div class="tablewrap"><table class="cmp"><tr><th>지표</th><th>성격</th></tr>
 <tr><td>BLEU</td><td>출력의 n-gram이 참조에 얼마나 있나 (정밀도 계열). 번역</td></tr>
@@ -51,7 +72,13 @@
 <tr><td>METEOR</td><td>어순과 유사 표현까지 고려해 사람 판단과의 상관을 개선</td></tr></table></div>
 <div class="stop"><b>한계.</b> 문체가 다르면 뜻이 같아도 낮은 점수 · 사람 평가와 상관이 그리 높지 않음 · 결국 사람이 참조를 써야 함.</div></article>
 
-<article class="card must"><span class="tag p">필수 ③</span><h3>LLM-as-a-Judge (LaaJ)</h3>
+<article class="card must"><span class="tag p">필수 ③</span><h3 id="piece-8-3">LLM-as-a-Judge (LaaJ)</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>LLM 심판 = 기준표를 주고 다른 답을 채점하게 하기</p>
+<p><b>작은 예</b> ‘근거가 있는가, 질문에 답했는가’를 따로 점수와 이유로 출력하게 한다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>Rubric은 채점 기준표다. 기준표와 사람 평가를 함께 써 심판의 신뢰도를 확인한다.</p><p><b>비유의 경계</b> 그럴듯한 채점 이유가 채점의 정확성을 보장하지 않는다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>모델에게 기준표로 채점 맡기기</b> — LLM 심판 = 기준표를 주고 다른 답을 채점하게 하기</p></details>
+</div>
 <div class="visual"><div class="flow"><div class="node">📝 프롬프트</div><div class="node">🤖 모델 응답</div><div class="node">🔍 기준<br><small>예: 관련성</small></div><div class="arrow">→</div><div class="node v">⚖️ LLM 심판</div><div class="arrow">→</div><div class="node y">💭 이유<br><small>"직접 설명했고 주제에 맞음"</small></div><div class="node g">🎯 점수<br><small>PASS</small></div></div></div>
 <p><b>장점.</b> 참조·라벨이 필요 없고, 이유를 함께 내어 해석할 수 있습니다. <b>형태.</b> 응답 하나의 품질을 묻는 pointwise, 둘 중 나은 것을 묻는 pairwise.</p>
 <p>출력 형식은 <a href="ch3.html">3장</a>의 guided decoding으로 강제합니다. 주요 API가 모두 지원하며, 두 단계입니다.</p>
@@ -66,7 +93,13 @@ response = client.responses.parse(
 )</div>
 <p style="font-size:14px">심판 프롬프트 예: "모델의 답이 사용자 프롬프트와 얼마나 관련 있는지 평가하라. 반환: 이유(1~2문장), 점수(대체로 관련 있으면 1, 아니면 0)."</p></article>
 
-<article class="card must"><span class="tag p">필수 ④</span><h3>심판의 세 편향</h3>
+<article class="card must"><span class="tag p">필수 ④</span><h3 id="piece-8-4">심판의 세 편향</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>편향 = 품질 외의 이유로 점수가 치우치기</p>
+<p><b>작은 예</b> 같은 두 답도 A/B 순서를 바꿨을 때 선택이 바뀔 수 있다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>위치 편향은 제시 순서, 길이 편향은 긴 답 선호, 자기 선호는 자기 계열 답 선호다.</p><p><b>비유의 경계</b> 편향 유무와 크기는 심판 모델·과제·프롬프트에 따라 달라진다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>순서·길이·출신 때문에 치우치나</b> — 편향 = 품질 외의 이유로 점수가 치우치기</p></details>
+</div>
 <div class="tablewrap"><table class="cmp"><tr><th>편향</th><th>증상</th><th>대책</th></tr>
 <tr><td>위치</td><td>A·B 순서를 바꾸면 선택이 바뀜 (먼저 나온 것을 선호)</td><td>두 순서로 다 묻고 평균</td></tr>
 <tr><td>장황함</td><td>짧고 정확한 답보다 길고 군더더기 많은 답을 선택</td><td>명확한 지침, few-shot 예시, 길이 벌점</td></tr>
@@ -103,7 +136,13 @@ response = client.responses.parse(
 <tr><td>에이전트</td><td>τ-bench</td><td>DB 스키마·API·정책이 주어진 2개 도메인.<br>항공: 사용자 500, 항공편 300, 예약 2,000, 도구 약 10개, 과제 50개.<br>소매: 사용자 500, 상품 50, 주문 1,000, 도구 약 10개, 과제 115개</td><td>보상 최대화, Pass^k</td></tr></table></div>
 <div class="why">지식은 사전학습의 질을, 코딩은 도구 사용 능력의 대리 지표를 반영합니다.</div></article>
 
-<article class="card later"><span class="tag g">확장 ⑧</span><h3>벤치마크를 읽는 법</h3>
+<article class="card later"><span class="tag g">확장 ⑧</span><h3 id="piece-8-6">벤치마크를 읽는 법</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>벤치마크 = 같은 조건으로 비교하기 위한 공통 시험</p>
+<p><b>작은 예</b> 수학 문제 성적이 높아도 실제 사내 규정 답변이 좋은지는 따로 확인한다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>데이터 오염은 시험 문제가 학습 데이터 등에 섞여 성적이 부풀 수 있는 문제다.</p><p><b>비유의 경계</b> 점수 비교 전에 모델 조건·도구 허용·시도 횟수·비용이 같은지 확인한다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>공통 시험 ≠ 모든 실무 성능</b> — 벤치마크 = 같은 조건으로 비교하기 위한 공통 시험</p></details>
+</div>
 <p><b>프로필.</b> 벤치마크 하나는 한 축에 대한 투영입니다. 모델마다 강점이 달라 "A는 코딩, B는 저렴"처럼 각자의 경험칙이 생깁니다. 강의 사흘 전(2025-11-18) 공개된 Gemini 3의 발표 표도 추론·코딩·도구 사용·지식 축으로 나눠 읽는 예로 쓰였습니다.</p>
 <p><b>파레토 전선.</b> 품질 대 비용·지연, 품질 대 안전, 품질 대 컨텍스트 길이 같은 맞교환에서 "더 나은 선택지가 없는" 점들의 집합. 전선 위의 모델 중에서 예산에 맞는 것을 고릅니다.</p>
 <div class="stop"><b>데이터 오염.</b> 벤치마크 문제의 단서가 학습 데이터에 들어 있을 수 있습니다. 대책: 식별용 해시 문자열 심기 · 도구 사용 평가에서는 차단 목록 · 더 새로운 버전으로 평가.</div>
@@ -134,7 +173,13 @@ response = client.responses.parse(
 <div class="decode"><span><b>α<sub>i</sub></b><i>알파 아이</i>사실 i의 중요도 (합이 1)</span><span><b>score<sub>i</sub></b><i>스코어 아이</i>사실 i가 참이면 1, 거짓이면 0</span><span><b>score</b><i>스코어</i>0~1. 중요한 사실이 맞을수록 큼</span></div>
 <div class="formula-read"><b>문장으로 읽기:</b> 맞은 사실의 중요도만 더한다. 위 카드 ⑤의 예: 0.3×0 + 0.4×1 + 0.2×1 + 0.1×0 = 0.60.</div></div>
 
-<div class="formula-box"><span class="tag g">수식 4</span><h3>Pass^k — 일관성</h3>
+<div class="formula-box"><span class="tag g">수식 4</span><h3 id="piece-8-5">Pass^k — 일관성</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>Pass^k = k번 반복해 모두 성공할 확률로 일관성 보기</p>
+<p><b>작은 예</b> 독립 성공률이 0.5면 2번 모두 성공은 0.25, 한 번 이상은 0.75다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>Pass@k는 한 번 이상, 이 장의 Pass^k는 모두 성공이다. 독립성 가정과 실제 벤치마크 정의를 함께 본다.</p><p><b>비유의 경계</b> p의 k제곱은 독립·동일 성공률 가정의 예시이며 관측된 지표를 대체하지 않는다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>@는 기회, ^는 일관성</b> — Pass^k = k번 반복해 모두 성공할 확률로 일관성 보기</p></details>
+</div>
 <div class="equation">Pass^<span class="c4">k</span> = C(<span class="c3">c</span>, <span class="c4">k</span>) / C(<span class="c1">n</span>, <span class="c4">k</span>) &nbsp; ≈ &nbsp; <span class="c2">p</span><sup><span class="c4">k</span></sup></div>
 <div class="decode"><span><b>n</b><i>엔</i>한 과제를 시도한 횟수</span><span><b>c</b><i>시</i>그중 성공한 횟수</span><span><b>C(a, b)</b><i>조합</i>a개 중 b개를 고르는 경우의 수</span></div>
 <div class="formula-read"><b>숫자 예제.</b> 10번 시도해 8번 성공(n=10, c=8), k=2 → C(8,2)/C(10,2) = 28/45 ≈ <b>0.62</b>. 성공률 p=0.8로 어림하면 0.8² = 0.64로 비슷하다.<br>k = 8이면 p⁸ ≈ <b>0.17</b>인데, 같은 모델의 Pass@8 = 1 − (1−p)⁸ ≈ 1.00이다.<br><b>문장으로 읽기:</b> Pass@k는 "k번 중 한 번이라도"(<a href="ch6.html">6장</a>), Pass^k는 "k번 <b>모두</b>". 고객 응대 에이전트처럼 매번 믿을 수 있어야 하는 곳에서는 Pass^k가 현실을 말한다. (조합식이 슬라이드의 정의이고, p<sup>k</sup>는 시도가 독립일 때의 어림이다.)</div></div>
@@ -172,6 +217,7 @@ response = client.responses.parse(
 </section>
 
 <section class="section" id="links"><h2>선수지식 · 관련 항목 · 다음 학습</h2>
+<div class="puzzle-check"><details><summary>연결 확인 · 왜 이 장이 필요했을까?</summary><p><b>이전 한계</b> 7장의 시스템은 검색·생성·도구 실행이 결합되어 있다. 최종 답 하나만 보면 실패 원인을 놓친다.</p><p><b>해결한 것</b> 무엇을 잘해야 하는지 정하고, 기준별로 측정해 개선 위치를 찾는다.</p><p><b>남은 질문</b> 이 평가 기준을 글뿐 아니라 이미지·새 생성 방식에도 적용해 장단점을 비교한다.</p></details><p><a href="ch7.html#concepts">앞 조각 · 7장</a> <span aria-hidden="true"> · </span> <a href="index.html#puzzle-map">전체 연결 지도</a> <span aria-hidden="true"> · </span> <a href="ch9.html#big">다음 조각 · 9장</a></p></div>
 <div class="links">
 <a class="card must" href="ch7.html"><span class="tag p">선수지식</span><h3>7장 · 에이전틱 LLM</h3><p>도구 호출 3단계, ReAct 루프 · <a href="ch6.html">6장</a>의 Pass@k</p></a>
 <a class="card along" href="../index.html"><span class="tag y">관련 항목</span><h3>수업 자료 탭</h3><p>8강에 해당하는 차시 자료는 아직 없습니다. 추가되면 여기서 연결합니다.</p></a>

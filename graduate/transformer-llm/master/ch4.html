@@ -19,6 +19,15 @@
 <nav class="route"><a href="#big">큰 그림</a><a href="#analogy">비유</a><a href="#concepts">핵심 개념</a><a href="#math">수식 해부</a><a href="#cases">활용 사례</a><a href="#myths">오해</a><a href="#quiz">퀴즈</a><a href="#links">연결</a></nav>
 
 <section class="section" id="big"><h2>한눈에 보는 큰 그림</h2>
+<div class="puzzle-bridge">
+<p class="puzzle-label">앞에서 가져온 조각 → 여기서 해결 → 다음 질문</p>
+<div class="puzzle-context"><div><b><a href="ch3.html#concepts">앞 조각 · 3장</a></b><p>3장에서는 이미 학습된 모델로 답을 만들었다. 이제 그 모델 안의 숫자를 어떻게 얻는지 본다.</p></div><div><b>지금 맞출 조각</b><p>예측 실수로 가중치를 고치고, 원하는 업무에 맞게 추가 교육한다.</p></div><div><b><a href="ch5.html#big">다음 조각 · 5장</a></b><p>모범 답안을 따라 쓰는 것만으로는 답의 선호·안전 기준을 충분히 전달하기 어렵다.</p></div></div>
+<ol class="puzzle-steps" aria-label="이 장의 개념이 이어지는 이유"><li><a href="#piece-4-1"><b>1. 광범위한 글 패턴을 배운다</b></a><p><b>왜 필요한가</b> 정답을 사람이 모두 쓰지 않아도 다음 토큰을 학습 신호로 쓸 수 있다.</p></li>
+<li><a href="#piece-4-2"><b>2. 틀린 정도로 가중치를 고친다</b></a><p><b>왜 필요한가</b> 답을 생성하는 단계와 모델 내부를 바꾸는 단계를 구분한다.</p></li>
+<li><a href="#piece-4-5"><b>3. 모범 답안으로 행동을 가르친다</b></a><p><b>왜 필요한가</b> 글을 이어 쓰는 능력을 질문에 답하는 행동으로 맞춘다.</p></li>
+<li><a href="#piece-4-6"><b>4. 작은 추가 행렬만 학습한다</b></a><p><b>왜 필요한가</b> 업무 적응 때 전체 가중치를 갱신하는 비용을 줄인다.</p></li></ol>
+<p class="memory-scope">화살표는 이해를 위한 연결입니다. 모두를 반드시 순서대로 적용하는 시스템 구성도는 아닙니다.</p>
+</div>
 <p class="lead">전통적 ML은 과제마다 모델을 처음부터 학습했습니다. LLM은 한 번 크게 학습한 모델을 여러 과제에 맞춰 조정합니다(전이 학습).</p>
 <div class="big-picture"><div class="flow">
 <div class="node">초기화된 모델<br><small>무작위 가중치</small></div><div class="arrow">→</div>
@@ -42,7 +51,13 @@
 <section class="section" id="concepts"><h2>핵심 개념 카드</h2>
 <div class="grid">
 
-<article class="card must"><span class="tag p">필수 ①</span><h3>Pre-training — 무엇을, 얼마나</h3>
+<article class="card must"><span class="tag p">필수 ①</span><h3 id="piece-4-1">Pre-training — 무엇을, 얼마나</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>사전학습 = 많은 글로 기본 언어 패턴 배우기</p>
+<p><b>작은 예</b> ‘서울은 대한민국의’ 다음에 ‘수도’가 나오도록 예측을 연습한다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>가중치는 모델이 학습으로 바꾸는 내부 숫자다. 입력 토큰과 구분한다.</p><p><b>비유의 경계</b> 다음 토큰 예측 능력이 데이터베이스처럼 모든 사실을 정확히 저장함을 뜻하지 않는다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>폭넓은 기본 교육</b> — 사전학습 = 많은 글로 기본 언어 패턴 배우기</p></details>
+</div>
 <p><b>목표.</b> 언어와 코드의 패턴 학습. <b>목적 함수.</b> 다음 토큰 예측. <b>데이터.</b> 웹 수집(Common Crawl, Wikipedia), 코드(GitHub, StackOverflow), 다국어.</p>
 <div class="tablewrap"><table class="cmp"><tr><th>모델</th><th>사전학습 토큰 수</th><th>SFT 예시 수</th></tr>
 <tr><td>GPT-3 (2020)</td><td>3,000억</td><td>약 1.3만</td></tr><tr><td>LLaMA 3 (2024)</td><td>15조</td><td>약 1,000만</td></tr></table></div>
@@ -53,18 +68,36 @@
 <div class="visual"><div class="flow"><div class="node">연산 예산 ↑</div><div class="node">데이터 ↑</div><div class="node">파라미터 ↑</div><div class="arrow">→</div><div class="node g">손실 ↓<br><small>(예측 가능한 곡선)</small></div></div></div>
 <p>Kaplan et al.(2020): 세 가지를 키우면 성능이 꾸준히 좋아지고, 큰 모델일수록 같은 데이터에서 더 많이 배웁니다(표본 효율). Hoffmann et al.(2022, <b>Chinchilla</b>): 연산 예산이 정해져 있으면 모델 크기와 데이터를 함께 키워야 하며, 당시 큰 모델들은 크기에 비해 데이터가 부족했습니다(경험적으로 파라미터 1개당 약 20토큰).</p></article>
 
-<article class="card must"><span class="tag p">필수 ③</span><h3>학습 한 스텝과 메모리</h3>
+<article class="card must"><span class="tag p">필수 ③</span><h3 id="piece-4-2">학습 한 스텝과 메모리</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>학습 한 스텝 = 예측 → 벌점 → 수정 방향 → 숫자 갱신</p>
+<p><b>작은 예</b> 정답 토큰에 낮은 확률을 줬다면 다음에는 더 잘 맞히도록 내부 숫자를 바꾼다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>Loss는 틀린 정도의 점수, Gradient는 그 점수가 변하는 방향, Optimizer는 갱신 규칙이다.</p><p><b>비유의 경계</b> 한 번의 갱신이 모든 문제의 성능을 개선하는 것은 아니다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>틀린 만큼 방향을 찾아 수정</b> — 학습 한 스텝 = 예측 → 벌점 → 수정 방향 → 숫자 갱신</p></details>
+</div>
 <div class="visual"><div class="flow"><div class="node v">순전파<br><small>활성값 저장<br>→ 손실</small></div><div class="arrow">→</div><div class="node v">역전파<br><small>기울기 계산</small></div><div class="arrow">→</div><div class="node v">가중치 갱신<br><small>Adam 상태 사용</small></div></div></div>
 <div class="tablewrap"><table class="cmp"><tr><th>메모리를 차지하는 것</th><th>크기를 정하는 것</th></tr>
 <tr><td>파라미터</td><td>모델 크기 (수십억~수천억)</td></tr><tr><td>활성값</td><td>모델 크기 × 배치 크기 × 문맥 길이</td></tr><tr><td>기울기</td><td>파라미터와 같은 크기</td></tr><tr><td>옵티마이저 상태</td><td>Adam은 파라미터의 2배 (1차·2차 모멘트)</td></tr></table></div>
 <div class="why">GPU 한 장의 메모리는 수십 GB입니다. <b>병목은 연산이 아니라 메모리</b>이고, 아래 기법들은 전부 메모리를 다룹니다.</div></article>
 
-<article class="card must"><span class="tag p">필수 ④</span><h3>여러 GPU에 나누기</h3>
+<article class="card must"><span class="tag p">필수 ④</span><h3 id="piece-4-3">여러 GPU에 나누기</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>분산 학습 = 데이터나 모델 계산을 여러 GPU에 나누기</p>
+<p><b>작은 예</b> 같은 모델 복사본이 서로 다른 문제 묶음을 처리하고 기울기를 합칠 수 있다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>Data parallel은 문제 묶음을, Tensor parallel은 층 안 계산을, Pipeline parallel은 층들을 나눈다.</p><p><b>비유의 경계</b> GPU 사이 통신 비용이 있어 개수만큼 항상 빨라지지는 않는다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>문제 나누기 / 계산 나누기</b> — 분산 학습 = 데이터나 모델 계산을 여러 GPU에 나누기</p></details>
+</div>
 <p><b>데이터 병렬.</b> 모델을 GPU마다 복제하고 배치를 나눕니다. 문제는 모든 GPU가 같은 것을 중복 보관한다는 점. <b>ZeRO</b>(Zero Redundancy Optimization)는 그 중복을 쪼개 나눠 갖습니다.</p>
 <div class="tablewrap"><table class="cmp"><tr><th>단계</th><th>나눠 갖는 것</th></tr><tr><td>ZeRO-1</td><td>옵티마이저 상태</td></tr><tr><td>ZeRO-2</td><td>+ 기울기</td></tr><tr><td>ZeRO-3</td><td>+ 파라미터</td></tr></table></div>
 <p><b>모델 병렬.</b> 모델 계산 자체를 여러 장치로 나눕니다. 텐서(TP)·파이프라인(PP)·시퀀스(SP)·컨텍스트(CP)·전문가(EP) 병렬.</p></article>
 
-<article class="card along"><span class="tag y">보충 ⑤</span><h3>FlashAttention — GPU 메모리 구조를 이용</h3>
+<article class="card along"><span class="tag y">보충 ⑤</span><h3 id="piece-4-4">FlashAttention — GPU 메모리 구조를 이용</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>플래시 어텐션 = 계산 재료의 메모리 왕복 줄이기</p>
+<p><b>작은 예</b> 큰 중간 행렬 전체를 느린 메모리에 썼다 읽는 부담을 줄인다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>작은 블록으로 계산하고 중간 결과를 관리한다. 원래 Attention 계산을 효율적으로 수행한다.</p><p><b>비유의 경계</b> 참고할 토큰을 대충 생략하는 근사 Attention과 구분한다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>계산식보다 메모리 이동 절약</b> — 플래시 어텐션 = 계산 재료의 메모리 왕복 줄이기</p></details>
+</div>
 <div class="visual"><div class="flow"><div class="node r">HBM<br><small>크고 느림</small></div><div class="arrow">⇄</div><div class="node g">SRAM<br><small>작고 빠름</small></div><div class="arrow">⇄</div><div class="node">연산 장치</div></div></div>
 <p>일반 Attention은 큰 중간 행렬(점수 S, 확률 P)을 HBM에 썼다 읽었다 합니다. FlashAttention은 ① Q·K·V를 <b>블록(타일)</b>으로 잘라 SRAM에서 끝까지 계산해 결과만 HBM에 쓰고, ② 역전파 때는 중간값을 저장하지 않고 <b>다시 계산</b>합니다.</p>
 <div class="ok">연산 횟수(FLOPs)는 오히려 늘지만 실행 시간은 줄어듭니다. 결과는 근사가 아니라 <b>정확히 같습니다</b>.</div></article>
@@ -74,12 +107,24 @@
 <tr><td>FP16</td><td>1</td><td>5</td><td>10</td></tr><tr><td>BFLOAT16</td><td>1</td><td>8</td><td>7</td></tr><tr><td>FP32</td><td>1</td><td>8</td><td>23</td></tr><tr><td>FP64</td><td>1</td><td>11</td><td>52</td></tr></table></div>
 <p>정밀도가 낮을수록 빠르고 메모리가 적게 듭니다. <b>혼합 정밀도</b>: 순전파 활성값과 역전파 기울기는 낮은 정밀도로, 가중치 자체는 높은 정밀도로 유지합니다. BFLOAT16은 FP32와 지수 비트가 같아 표현 범위가 넓습니다.</p></article>
 
-<article class="card must"><span class="tag p">필수 ⑦</span><h3>SFT · Instruction tuning</h3>
+<article class="card must"><span class="tag p">필수 ⑦</span><h3 id="piece-4-5">SFT · Instruction tuning</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>SFT = 질문과 모범 답안을 짝지어 추가 교육하기</p>
+<p><b>작은 예</b> ‘휴가 신청 방법?’과 바람직한 답을 함께 보여준다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>Instruction tuning은 지시를 따르게 하는 미세조정이다. 학습 시 가중치가 변한다.</p><p><b>비유의 경계</b> 문서를 프롬프트에 넣는 RAG와 달리 모델 내부 숫자를 갱신한다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>모범 답안 따라 배우기</b> — SFT = 질문과 모범 답안을 짝지어 추가 교육하기</p></details>
+</div>
 <p><b>SFT</b>(Supervised Fine-Tuning): 원하는 행동의 입력·출력 쌍을 모아, 입력이 주어졌을 때의 다음 토큰 예측으로 학습합니다. 지시를 따르는 데이터로 하면 <b>instruction tuning</b>. 데이터는 비서 대화, 합성 지시문, 수학·추론·코드, 안전 정렬 등.</p>
 <div class="stop"><b>과제.</b> 아주 고품질 데이터 필요 · 프롬프트 분포에 민감 · 일반화 · 평가가 어려움 · 연산 비용.</div>
 <div class="why">벤치마크: 지식 MMLU, 기초 추론 ARC, 수학 GSM8K, 코드 HumanEval. 모델끼리 공정하게 비교하려면 각 모델을 해당 과제 형식에 맞춰 학습시킨 뒤 비교하라는 권고가 있습니다(과제 형식에 익숙한지가 점수를 좌우하므로). 사용자 A/B 투표로 "느낌"에 숫자를 매기는 Chatbot Arena도 있지만 노출 불균형, 조작 가능성, 사실성 판단의 한계가 있습니다. 평가는 <a href="ch8.html">8장</a>에서.</div></article>
 
-<article class="card must"><span class="tag p">필수 ⑧</span><h3>LoRA · QLoRA</h3>
+<article class="card must"><span class="tag p">필수 ⑧</span><h3 id="piece-4-6">LoRA · QLoRA</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>LoRA = 원본 숫자는 고정하고 작은 수정 부품만 학습하기</p>
+<p><b>작은 예</b> 큰 행렬 전체 대신 두 작은 행렬 A·B를 학습해 변화량 BA를 만든다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>저랭크는 변화량을 더 작은 차원으로 표현한다는 뜻이다. QLoRA는 양자화된 기반 모델 위에서 학습한다.</p><p><b>비유의 경계</b> 포스트잇은 비유일 뿐 텍스트 메모를 저장하는 장치가 아니다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>원본 고정 + 작은 수정</b> — LoRA = 원본 숫자는 고정하고 작은 수정 부품만 학습하기</p></details>
+</div>
 <div class="visual"><div class="flow"><div class="node x" style="background:#eee">W<sub>0</sub> ❄<br><small>d×k, 고정</small></div><div class="arrow">+</div><div class="node p">B 🔥<br><small>d×r</small></div><div class="arrow">×</div><div class="node p">A 🔥<br><small>r×k</small></div></div></div>
 <p><b>LoRA</b>: 가중치 변화량을 두 개의 낮은 랭크 행렬의 곱으로 근사합니다. 일부 파라미터만 학습해도 비슷한 성능. B·A만 바꿔 끼우면 과제가 바뀝니다.</p>
 <p><b>최근 지침</b>(Schulman et al., 2025): 원 논문은 Attention 행렬에 적용했지만 지금은 FFN(MLP) 쪽이 가장 중요한 위치로 권장됩니다. 전체 미세조정보다 높은 학습률이 필요하고, 큰 배치에서는 불리합니다.</p>
@@ -141,6 +186,7 @@
 </section>
 
 <section class="section" id="links"><h2>선수지식 · 관련 항목 · 다음 학습</h2>
+<div class="puzzle-check"><details><summary>연결 확인 · 왜 이 장이 필요했을까?</summary><p><b>이전 한계</b> 3장에서는 이미 학습된 모델로 답을 만들었다. 이제 그 모델 안의 숫자를 어떻게 얻는지 본다.</p><p><b>해결한 것</b> 예측 실수로 가중치를 고치고, 원하는 업무에 맞게 추가 교육한다.</p><p><b>남은 질문</b> 모범 답안을 따라 쓰는 것만으로는 답의 선호·안전 기준을 충분히 전달하기 어렵다.</p></details><p><a href="ch3.html#concepts">앞 조각 · 3장</a> <span aria-hidden="true"> · </span> <a href="index.html#puzzle-map">전체 연결 지도</a> <span aria-hidden="true"> · </span> <a href="ch5.html#big">다음 조각 · 5장</a></p></div>
 <div class="links">
 <a class="card must" href="ch3.html"><span class="tag p">선수지식</span><h3>3장 · LLM의 생성</h3><p>다음 토큰 확률, 디코더 전용 구조</p></a>
 <a class="card along" href="../week4.html"><span class="tag y">관련 항목</span><h3>수업 자료 4차시</h3><p>같은 강의의 수업·시험 관점 정리</p></a>

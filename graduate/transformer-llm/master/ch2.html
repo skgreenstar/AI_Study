@@ -19,6 +19,15 @@
 <nav class="route"><a href="#big">큰 그림</a><a href="#analogy">비유</a><a href="#concepts">핵심 개념</a><a href="#math">수식 해부</a><a href="#cases">활용 사례</a><a href="#myths">오해</a><a href="#quiz">퀴즈</a><a href="#links">연결</a></nav>
 
 <section class="section" id="big"><h2>한눈에 보는 큰 그림</h2>
+<div class="puzzle-bridge">
+<p class="puzzle-label">앞에서 가져온 조각 → 여기서 해결 → 다음 질문</p>
+<div class="puzzle-context"><div><b><a href="ch1.html#concepts">앞 조각 · 1장</a></b><p>1장에서 토큰 간 관계를 계산했다. 그런데 순서를 알려주지 않으면 위치를 구별하기 어렵다.</p></div><div><b>지금 맞출 조각</b><p>순서 정보를 넣고, 같은 구조를 더 안정적이고 가볍게 만든다.</p></div><div><b><a href="ch3.html#big">다음 조각 · 3장</a></b><p>모델이 다음 토큰의 점수를 냈다. 실제로 어느 토큰을 고를까?</p></div></div>
+<ol class="puzzle-steps" aria-label="이 장의 개념이 이어지는 이유"><li><a href="#piece-2-1"><b>1. 순서를 알려준다</b></a><p><b>왜 필요한가</b> Attention만으로는 토큰의 나열 순서가 자동으로 주어지지 않는다.</p></li>
+<li><a href="#piece-2-3"><b>2. 학습 중 숫자 크기를 다듬는다</b></a><p><b>왜 필요한가</b> 층을 깊게 쌓으려면 신호와 학습을 안정화해야 한다.</p></li>
+<li><a href="#piece-2-4"><b>3. 저장할 K·V를 줄인다</b></a><p><b>왜 필요한가</b> 여러 헤드의 메모리를 공유하면 생성 시 캐시 부담을 줄일 수 있다.</p></li>
+<li><a href="#piece-2-5"><b>4. 읽기에 집중하는 구조를 만든다</b></a><p><b>왜 필요한가</b> 양쪽 문맥을 쓰는 읽기와 앞부분만 보는 생성은 목적이 다르다.</p></li></ol>
+<p class="memory-scope">화살표는 이해를 위한 연결입니다. 모두를 반드시 순서대로 적용하는 시스템 구성도는 아닙니다.</p>
+</div>
 <p class="lead">원본 Transformer의 어느 부품이 무엇으로 바뀌었는지, 그리고 구조가 어떻게 갈라졌는지.</p>
 <div class="big-picture">
 <div class="tablewrap"><table class="cmp" style="color:var(--ink)"><tr><th>부품</th><th>2017 원본</th><th>요즘의 기본 선택</th><th>바꾼 이유</th></tr>
@@ -44,7 +53,13 @@
 <section class="section" id="concepts"><h2>핵심 개념 카드</h2>
 <div class="grid">
 
-<article class="card must"><span class="tag p">필수 ①</span><h3>위치 정보의 세 세대</h3>
+<article class="card must"><span class="tag p">필수 ①</span><h3 id="piece-2-1">위치 정보의 세 세대</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>위치 정보 = 같은 조각도 어디에 놓였는지 알려주기</p>
+<p><b>작은 예</b> ‘개가 사람을 문다’와 ‘사람이 개를 문다’는 조각이 비슷해도 순서가 다르다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>절대 위치는 몇 번째인지, 상대 위치는 서로 몇 칸 떨어졌는지다.</p><p><b>비유의 경계</b> 위치 처리 방식은 모델마다 다르며, 한 방식이 모든 길이에서 무조건 좋지는 않다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>몇 번째 / 몇 칸 차이</b> — 위치 정보 = 같은 조각도 어디에 놓였는지 알려주기</p></details>
+</div>
 <div class="tablewrap"><table class="cmp"><tr><th>방식</th><th>어디에 넣나</th><th>특징</th></tr>
 <tr><td>학습된 절대 위치</td><td>입력 임베딩에 더함</td><td>학습한 길이보다 긴 문장은 재학습 필요</td></tr>
 <tr><td>사인·코사인 (고정)</td><td>입력 임베딩에 더함</td><td>어떤 길이로도 확장 가능</td></tr>
@@ -58,7 +73,13 @@
 <div class="ctrl" style="grid-template-columns:1fr"><label>기준 위치: <span id="pv">10</span><input id="pos" type="range" min="0" max="39" value="10"></label></div>
 <p style="font-size:14px">위: 위치(세로 0~39) × 차원(가로 0~63)의 값(분홍 +1, 보라 −1). 왼쪽 차원은 빠르게, 오른쪽은 천천히 변합니다. 아래 막대: 기준 위치와 각 위치의 내적(가장 낮은 값을 바닥으로 맞춰 차이를 키워 그림). <b>가까운 위치일수록 비슷</b>합니다.</p></article>
 
-<article class="card must"><span class="tag p">필수 ②</span><h3>Layer Normalization — 어디에 두느냐</h3>
+<article class="card must"><span class="tag p">필수 ②</span><h3 id="piece-2-3">Layer Normalization — 어디에 두느냐</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>레이어 노멀라이제이션 = 토큰 안의 숫자 크기를 다듬기</p>
+<p><b>작은 예</b> 어떤 층의 특징값이 지나치게 커져도 다음 계산에 쓸 범위를 조절한다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>정규화는 여기서 특징값의 평균·퍼짐을 이용한 조정이다. 과적합 방지라는 regularization과는 다른 뜻이다.</p><p><b>비유의 경계</b> 출력을 늘 같은 값으로 만드는 작업이 아니라, 학습 가능한 조정을 포함한다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>숫자 눈금 다듬기</b> — 레이어 노멀라이제이션 = 토큰 안의 숫자 크기를 다듬기</p></details>
+</div>
 <div class="visual"><div class="flow"><div class="node r">Post-Norm (원본)<br><small>x → 하위층 → (+x) → <b>Norm</b></small></div><div class="arrow">→</div><div class="node g">Pre-Norm (요즘)<br><small>x → <b>Norm</b> → 하위층 → (+x)</small></div></div></div>
 <p>정규화는 각 토큰 벡터의 값 범위를 맞춰 학습을 안정시키고 수렴을 돕습니다. Pre-Norm은 잔차 통로(+x)를 정규화 없이 깨끗하게 남겨 깊은 모델에서 기울기가 잘 흐릅니다.</p>
 <p><b>RMSNorm</b>은 평균을 빼지 않고 크기(제곱평균제곱근)로만 나눕니다. 계산이 더 싸고 성능은 비슷해 요즘은 Pre-Norm + RMSNorm 조합이 흔합니다.</p></article>
@@ -67,14 +88,26 @@
 <div class="visual"><div class="flow"><div class="node">전체 Attention<br><small>모든 쌍, n²</small></div><div class="arrow">→</div><div class="node b">슬라이딩 윈도우<br><small>앞뒤 w개만</small></div><div class="arrow">+</div><div class="node y">전역 토큰<br><small>[CLS]는 전부 봄</small></div></div></div>
 <p><b>Longformer</b>는 대부분의 토큰이 이웃만 보고, 몇 개의 전역 토큰만 전체를 봅니다. <b>Mistral 7B</b>도 슬라이딩 윈도우 Attention을 씁니다. 층을 쌓으면 간접적으로 더 먼 곳까지 닿는데, CNN의 수용 영역(receptive field)과 같은 원리입니다.</p></article>
 
-<article class="card must"><span class="tag p">필수 ④</span><h3>헤드 공유: MHA → GQA → MQA</h3>
+<article class="card must"><span class="tag p">필수 ④</span><h3 id="piece-2-4">헤드 공유: MHA → GQA → MQA</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>GQA·MQA = 여러 Q 헤드가 K·V 메모를 나눠 쓰기</p>
+<p><b>작은 예</b> Q 헤드가 8개여도 K·V를 2묶음만 두고 공유할 수 있다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>MHA는 K·V도 헤드별, GQA는 그룹별, MQA는 하나의 묶음을 공유한다.</p><p><b>비유의 경계</b> Q 헤드까지 전부 하나로 합친다는 뜻은 아니다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>K·V를 공유해 절약</b> — GQA·MQA = 여러 Q 헤드가 K·V 메모를 나눠 쓰기</p></details>
+</div>
 <div class="tablewrap"><table class="cmp"><tr><th></th><th>Q 헤드</th><th>K·V 헤드</th><th>성격</th></tr>
 <tr><td>MHA (Multi-Head)</td><td>h</td><td>h</td><td>가장 풍부, 가장 비쌈</td></tr>
 <tr><td><b>GQA (Grouped-Query)</b></td><td>h</td><td>G (1 &lt; G &lt; h)</td><td>절충. 요즘 흔한 선택</td></tr>
 <tr><td>MQA (Multi-Query)</td><td>h</td><td>1</td><td>가장 쌈, 품질 손실 가능</td></tr></table></div>
 <p>질문(Q)은 헤드마다 따로 두되, 색인과 내용(K·V)은 그룹끼리 같이 씁니다. K·V가 줄면 3장의 <b>KV 캐시</b> 메모리가 그만큼 줄어듭니다.</p></article>
 
-<article class="card must"><span class="tag p">필수 ⑤</span><h3>BERT — 인코더만 남긴 모델</h3>
+<article class="card must"><span class="tag p">필수 ⑤</span><h3 id="piece-2-5">BERT — 인코더만 남긴 모델</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>버트 = 빈칸 양옆을 읽고 의미를 배우는 모델</p>
+<p><b>작은 예</b> ‘나는 [MASK]를 마셨다’에서 앞뒤 문맥으로 빈칸을 맞힌다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>인코더는 입력의 양쪽 문맥을 참고해 표현을 만든다. MLM은 가린 토큰을 예측하는 학습 과제다.</p><p><b>비유의 경계</b> 일반적인 GPT처럼 다음 토큰을 차례로 생성하도록 학습한 모델은 아니다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>양쪽을 읽고 빈칸 맞히기</b> — 버트 = 빈칸 양옆을 읽고 의미를 배우는 모델</p></details>
+</div>
 <p><b>B</b>idirectional <b>E</b>ncoder <b>R</b>epresentations from <b>T</b>ransformers (2018). 디코더를 버리고 인코더가 만든 임베딩을 투영해 예측합니다.</p>
 <div class="visual"><div class="flow"><div class="node">토큰 임베딩</div><div class="arrow">+</div><div class="node">위치 임베딩</div><div class="arrow">+</div><div class="node y">세그먼트 임베딩<br><small>문장 A / B (BERT에서 추가)</small></div><div class="arrow">→</div><div class="node v">인코더 × L</div><div class="arrow">→</div><div class="node g">[CLS] 벡터<br><small>→ 분류</small></div></div></div>
 <p>입력 처리: WordPiece 토크나이저(어휘 약 3만), 맨 앞에 <span class="tok">[CLS]</span>, 문장 사이와 끝에 <span class="tok">[SEP]</span>, 길이를 맞추는 <span class="tok x">[PAD]</span>.</p></article>
@@ -92,7 +125,13 @@
 <tr><td>BERT-Base</td><td>12</td><td>768</td><td>12</td><td>110M</td></tr><tr><td>BERT-Large</td><td>24</td><td>1024</td><td>16</td><td>340M</td></tr></table></div>
 <p>요령: 이미 사전학습된 가중치를 쓰고, 앞쪽 층을 얼리면 비용 대비 성능이 좋을 때가 있으며, 라벨이 적어도 좋은 결과가 가능합니다. 용도는 문장 분류(감성)와 토큰 분류(질의응답의 답 위치)입니다.</p></article>
 
-<article class="card later"><span class="tag g">확장 ⑧</span><h3>BERT의 변형: 증류와 RoBERTa</h3>
+<article class="card later"><span class="tag g">확장 ⑧</span><h3 id="piece-2-6">BERT의 변형: 증류와 RoBERTa</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>증류 = 큰 모델의 출력을 참고해 작은 모델 가르치기</p>
+<p><b>작은 예</b> 교사 모델의 후보별 확률을 학생 모델이 따라 배우게 한다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>교사는 지식을 주는 모델, 학생은 그 신호로 배우는 모델이다.</p><p><b>비유의 경계</b> 모델을 압축 파일처럼 완전히 똑같이 복사하는 것이 아니다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>큰 모델에서 작은 모델로</b> — 증류 = 큰 모델의 출력을 참고해 작은 모델 가르치기</p></details>
+</div>
 <p><b>증류(Distillation).</b> 큰 교사 모델의 출력 확률 분포("soft target")를 작은 학생 모델이 따라 하게 학습합니다. 정답 하나보다 "2등, 3등이 무엇인지"에 지식이 담겨 있기 때문입니다.</p>
 <div class="tablewrap"><table class="cmp"><tr><th>변형</th><th>목표</th><th>핵심</th></tr>
 <tr><td>DistilBERT</td><td>효율</td><td>12층 → 6층, 성능 약 97% 유지, 약 1.6배 빠름</td></tr>
@@ -106,7 +145,13 @@
 <div class="decode"><span><b>pos</b><i>포지션</i>토큰의 자리 번호 (0, 1, 2…)</span><span><b>i</b><i>아이</i>차원 쌍의 번호. 클수록 느린 파동</span><span><b>d</b><i>디</i>임베딩 차원 d<sub>model</sub></span></div>
 <div class="formula-read"><b>문장으로 읽기:</b> 자리 번호를 여러 빠르기의 파동에 넣어 읽은 값들을 나열한 것이 그 자리의 서명이다.<br><b>왜 필요한가:</b> 값을 외울 필요 없이 어떤 길이로도 만들 수 있고, 가까운 자리끼리 서명이 비슷하다.</div></div>
 
-<div class="formula-box"><span class="tag p">수식 2</span><h3>RoPE — 회전으로 넣는 위치</h3>
+<div class="formula-box"><span class="tag p">수식 2</span><h3 id="piece-2-2">RoPE — 회전으로 넣는 위치</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>로프 = Q·K를 위치에 따라 회전시켜 상대 거리를 반영하기</p>
+<p><b>작은 예</b> 위치 2와 5의 비교에는 3칸 차이가 드러난다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>내적은 두 숫자 목록의 대응 값을 곱해 합하는 계산이다. 회전된 Q·K의 내적에 상대 위치가 반영된다.</p><p><b>비유의 경계</b> 단순히 문장에 순번을 붙이는 것과는 계산 방식이 다르다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>회전으로 거리 반영</b> — 로프 = Q·K를 위치에 따라 회전시켜 상대 거리를 반영하기</p></details>
+</div>
 <div class="equation">R(<span class="c1">m</span><span class="c2">θ</span>) = [ cos <span class="c1">m</span><span class="c2">θ</span>, −sin <span class="c1">m</span><span class="c2">θ</span> ; sin <span class="c1">m</span><span class="c2">θ</span>, cos <span class="c1">m</span><span class="c2">θ</span> ]<br>(R(<span class="c1">m</span><span class="c2">θ</span>) q) · (R(<span class="c3">n</span><span class="c2">θ</span>) k) = q · R((<span class="c3">n</span>−<span class="c1">m</span>)<span class="c2">θ</span>) k</div>
 <div class="decode"><span><b>m, n</b><i>엠, 엔</i>질문 토큰과 색인 토큰의 자리</span><span><b>θ</b><i>세타</i>한 칸당 회전 각도 (차원 쌍마다 다름)</span><span><b>R(·)</b><i>알</i>그 각도만큼 돌리는 2×2 회전 행렬</span></div>
 <div class="formula-read"><b>문장으로 읽기:</b> 둘을 각자 자리만큼 돌린 뒤 내적하면, 결과는 두 자리의 차이(n−m)에만 달려 있다.<br><b>숫자 예제:</b> q=k=[1,0], θ=30°. 자리 (2,5)면 내적 = cos(90°) = 0. 자리 (10,13)도 cos(90°) = 0. 자리 (2,3)이면 cos(30°) ≈ 0.87. 차원이 2보다 크면 2개씩 묶어 각각 돌린다.<br><b>장거리 감쇠:</b> 여러 속도의 회전이 합쳐지면서, Attention 점수의 상한이 두 토큰의 거리 |m−n|가 멀수록 작아진다. 먼 토큰일수록 자연스럽게 덜 본다.</div></div>
@@ -153,6 +198,7 @@
 </section>
 
 <section class="section" id="links"><h2>선수지식 · 관련 항목 · 다음 학습</h2>
+<div class="puzzle-check"><details><summary>연결 확인 · 왜 이 장이 필요했을까?</summary><p><b>이전 한계</b> 1장에서 토큰 간 관계를 계산했다. 그런데 순서를 알려주지 않으면 위치를 구별하기 어렵다.</p><p><b>해결한 것</b> 순서 정보를 넣고, 같은 구조를 더 안정적이고 가볍게 만든다.</p><p><b>남은 질문</b> 모델이 다음 토큰의 점수를 냈다. 실제로 어느 토큰을 고를까?</p></details><p><a href="ch1.html#concepts">앞 조각 · 1장</a> <span aria-hidden="true"> · </span> <a href="index.html#puzzle-map">전체 연결 지도</a> <span aria-hidden="true"> · </span> <a href="ch3.html#big">다음 조각 · 3장</a></p></div>
 <div class="links">
 <a class="card must" href="ch1.html"><span class="tag p">선수지식</span><h3>1장 · Transformer의 탄생</h3><p>Q·K·V, 인코더·디코더, 위치 인코딩이 필요한 이유</p></a>
 <a class="card along" href="../week2.html"><span class="tag y">관련 항목</span><h3>수업 자료 2차시</h3><p>같은 강의의 수업·시험 관점 정리</p></a>

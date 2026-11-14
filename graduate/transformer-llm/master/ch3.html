@@ -19,6 +19,15 @@
 <nav class="route"><a href="#big">큰 그림</a><a href="#analogy">비유</a><a href="#concepts">핵심 개념</a><a href="#lab">실험기</a><a href="#math">수식 해부</a><a href="#cases">활용 사례</a><a href="#myths">오해</a><a href="#quiz">퀴즈</a><a href="#links">연결</a></nav>
 
 <section class="section" id="big"><h2>한눈에 보는 큰 그림</h2>
+<div class="puzzle-bridge">
+<p class="puzzle-label">앞에서 가져온 조각 → 여기서 해결 → 다음 질문</p>
+<div class="puzzle-context"><div><b><a href="ch2.html#concepts">앞 조각 · 2장</a></b><p>1·2장의 구조가 후보 토큰마다 점수를 낸다. 점수만으로는 어떤 답을 출력할지 정해지지 않는다.</p></div><div><b>지금 맞출 조각</b><p>점수를 확률로 바꾸고, 후보를 고르며, 생성 계산을 재사용한다.</p></div><div><b><a href="ch4.html#big">다음 조각 · 4장</a></b><p>이 점수를 내는 가중치는 어떻게 배우며, 학습 비용을 어떻게 줄일까?</p></div></div>
+<ol class="puzzle-steps" aria-label="이 장의 개념이 이어지는 이유"><li><a href="#piece-3-2"><b>1. 후보에서 다음 조각을 고른다</b></a><p><b>왜 필요한가</b> 같은 점수라도 선택 규칙에 따라 다른 문장이 나온다.</p></li>
+<li><a href="#piece-3-3"><b>2. 확률의 쏠림을 조절한다</b></a><p><b>왜 필요한가</b> 상위 후보에 집중할지 여러 후보에 기회를 줄지 조절한다.</p></li>
+<li><a href="#piece-3-5"><b>3. 이번에 보여줄 정보를 정한다</b></a><p><b>왜 필요한가</b> 선택은 지금까지 주어진 입력에 조건부로 이루어진다.</p></li>
+<li><a href="#piece-3-7"><b>4. 지난 조각의 K·V를 재사용한다</b></a><p><b>왜 필요한가</b> 하나 생성할 때마다 이전 토큰의 K·V를 다시 계산할 필요를 줄인다.</p></li></ol>
+<p class="memory-scope">화살표는 이해를 위한 연결입니다. 모두를 반드시 순서대로 적용하는 시스템 구성도는 아닙니다.</p>
+</div>
 <p class="lead">"언어 모델"은 토큰열에 확률을 매기는 모델입니다. "거대"는 파라미터 수십억 개 이상, 학습 토큰 수천억 개 이상, 많은 GPU를 뜻합니다. 예: GPT 계열, LLaMA, Gemma, DeepSeek, Mistral, Qwen.</p>
 <div class="big-picture"><div class="flow">
 <div class="node y">프롬프트<br><small>맥락·지시·입력·제약</small></div><div class="arrow">→</div>
@@ -43,19 +52,37 @@
 <section class="section" id="concepts"><h2>핵심 개념 카드</h2>
 <div class="grid">
 
-<article class="card must"><span class="tag p">필수 ①</span><h3>MoE — Mixture of Experts</h3>
+<article class="card must"><span class="tag p">필수 ①</span><h3 id="piece-3-1">MoE — Mixture of Experts</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>엠오이 = 토큰마다 일부 계산 담당만 골라 쓰기</p>
+<p><b>작은 예</b> 전문가 8개 중 선택된 2개의 FFN만 해당 토큰을 처리하게 할 수 있다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>라우터는 보낼 전문가를 고르는 장치다. 전문가는 작은 신경망이며, 사람이 정한 직업 분야가 아니다.</p><p><b>비유의 경계</b> 전체 모델이 차지하는 저장 공간까지 활성 전문가 수만큼 줄어드는 것은 아니다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>일부 전문가만 가동</b> — 엠오이 = 토큰마다 일부 계산 담당만 골라 쓰기</p></details>
+</div>
 <div class="visual"><div class="flow"><div class="node">토큰 x</div><div class="arrow">→</div><div class="node y">게이트 G<br><small>top-k 선택</small></div><div class="arrow">→</div><div class="node x" style="opacity:.45">FFN 1</div><div class="node v">FFN 2 ✓</div><div class="node v">FFN 3 ✓</div><div class="node x" style="opacity:.45">FFN n</div><div class="arrow">→</div><div class="node g">가중 합</div></div></div>
 <p>발상: 순전파 한 번에 모든 가중치가 쓸모 있지는 않다. <b>Dense MoE</b>는 모든 전문가 출력의 가중 평균, <b>Sparse MoE</b>는 top-k로 고른 전문가만 계산합니다. Transformer에서는 각 블록의 FFN을 여러 개로 늘리고, 라우팅은 토큰마다 합니다.</p>
 <div class="stop"><b>라우팅 붕괴.</b> 학습 중 같은 전문가만 계속 뽑히는 현상. 보조 손실로 다른 전문가도 "경기에 뛰게" 강제합니다(수식 3).</div></article>
 
-<article class="card must"><span class="tag p">필수 ②</span><h3>디코딩 전략 세 가지</h3>
+<article class="card must"><span class="tag p">필수 ②</span><h3 id="piece-3-2">디코딩 전략 세 가지</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>디코딩 = 다음 글 조각을 고르는 규칙</p>
+<p><b>작은 예</b> Greedy는 가장 높은 확률 하나, Sampling은 확률에 따라 뽑는다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>Beam search는 여러 후보 경로를 유지한다. Sampling은 같은 입력에서도 다른 답을 낼 수 있다.</p><p><b>비유의 경계</b> 가장 확률 높은 경로가 항상 사실에 맞거나 가장 유용한 답은 아니다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>확률에서 실제 선택으로</b> — 디코딩 = 다음 글 조각을 고르는 규칙</p></details>
+</div>
 <div class="tablewrap"><table class="cmp"><tr><th>전략</th><th>방법</th><th>한계</th></tr>
 <tr><td>Greedy</td><td>확률이 가장 높은 토큰</td><td>최적이 아닐 수 있고, 단조롭고 부자연스러움</td></tr>
 <tr><td>Beam search</td><td>가장 가능성 높은 경로 k개를 유지, [EOS]에서 종료</td><td>계산이 더 들고 다양성·창의성 부족</td></tr>
 <tr><td><b>Sampling</b></td><td>확률 분포에서 뽑기</td><td>무작위성 → 범위를 제한해 씀</td></tr></table></div>
 <p><b>Top-k</b>: 상위 k개 안에서만 뽑기. <b>Top-p</b>: 누적 확률이 p 이상이 되는 가장 작은 집합 안에서만 뽑기. 분포가 뾰족하면 후보가 적고, 평평하면 후보가 많아지는 것이 top-p의 장점입니다.</p></article>
 
-<article class="card must"><span class="tag p">필수 ③</span><h3>Temperature — 확률의 대담함</h3>
+<article class="card must"><span class="tag p">필수 ③</span><h3 id="piece-3-3">Temperature — 확률의 대담함</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>온도 = 후보 확률을 더 뾰족하거나 평평하게 만들기</p>
+<p><b>작은 예</b> 높이면 덜 유력한 후보도 뽑힐 기회가 커진다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>로짓은 확률로 바꾸기 전 점수다. 로짓을 양수 T로 나눈 뒤 softmax를 적용한다.</p><p><b>비유의 경계</b> 온도를 낮춘다고 사실성이 보장되지는 않는다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>쏠림을 조절하는 손잡이</b> — 온도 = 후보 확률을 더 뾰족하거나 평평하게 만들기</p></details>
+</div>
 <div class="visual"><div class="flow"><div class="node b">낮은 T<br><small>뾰족 → 1등에 몰림<br>일관·보수적</small></div><div class="arrow">↔</div><div class="node p">높은 T<br><small>평평 → 고르게 퍼짐<br>다양·위험</small></div></div></div>
 <p>로짓을 T로 나눈 뒤 softmax를 합니다. T → 0이면 greedy와 같아지고, T = 1이면 모델이 낸 그대로입니다. 온도는 순위를 바꾸지 않고 <b>격차</b>만 바꿉니다.</p></article>
 
@@ -63,7 +90,13 @@
 <div class="visual"><span class="tok g">{</span><span class="tok x">the</span><span class="tok x">}</span> → <span class="tok g">"first_name"</span><span class="tok x">sun</span><span class="tok x">road</span> → <span class="tok g">:</span><span class="tok x">,</span><span class="tok x">to</span> → <span class="tok g">"teddy"</span><span class="tok x">10</span></div>
 <p>JSON 같은 형식이 필요할 때, 매 단계에서 <b>문법상 가능한 토큰만</b> 남기고 나머지 확률을 0으로 만듭니다. 형식은 보장되지만 내용의 정확성까지 보장하지는 않습니다.</p></article>
 
-<article class="card must"><span class="tag p">필수 ⑤</span><h3>Context Window와 프롬프트 구조</h3>
+<article class="card must"><span class="tag p">필수 ⑤</span><h3 id="piece-3-5">Context Window와 프롬프트 구조</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>컨텍스트 = 이번 답에 참고하도록 보여준 입력 범위</p>
+<p><b>작은 예</b> 질문 앞에 사내 규정 문단을 넣으면 그 문단도 지금 답의 재료가 된다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>프롬프트는 입력 내용, 컨텍스트 창은 한 번에 처리 가능한 토큰 범위다.</p><p><b>비유의 경계</b> 보여준다고 가중치에 영구 저장되는 것은 아니다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>지금 펼쳐 둔 작업대</b> — 컨텍스트 = 이번 답에 참고하도록 보여준 입력 범위</p></details>
+</div>
 <p>컨텍스트 길이(창 크기)는 모델이 한 번에 볼 수 있는 토큰 수입니다. 길다고 다 잘 쓰는 것은 아니어서, 입력이 길어질수록 성능이 떨어지는 <b>"context rot"</b>을 조심해야 합니다.</p>
 <div class="tablewrap"><table class="cmp"><tr><th>구성</th><th>예 (슬라이드의 곰 인형 이야기)</th></tr>
 <tr><td>맥락</td><td>내 곰 인형이 긴 하루를 보내 잠자리 이야기가 필요해.</td></tr>
@@ -71,7 +104,13 @@
 <tr><td>입력</td><td>장소: 곰 인형의 나라</td></tr>
 <tr><td>제약</td><td>피곤한 곰 인형에게 맞는 이야기여야 해.</td></tr></table></div></article>
 
-<article class="card must"><span class="tag p">필수 ⑥</span><h3>In-context Learning과 Chain of Thought</h3>
+<article class="card must"><span class="tag p">필수 ⑥</span><h3 id="piece-3-6">In-context Learning과 Chain of Thought</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>문맥 내 학습 = 예시를 보고 이번 입력에서 패턴 따라 하기</p>
+<p><b>작은 예</b> ‘좋아요→긍정, 싫어요→부정’ 뒤에 새 문장을 주어 분류하게 한다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>CoT는 풀이 단계를 적게 하는 방식이다. 여기서의 ‘학습’은 보통 가중치 변경을 뜻하지 않는다.</p><p><b>비유의 경계</b> 적힌 풀이가 모델 내부 계산의 충실한 설명이라는 보장은 없다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>예시 보고 이번에 따라 하기</b> — 문맥 내 학습 = 예시를 보고 이번 입력에서 패턴 따라 하기</p></details>
+</div>
 <div class="tablewrap"><table class="cmp"><tr><th>기법</th><th>내용</th><th>대가</th></tr>
 <tr><td>Zero-shot</td><td>예시 없이 질문</td><td>원래 모델 성능에 크게 의존</td></tr>
 <tr><td>Few-shot</td><td>입력·출력 예시를 프롬프트에 포함. 대체로 더 좋음</td><td>예시 만드는 수고, 비용·지연 증가</td></tr>
@@ -79,7 +118,13 @@
 <tr><td>Self-consistency</td><td>여러 번 풀게 하고 다수결</td><td>성능과 추가 비용의 맞교환</td></tr></table></div>
 <div class="why">가중치는 전혀 바뀌지 않습니다. 프롬프트라는 "입력"만으로 행동이 바뀌기 때문에 in-context "learning"이라고 부릅니다. CoT를 대규모로 훈련한 것이 <a href="ch6.html">6장의 추론 모델</a>입니다.</div></article>
 
-<article class="card must"><span class="tag p">필수 ⑦</span><h3>KV Cache — 했던 계산 다시 안 하기</h3>
+<article class="card must"><span class="tag p">필수 ⑦</span><h3 id="piece-3-7">KV Cache — 했던 계산 다시 안 하기</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>KV 캐시 = 지난 토큰의 계산 메모를 저장하기</p>
+<p><b>작은 예</b> 10번째 토큰을 만들 때 1~9번째 토큰의 K·V를 다시 쓴다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>캐시는 재사용을 위한 임시 저장이다. 답변 전체를 통째로 저장하는 응답 캐시와 다르다.</p><p><b>비유의 경계</b> 입력과 생성 길이가 늘면 캐시 메모리도 늘어난다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>이전 K·V 메모 재사용</b> — KV 캐시 = 지난 토큰의 계산 메모를 저장하기</p></details>
+</div>
 <div class="visual"><div class="flow"><div class="node x" style="opacity:.6">a<br><small>K,V 저장됨</small></div><div class="node x" style="opacity:.6">cute<br><small>K,V 저장됨</small></div><div class="node x" style="opacity:.6">teddy bear<br><small>K,V 저장됨</small></div><div class="node p">is<br><small>Q만 새로 계산</small></div></div></div>
 <p>새 토큰은 이전 토큰 전부와 Attention을 해야 합니다. 그런데 이전 토큰의 K와 V는 바뀌지 않습니다(미래를 못 보므로). 그래서 K·V를 캐시에 두고, 새 토큰의 Q·K·V만 계산합니다.</p>
 <div class="why">대가는 메모리입니다. 캐시 크기 ∝ 층 수 × 토큰 수 × K·V 헤드 수 × 차원. 아래 기법들이 이 메모리를 줄입니다.</div></article>
@@ -109,7 +154,13 @@
 <div class="decode"><span><b>z<sub>i</sub></b><i>제트 아이</i>토큰 i의 로짓(점수)</span><span><b>T</b><i>티 (템퍼러처)</i>온도. 점수 격차를 줄이거나 키움</span><span><b>P(i)</b><i>피 아이</i>토큰 i가 뽑힐 확률</span></div>
 <div class="formula-read"><b>숫자 예제.</b> 로짓 [2, 1, 0].<br>T=1 → e²=7.39, e¹=2.72, e⁰=1 → <b>0.665, 0.245, 0.090</b><br>T=0.5 → 로짓 [4,2,0] → <b>0.867, 0.117, 0.016</b> (더 뾰족)<br>T=2 → 로짓 [1,0.5,0] → <b>0.506, 0.307, 0.186</b> (더 평평)</div></div>
 
-<div class="formula-box"><span class="tag p">수식 2</span><h3>Top-p 집합 만들기</h3>
+<div class="formula-box"><span class="tag p">수식 2</span><h3 id="piece-3-4">Top-p 집합 만들기</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>Top-p = 확률 누적합으로 후보 바구니 크기 정하기</p>
+<p><b>작은 예</b> 확률이 0.6·0.3·0.1이면 p=0.8에서 상위 두 개를 남긴다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>Top-k는 후보 개수를 고정하고, Top-p는 누적확률 기준으로 개수가 달라진다.</p><p><b>비유의 경계</b> 남긴 후보끼리 확률을 다시 나누며, 실제 엔진의 옵션 조합에 따라 처리 순서가 다를 수 있다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>개수 k / 누적확률 p</b> — Top-p = 확률 누적합으로 후보 바구니 크기 정하기</p></details>
+</div>
 <div class="equation">S = 확률 큰 순으로 담되, Σ<sub>i∈S</sub> P(i) ≥ <span class="c1">p</span> 가 되는 <b>가장 작은</b> 집합</div>
 <div class="formula-read"><b>숫자 예제.</b> 확률 [0.50, 0.30, 0.12, 0.08], p = 0.9.<br>0.50 → 0.80 → <b>0.92 ≥ 0.9</b>에서 멈춤. 상위 3개가 남는다.<br>다시 나누기: 0.50/0.92=0.543, 0.30/0.92=0.326, 0.12/0.92=0.130.<br><b>주의:</b> "누적이 p를 넘지 않는 데까지"가 아니라 "p 이상이 되는 순간의 토큰까지 포함"이다.</div></div>
 
@@ -156,6 +207,7 @@
 </section>
 
 <section class="section" id="links"><h2>선수지식 · 관련 항목 · 다음 학습</h2>
+<div class="puzzle-check"><details><summary>연결 확인 · 왜 이 장이 필요했을까?</summary><p><b>이전 한계</b> 1·2장의 구조가 후보 토큰마다 점수를 낸다. 점수만으로는 어떤 답을 출력할지 정해지지 않는다.</p><p><b>해결한 것</b> 점수를 확률로 바꾸고, 후보를 고르며, 생성 계산을 재사용한다.</p><p><b>남은 질문</b> 이 점수를 내는 가중치는 어떻게 배우며, 학습 비용을 어떻게 줄일까?</p></details><p><a href="ch2.html#concepts">앞 조각 · 2장</a> <span aria-hidden="true"> · </span> <a href="index.html#puzzle-map">전체 연결 지도</a> <span aria-hidden="true"> · </span> <a href="ch4.html#big">다음 조각 · 4장</a></p></div>
 <div class="links">
 <a class="card must" href="ch2.html"><span class="tag p">선수지식</span><h3>2장 · 개량과 BERT</h3><p>디코더 전용 구조, GQA</p></a>
 <a class="card along" href="../week3.html"><span class="tag y">관련 항목</span><h3>수업 자료 3차시</h3><p>같은 강의의 수업·시험 관점 정리 · <a href="../midterm-review.html">중간고사 복원(Top-p 계산 포함)</a></p></a>

@@ -19,6 +19,15 @@
 <nav class="route"><a href="#big">큰 그림</a><a href="#analogy">비유</a><a href="#concepts">핵심 개념</a><a href="#math">수식 해부</a><a href="#cases">활용 사례</a><a href="#myths">오해</a><a href="#quiz">퀴즈</a><a href="#links">연결</a></nav>
 
 <section class="section" id="big"><h2>한눈에 보는 큰 그림</h2>
+<div class="puzzle-bridge">
+<p class="puzzle-label">앞에서 가져온 조각 → 여기서 해결 → 다음 질문</p>
+<div class="puzzle-context"><div><b><a href="ch6.html#concepts">앞 조각 · 6장</a></b><p>모델 가중치에 없는 최신 정보는 찾아야 하고, 계산·예약 같은 일은 외부 프로그램이 수행해야 한다.</p></div><div><b>지금 맞출 조각</b><p>검색으로 근거를 제공하고, 도구 실행 결과를 보고 다음 행동을 결정한다.</p></div><div><b><a href="ch8.html#big">다음 조각 · 8장</a></b><p>찾고 실행했다고 끝이 아니다. 검색·답변·행동을 각각 어떻게 평가할까?</p></div></div>
+<ol class="puzzle-steps" aria-label="이 장의 개념이 이어지는 이유"><li><a href="#piece-7-1"><b>1. 근거를 찾아 입력에 붙인다</b></a><p><b>왜 필요한가</b> 모델 내부를 다시 학습하지 않고 이번 질문의 참고 자료를 보충한다.</p></li>
+<li><a href="#piece-7-2"><b>2. 넓게 찾고 다시 정렬한다</b></a><p><b>왜 필요한가</b> 빠른 후보 수집과 정밀한 순서 매기기는 비용·목적이 다르다.</p></li>
+<li><a href="#piece-7-3"><b>3. 외부 프로그램으로 일을 수행한다</b></a><p><b>왜 필요한가</b> LLM이 함수 이름과 인자를 제안하면 프로그램이 실제로 실행한다.</p></li>
+<li><a href="#piece-7-5"><b>4. 결과를 보고 다음 행동을 고른다</b></a><p><b>왜 필요한가</b> 고정된 단계만 실행하는 흐름과 달리 관찰에 따라 반복·중단을 결정한다.</p></li></ol>
+<p class="memory-scope">화살표는 이해를 위한 연결입니다. 모두를 반드시 순서대로 적용하는 시스템 구성도는 아닙니다.</p>
+</div>
 <p class="lead">세 기법은 "LLM에게 무엇을 더 쥐여 주는가"로 구분됩니다.</p>
 <div class="big-picture">
 <div class="grid g3" style="color:var(--ink)">
@@ -41,11 +50,23 @@
 <section class="section" id="concepts"><h2>핵심 개념 카드</h2>
 <div class="grid">
 
-<article class="card must"><span class="tag p">필수 ①</span><h3>RAG — Retrieve, Augment, Generate</h3>
+<article class="card must"><span class="tag p">필수 ①</span><h3 id="piece-7-1">RAG — Retrieve, Augment, Generate</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>RAG = 찾아온 문서를 펼쳐 놓고 답하게 하기</p>
+<p><b>작은 예</b> 최신 휴가 규정을 검색해 질문과 함께 LLM 입력에 넣는다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>검색은 근거 후보를 찾고, 증강은 입력에 붙이고, 생성은 그 입력을 바탕으로 답하는 단계다.</p><p><b>비유의 경계</b> 문서를 붙인다고 모델 가중치가 업데이트되거나 환각이 사라지지는 않는다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>검색 → 근거 붙이기 → 답</b> — RAG = 찾아온 문서를 펼쳐 놓고 답하게 하기</p></details>
+</div>
 <div class="visual"><div class="flow"><div class="node">① 검색<br><small>지식 베이스에서 유사도로 관련 조각 찾기</small></div><div class="arrow">→</div><div class="node">② 보강<br><small>찾은 내용을 프롬프트에 붙이기</small></div><div class="arrow">→</div><div class="node g">③ 생성<br><small>LLM이 답 작성</small></div></div></div>
 <p><b>사전 준비: 지식 베이스.</b> 문서를 모으고(collect) → 조각으로 나누고(divide) → 조각마다 임베딩 벡터로 바꿉니다(embed). 하이퍼파라미터: 임베딩 차원, 조각 크기, 조각 간 겹침.</p></article>
 
-<article class="card must"><span class="tag p">필수 ②</span><h3>검색 2단계</h3>
+<article class="card must"><span class="tag p">필수 ②</span><h3 id="piece-7-2">검색 2단계</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>검색 2단계 = 넓게 추린 뒤 좋은 근거를 앞으로 옮기기</p>
+<p><b>작은 예</b> 전체 문서에서 100개를 빠르게 찾고 더 정밀하게 5개를 고른다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>Retrieve는 후보 수집, Rerank는 수집한 후보의 순서를 다시 매기기다.</p><p><b>비유의 경계</b> 예시 개수는 설명용이며 검색 설정에 따라 달라진다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>후보 수집 → 재정렬</b> — 검색 2단계 = 넓게 추린 뒤 좋은 근거를 앞으로 옮기기</p></details>
+</div>
 <div class="tablewrap"><table class="cmp"><tr><th></th><th>🎣 1단계 후보 추출</th><th>💯 2단계 재순위</th></tr>
 <tr><td>목표</td><td>재현율 최대화 (놓치지 않기)</td><td>정밀도 최대화 (정확히 고르기)</td></tr>
 <tr><td>대상</td><td>지식 베이스 전체</td><td>추려진 소수 후보</td></tr>
@@ -63,19 +84,37 @@
 <p><b>가짜 문서 만들기 (HyDE).</b> 질문과 문서는 글의 성격이 다릅니다. LLM에게 먼저 가상의 답 문서를 쓰게 하고("Cuddly is in…"), 그 가짜 문서의 임베딩으로 검색합니다.</p>
 <p><b>조각에 맥락 붙이기 (Contextual Retrieval).</b> 조각만 떼어 놓으면 "그는"이 누구인지 모릅니다. 문서 전체와 조각을 LLM에 주고 "이 조각이 문서에서 어떤 위치인지 짧게 설명하라"고 해 그 설명을 조각 앞에 붙입니다. 같은 문서를 반복해 넣으므로 <b>프롬프트 캐싱</b>으로 비용을 줄입니다.</p></article>
 
-<article class="card must"><span class="tag p">필수 ⑤</span><h3>Tool calling — 3단계</h3>
+<article class="card must"><span class="tag p">필수 ⑤</span><h3 id="piece-7-3">Tool calling — 3단계</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>도구 호출 = 실행할 함수와 입력값을 프로그램에 넘기기</p>
+<p><b>작은 예</b> LLM이 calculator(17*23)를 요청하면 프로그램이 391을 계산해 돌려준다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>인자는 함수에 넘기는 입력값이다. 실행 권한·검증은 모델 바깥 프로그램이 관리한다.</p><p><b>비유의 경계</b> LLM이 함수 이름을 출력한 것만으로 외부 실행이 끝난 것은 아니다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>요청 작성 → 실행 → 결과 읽기</b> — 도구 호출 = 실행할 함수와 입력값을 프로그램에 넘기기</p></details>
+</div>
 <div class="visual"><div class="flow"><div class="node y">① LLM<br><small>함수와 인자 결정<br>find_teddy_bear(location=(37.42,−122.17))</small></div><div class="arrow">→</div><div class="node">② 백엔드<br><small>실제 실행<br>{"name":"Teddy",…}</small></div><div class="arrow">→</div><div class="node g">③ LLM<br><small>결과를 읽고 답 작성</small></div></div></div>
 <p>LLM은 함수를 <b>실행하지 않습니다</b>. 어떤 함수를 어떤 인자로 부를지 글로 쓸 뿐입니다. 좋은 도구는 설명이 잘 된 API를 갖고, 무언가를 반환합니다.</p>
 <p><b>가르치는 법.</b> ① 학습: (대화 기록 → 원하는 도구 호출·응답) 쌍으로 SFT. ② 프롬프트: API와 자세한 사용 설명을 넣기. 그 설명문은 SFT 쌍을 평가 세트로 삼아 강력한 추론 모델에게 쓰게 하는 방법이 있습니다.</p>
 <div class="why">용도: 정보(웹·DB 검색, 날씨, 코드베이스) · 계산(계산기, 코드 실행) · 행동(메일·메시지 전송 등).</div></article>
 
-<article class="card along"><span class="tag y">보충 ⑥</span><h3>도구가 많아질 때: 선택과 MCP</h3>
+<article class="card along"><span class="tag y">보충 ⑥</span><h3 id="piece-7-4">도구가 많아질 때: 선택과 MCP</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>MCP = 도구·자료를 연결하는 공통 통신 약속</p>
+<p><b>작은 예</b> 클라이언트가 서버에 어떤 도구가 있는지 묻고 정해진 형식으로 호출한다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>프로토콜은 서로 주고받을 메시지 규칙이다. MCP는 Model Context Protocol이다.</p><p><b>비유의 경계</b> 자동 계획이나 권한 검사를 대신해 주는 만능 에이전트는 아니다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>도구 연결 약속</b> — MCP = 도구·자료를 연결하는 공통 통신 약속</p></details>
+</div>
 <p><b>문제.</b> 도구가 늘수록 성능이 떨어지고, 컨텍스트는 유한하며, 도구마다 정의하는 수고가 큽니다.</p>
 <p><b>도구 선택.</b> 라우터가 먼저 관련 도구 몇 개만 고르고, 그 API만 LLM에 넘깁니다. 지연이 줄고 성능이 오릅니다.</p>
 <div class="visual"><div class="flow"><div class="node">LLM 1</div><div class="node">LLM 2</div><div class="node">LLM 3</div><div class="arrow">⇄</div><div class="node v">MCP</div><div class="arrow">⇄</div><div class="node">도구 1</div><div class="node">도구 2</div><div class="node">도구 3</div></div></div>
 <p><b>MCP</b>(Model Context Protocol, Anthropic 2024): 도구·데이터를 LLM에 연결하는 표준. 없으면 LLM 3종 × 도구 3종 = 9개 연결을 따로 만들어야 합니다. 구성: 호스트(앱) 안의 <b>클라이언트</b> ⇄ <b>서버</b>가 제공하는 도구·프롬프트·리소스.</p></article>
 
-<article class="card must"><span class="tag p">필수 ⑦</span><h3>에이전트와 ReAct</h3>
+<article class="card must"><span class="tag p">필수 ⑦</span><h3 id="piece-7-5">에이전트와 ReAct</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>ReAct = 판단 → 행동 → 결과 관찰을 반복하기</p>
+<p><b>작은 예</b> 문서 검색 → 근거 부족 확인 → 추가 검색 → 답변처럼 진행한다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>에이전트는 목표에 따라 다음 행동을 정한다. Workflow는 코드로 정한 경로가 중심이다.</p><p><b>비유의 경계</b> 반복 횟수·권한·종료 조건을 제한해야 하며 항상 최적의 행동을 고르지는 않는다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>해 보고 결과를 보고 다음 결정</b> — ReAct = 판단 → 행동 → 결과 관찰을 반복하기</p></details>
+</div>
 <p>에이전트: 사용자를 대신해 <b>자율적으로</b> 목표를 추구하고 과제를 완수하는 시스템. ReAct = Reason + Act.</p>
 <div class="tablewrap"><table class="cmp"><tr><th>단계</th><th>예: "곰 인형이 추워해요. 뭔가 해 주세요."</th></tr>
 <tr><td>관찰</td><td>곰이 추운 것은 방 온도 때문일 수 있는데, 현재 온도를 모른다.</td></tr>
@@ -95,7 +134,13 @@
 <section class="section" id="math"><h2>최소 수식 해부</h2>
 <p class="lead">검색 품질을 재는 네 지표. 같은 예시로 계산합니다: 관련 조각이 전체에 <b>3개</b> 있고, 상위 4개 결과의 관련 여부가 <b>[✗, ✓, ✓, ✗]</b>.</p>
 <div class="grid">
-<div class="formula-box"><span class="tag p">수식 1·2</span><h3>Precision@k와 Recall@k</h3>
+<div class="formula-box"><span class="tag p">수식 1·2</span><h3 id="piece-7-6">Precision@k와 Recall@k</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>정밀도 = 가져온 것 중 맞는 비율, 재현율 = 필요한 것 중 찾은 비율</p>
+<p><b>작은 예</b> 관련 문서가 총 4개인데 상위 5개 중 2개가 관련이면 정밀도 2/5, 재현율 2/4다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>k는 위에서 몇 개까지 볼지다. 두 지표는 분모가 다르다.</p><p><b>비유의 경계</b> 관련 문서 전체를 모르면 재현율을 정확히 계산하기 어렵다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>가져온 것 기준 / 필요한 것 기준</b> — 정밀도 = 가져온 것 중 맞는 비율, 재현율 = 필요한 것 중 찾은 비율</p></details>
+</div>
 <div class="equation">Precision@<span class="c4">k</span> = (상위 k 중 관련 조각 수) / <span class="c4">k</span><br>Recall@<span class="c4">k</span> = (상위 k 중 관련 조각 수) / (<span class="c1">전체 관련 조각 수</span>)</div>
 <div class="formula-read"><b>숫자 예제.</b> Precision@4 = 2/4 = <b>0.50</b>. Recall@4 = 2/3 ≈ <b>0.67</b>.<br><b>문장으로 읽기:</b> 정밀도는 "가져온 것 중 쓸모 있는 비율", 재현율은 "쓸모 있는 것 중 가져온 비율". 1단계는 재현율, 2단계는 정밀도를 겨냥한다.</div></div>
 
@@ -141,6 +186,7 @@
 </section>
 
 <section class="section" id="links"><h2>선수지식 · 관련 항목 · 다음 학습</h2>
+<div class="puzzle-check"><details><summary>연결 확인 · 왜 이 장이 필요했을까?</summary><p><b>이전 한계</b> 모델 가중치에 없는 최신 정보는 찾아야 하고, 계산·예약 같은 일은 외부 프로그램이 수행해야 한다.</p><p><b>해결한 것</b> 검색으로 근거를 제공하고, 도구 실행 결과를 보고 다음 행동을 결정한다.</p><p><b>남은 질문</b> 찾고 실행했다고 끝이 아니다. 검색·답변·행동을 각각 어떻게 평가할까?</p></details><p><a href="ch6.html#concepts">앞 조각 · 6장</a> <span aria-hidden="true"> · </span> <a href="index.html#puzzle-map">전체 연결 지도</a> <span aria-hidden="true"> · </span> <a href="ch8.html#big">다음 조각 · 8장</a></p></div>
 <div class="links">
 <a class="card must" href="ch6.html"><span class="tag p">선수지식</span><h3>6장 · 추론 모델</h3><p>관찰·계획 단계를 받치는 추론 능력 · <a href="ch2.html">2장</a>의 인코더(임베딩)</p></a>
 <a class="card along" href="../week7.html"><span class="tag y">관련 항목</span><h3>수업 자료 7차시</h3><p>같은 강의의 수업·시험 관점 정리</p></a>

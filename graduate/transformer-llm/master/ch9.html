@@ -19,6 +19,15 @@
 <nav class="route"><a href="#big">큰 그림</a><a href="#recap">전체 복습</a><a href="#analogy">비유</a><a href="#concepts">핵심 개념</a><a href="#math">수식 해부</a><a href="#cases">활용 사례</a><a href="#myths">오해</a><a href="#quiz">퀴즈</a><a href="#links">연결</a></nav>
 
 <section class="section" id="big"><h2>한눈에 보는 큰 그림</h2>
+<div class="puzzle-bridge">
+<p class="puzzle-label">앞에서 가져온 조각 → 여기서 해결 → 다음 질문</p>
+<div class="puzzle-context"><div><b><a href="ch8.html#concepts">앞 조각 · 8장</a></b><p>1~8장에서 조각 표현·학습·생성·평가를 배웠다. 글 조각 대신 이미지 조각을 넣거나 생성 규칙을 바꿀 수 있다.</p></div><div><b>지금 맞출 조각</b><p>이미지 이해와 다른 생성 방식을 기존 개념에 연결해 비교한다.</p></div><div><b><a href="index.html#puzzle-map">전체 연결로 돌아가기</a></b><p>새 모델을 만나도 ‘입력 조각·관계 계산·학습 목표·생성 방식·평가’의 다섯 질문으로 돌아간다.</p></div></div>
+<ol class="puzzle-steps" aria-label="이 장의 개념이 이어지는 이유"><li><a href="#piece-9-1"><b>1. 이미지 조각을 토큰처럼 만든다</b></a><p><b>왜 필요한가</b> 1장의 조각→벡터→Attention 흐름을 이미지에 적용한다.</p></li>
+<li><a href="#piece-9-2"><b>2. 이미지 표현을 언어 모델에 연결한다</b></a><p><b>왜 필요한가</b> 이미지를 이해하는 표현과 질문·답변 능력을 이어 준다.</p></li>
+<li><a href="#piece-9-3"><b>3. 순차 생성의 제약을 본다</b></a><p><b>왜 필요한가</b> 앞 토큰이 정해져야 다음 토큰을 내는 방식은 병렬 생성에 제약이 있다.</p></li>
+<li><a href="#piece-9-4"><b>4. 다른 생성 경로를 비교한다</b></a><p><b>왜 필요한가</b> 여러 위치를 반복 복원하는 방법이지만 속도·품질은 실제 조건에서 평가해야 한다.</p></li></ol>
+<p class="memory-scope">화살표는 이해를 위한 연결입니다. 모두를 반드시 순서대로 적용하는 시스템 구성도는 아닙니다.</p>
+</div>
 <p class="lead">Transformer는 2017년 번역을 위해 나왔지만, 핵심인 Query·Key·Value Attention은 "순서 있는 조각들"이면 무엇에든 쓸 수 있습니다.</p>
 <div class="big-picture">
 <div class="flow"><div class="node v">Transformer<br><small>Self-Attention<br>약한 귀납 편향 → 높은 범용성</small></div><div class="arrow">→</div><div class="node">글 생성<br><small>LLM (1~8장)</small></div><div class="node b">이미지 이해<br><small>ViT</small></div><div class="node p">이미지 + 글<br><small>VLM</small></div><div class="node y">이미지 생성<br><small>DiT, MM-DiT</small></div><div class="node">추천·음성 등</div></div>
@@ -55,22 +64,46 @@
 <section class="section" id="concepts"><h2>핵심 개념 카드</h2>
 <div class="grid">
 
-<article class="card must"><span class="tag p">필수 ①</span><h3>Vision Transformer (ViT)</h3>
+<article class="card must"><span class="tag p">필수 ①</span><h3 id="piece-9-1">Vision Transformer (ViT)</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>ViT = 사진을 조각내어 Transformer로 읽기</p>
+<p><b>작은 예</b> 224×224 이미지를 16×16 패치로 나누면 이미지 조각은 196개다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>패치는 이미지의 작은 사각형 조각이다. 각 패치를 벡터로 바꾸고 위치 정보를 더한다.</p><p><b>비유의 경계</b> 문자 토큰과 재료는 다르지만 숫자 표현을 관계 계산에 넣는 구조를 재사용한다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>이미지 조각도 토큰처럼</b> — ViT = 사진을 조각내어 Transformer로 읽기</p></details>
+</div>
 <div class="visual"><div class="flow"><div class="node">이미지<br><small>H×W×C</small></div><div class="arrow">→</div><div class="node">P×P 패치로 자르기</div><div class="arrow">→</div><div class="node">선형 투영<br><small>패치 → D차원</small></div><div class="arrow">→</div><div class="node y">[CLS] + 위치 임베딩</div><div class="arrow">→</div><div class="node v">인코더</div><div class="arrow">→</div><div class="node g">[CLS] → FFN → 분류</div></div></div>
 <p>논문 제목 그대로 "이미지 한 장은 16×16 단어의 가치". <a href="ch2.html">2장</a>의 BERT와 같은 구조입니다: 인코더 전용, [CLS] 토큰, 위치 임베딩, [CLS] 벡터를 투영해 분류. 달라진 것은 토큰을 만드는 방법뿐입니다.</p></article>
 
-<article class="card must"><span class="tag p">필수 ②</span><h3>Vision Language Model (VLM)</h3>
+<article class="card must"><span class="tag p">필수 ②</span><h3 id="piece-9-2">Vision Language Model (VLM)</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>VLM = 사진 표현을 글 질문·답변과 연결한 모델</p>
+<p><b>작은 예</b> 영수증 사진과 ‘총액은?’을 입력해 글로 답하게 한다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>멀티모달은 글·사진·소리처럼 여러 정보 형태를 다룬다는 뜻이다.</p><p><b>비유의 경계</b> 사진을 넣을 수 있다고 작은 글씨나 공간 관계를 항상 정확히 읽는 것은 아니다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>보는 표현 + 말하는 능력</b> — VLM = 사진 표현을 글 질문·답변과 연결한 모델</p></details>
+</div>
 <p>"이 곰 인형 얼마나 귀여워?" + 사진 → "아주 귀여워요!"</p>
 <div class="tablewrap"><table class="cmp"><tr><th>방법</th><th>구조</th><th>예</th></tr>
 <tr><td>① 디코더 전용 재활용</td><td>이미지를 인코더로 벡터화 → 글 토큰 임베딩 공간으로 투영 → 글 토큰과 한 줄로 이어 평범한 LLM에 입력</td><td>LLaVA (Visual Instruction Tuning)</td></tr>
 <tr><td>② 교차 Attention</td><td>디코더 안에 교차 Attention 층을 넣어 글 토큰이 이미지 표현을 참고</td><td>Llama 3 계열 비전 모델</td></tr></table></div>
 <div class="why">②는 <a href="ch1.html">1장</a>의 인코더-디코더 Attention과 같은 발상입니다. "원문" 자리에 이미지가 들어갔을 뿐입니다.</div></article>
 
-<article class="card must"><span class="tag p">필수 ③</span><h3>자기회귀의 한계</h3>
+<article class="card must"><span class="tag p">필수 ③</span><h3 id="piece-9-3">자기회귀의 한계</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>자기회귀 = 앞에서 고른 조각을 바탕으로 다음 조각 만들기</p>
+<p><b>작은 예</b> 첫 토큰을 고르고, 그 토큰을 포함해 둘째 토큰을 고르는 일을 반복한다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>Autoregressive는 이미 만든 출력에 조건부로 다음 출력을 생성한다는 뜻이다.</p><p><b>비유의 경계</b> 반드시 가장 높은 확률 하나만 고른다는 뜻은 아니다. 선택 규칙은 3장과 연결된다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>앞 결과로 다음 결과 생성</b> — 자기회귀 = 앞에서 고른 조각을 바탕으로 다음 조각 만들기</p></details>
+</div>
 <div class="visual"><span class="tok x">[BOS]</span> → <span class="tok g">A</span> → <span class="tok g">teddy</span> → <span class="tok g">bear</span> → <span class="tok g">is</span> → <span class="tok p">?</span></div>
 <p>지금까지 본 모든 LLM은 <b>자기회귀 모델(ARM)</b>입니다. 앞 토큰이 정해져야 다음 토큰을 계산하므로 <b>추론을 병렬화할 수 없습니다</b>. 학습 때는 정답 문장 전체가 있어 병렬로 계산하지만, 생성 때는 토큰 수만큼 순전파를 반복합니다.</p></article>
 
-<article class="card must"><span class="tag p">필수 ④</span><h3>Diffusion — 이미지에서 글로</h3>
+<article class="card must"><span class="tag p">필수 ④</span><h3 id="piece-9-4">Diffusion — 이미지에서 글로</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>텍스트 디퓨전 = 가린 부분 등을 반복 복원하며 글 만들기</p>
+<p><b>작은 예</b> 여러 [MASK] 위치를 예측하고 다시 수정해 문장을 완성할 수 있다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>Denoising은 흐트러진 입력을 복원하는 학습·생성 과정이다. 텍스트에서는 마스크를 쓰는 방식도 있다.</p><p><b>비유의 경계</b> 모든 디퓨전 LLM이 같은 마스크 방식은 아니며 이미지 디퓨전과 수학적 구현이 다를 수 있다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>하나씩 이어쓰기 / 반복 복원</b> — 텍스트 디퓨전 = 가린 부분 등을 반복 복원하며 글 만들기</p></details>
+</div>
 <div class="tablewrap"><table class="cmp"><tr><th></th><th>이미지 디퓨전</th><th>글 디퓨전 (마스크)</th></tr>
 <tr><td>정방향 (망가뜨리기)</td><td>이미지에 잡음을 더함</td><td>토큰을 어떤 확률로 [MASK]로 가림</td></tr>
 <tr><td>역방향 (학습 대상)</td><td>잡음을 걷어 내기</td><td>가린 토큰을 맞히기</td></tr>
@@ -120,7 +153,13 @@
 <div class="equation">자기회귀: <span class="c1">N</span>번 &nbsp; vs &nbsp; 디퓨전: <span class="c3">T</span>번 (<span class="c3">T</span> &lt; <span class="c1">N</span>)</div>
 <div class="formula-read"><b>숫자 예제.</b> 256토큰 답. 자기회귀는 순전파 256번(KV 캐시로 각 회는 가벼움). 디퓨전이 16단계로 끝내면 순전파 <b>16번</b>, 단계마다 평균 16토큰을 드러낸다.<br><b>주의:</b> 디퓨전의 한 번은 문장 전체를 다시 계산하므로 한 회가 더 무겁다. 단계 수 T를 줄이면 빨라지지만 품질이 떨어지는 맞교환이 있다.</div></div>
 
-<div class="formula-box"><span class="tag g">수식 4</span><h3>파레토 최적의 정의</h3>
+<div class="formula-box"><span class="tag g">수식 4</span><h3 id="piece-9-5">파레토 최적의 정의</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>파레토 = 하나를 더 좋게 하려면 다른 것을 양보해야 하는 경계</p>
+<p><b>작은 예</b> 더 빠르지만 정확도가 낮은 모델과 느리지만 정확한 모델은 목표에 따라 선택이 달라진다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>속도·비용·품질을 동시에 비교한다. 다른 대안에 모든 기준에서 뒤지는 선택은 제외할 수 있다.</p><p><b>비유의 경계</b> 한 점수가 가장 높다고 항상 최적의 서비스 선택이 되는 것은 아니다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>무엇을 얻고 무엇을 양보하나</b> — 파레토 = 하나를 더 좋게 하려면 다른 것을 양보해야 하는 경계</p></details>
+</div>
 <div class="equation">모델 A가 전선 위 ⟺ <span class="c1">품질도 더 높고 비용도 더 낮은</span> 다른 모델이 없다</div>
 <div class="formula-read"><b>숫자 예제.</b> (품질, 비용): A(90, 10), B(85, 3), C(80, 5). C는 B보다 품질도 낮고 비용도 높으므로 탈락. A와 B가 전선이다. A와 B 중 무엇을 고를지는 예산이 정한다.</div></div>
 </div></section>
@@ -157,6 +196,7 @@
 </section>
 
 <section class="section" id="links"><h2>선수지식 · 관련 항목 · 다음 학습</h2>
+<div class="puzzle-check"><details><summary>연결 확인 · 왜 이 장이 필요했을까?</summary><p><b>이전 한계</b> 1~8장에서 조각 표현·학습·생성·평가를 배웠다. 글 조각 대신 이미지 조각을 넣거나 생성 규칙을 바꿀 수 있다.</p><p><b>해결한 것</b> 이미지 이해와 다른 생성 방식을 기존 개념에 연결해 비교한다.</p><p><b>남은 질문</b> 새 모델을 만나도 ‘입력 조각·관계 계산·학습 목표·생성 방식·평가’의 다섯 질문으로 돌아간다.</p></details><p><a href="ch8.html#concepts">앞 조각 · 8장</a> <span aria-hidden="true"> · </span> <a href="index.html#puzzle-map">전체 연결 지도</a> <span aria-hidden="true"> · </span> <a href="index.html#puzzle-map">전체 연결로 돌아가기</a></p></div>
 <div class="links">
 <a class="card must" href="ch8.html"><span class="tag p">선수지식</span><h3>8장 · LLM 평가</h3><p>그리고 1~7장 전체. 막히는 줄이 있으면 위 되감기 표에서 해당 장으로</p></a>
 <a class="card along" href="../../../topics/diffusion-prerequisites.html"><span class="tag y">관련 항목</span><h3>디퓨전 선수지식 전체</h3><p>이미지 디퓨전의 정방향·역방향과 수식 기초</p></a>
