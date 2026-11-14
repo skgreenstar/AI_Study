@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="2장 Transformer의 개량과 BERT — 위치 인코딩과 RoPE, 층 정규화, Attention 근사, 세 갈래 모델, BERT 해부">
+<title>2장 · Transformer의 개량과 BERT | 전문가 마스터</title>
+<link rel="stylesheet" href="master.css">
+<link rel="stylesheet" href="../../../assets/inline-terms.css">
+</head>
+<body><main class="wrap">
+<div class="topbar"><a href="index.html">← 전문가 마스터 전체 지도</a>
+<nav class="tabs" aria-label="보기 전환"><a href="../index.html">📚 수업 자료</a><a class="on" href="index.html">🎓 전문가 마스터</a></nav></div>
+
+<header class="hero"><span class="pill">2장 · CME295 LECTURE 2</span>
+<h1>Transformer의 개량과 BERT</h1>
+<p>2017년 원본은 출발점이었습니다. 이후 <b>위치를 넣는 법, 정규화 위치, Attention 비용</b>이 차례로 고쳐졌고, 구조는 세 갈래로 갈라졌습니다. 그중 "이해 전문" 갈래인 BERT를 끝까지 뜯어봅니다.</p>
+<div class="goals"><div><b>이 장을 마치면</b>절대 위치와 상대 위치(RoPE)의 차이를 설명할 수 있다</div><div><b>이 장을 마치면</b>요즘 모델이 Pre-Norm·GQA를 쓰는 이유를 말할 수 있다</div><div><b>이 장을 마치면</b>BERT의 사전학습 두 과제와 미세조정을 그릴 수 있다</div></div></header>
+<nav class="route"><a href="#big">큰 그림</a><a href="#analogy">비유</a><a href="#concepts">핵심 개념</a><a href="#math">수식 해부</a><a href="#cases">활용 사례</a><a href="#myths">오해</a><a href="#quiz">퀴즈</a><a href="#links">연결</a></nav>
+
+<section class="section" id="big"><h2>한눈에 보는 큰 그림</h2>
+<p class="lead">원본 Transformer의 어느 부품이 무엇으로 바뀌었는지, 그리고 구조가 어떻게 갈라졌는지.</p>
+<div class="big-picture">
+<div class="tablewrap"><table class="cmp" style="color:var(--ink)"><tr><th>부품</th><th>2017 원본</th><th>요즘의 기본 선택</th><th>바꾼 이유</th></tr>
+<tr><td>위치 정보</td><td>입력에 사인·코사인 벡터를 더함</td><td><b>RoPE</b>: Attention 안에서 Q·K를 회전</td><td>Attention이 정말 필요한 것은 상대 거리</td></tr>
+<tr><td>정규화</td><td>Post-Norm + LayerNorm</td><td><b>Pre-Norm + RMSNorm</b></td><td>깊은 모델의 학습 안정, 더 싼 계산</td></tr>
+<tr><td>Attention 헤드</td><td>MHA (Q·K·V 헤드 수 동일)</td><td><b>GQA</b> (K·V 헤드를 묶어 공유)</td><td>메모리·연산 절감</td></tr>
+<tr><td>Attention 범위</td><td>모든 쌍</td><td>필요하면 창(window)으로 제한</td><td>n² 비용 완화</td></tr></table></div>
+<div class="flow" style="margin-top:18px"><div class="node">원본<br><small>인코더 + 디코더</small></div><div class="arrow">→</div><div class="node b">인코더-디코더<br><small>T5, mT5, ByT5<br>글 → 글</small></div><div class="node p">인코더 전용<br><small>BERT, DistilBERT, RoBERTa<br>임베딩 → 분류<br>2018~2022 전성기</small></div><div class="node g">디코더 전용<br><small>GPT 계열<br>글 → 글<br>지금의 주류</small></div></div>
+</div></section>
+
+<section class="section" id="analogy"><h2>생활 비유</h2>
+<div class="grid">
+<div class="card"><span class="tag p">위치: 좌석 번호 vs 시곗바늘</span><h3>"몇 번 자리"보다 "몇 칸 떨어졌나"</h3>
+<p><b>절대 위치</b>는 좌석 번호표입니다. 37번과 40번이라는 숫자를 보고 3칸 차이임을 따로 계산해야 합니다.</p>
+<p><b>RoPE</b>는 각 단어에 시곗바늘을 달아 자리마다 일정 각도씩 돌려 둡니다. 두 바늘 사이의 각도는 두 자리의 <b>거리</b>에만 달려 있어, 37·40번이든 137·140번이든 똑같이 보입니다.</p>
+<div class="note"><b>한계.</b> 실제로는 바늘 하나가 아니라 벡터를 2차원씩 묶어 서로 다른 속도로 돌립니다. 빠른 바늘은 가까운 거리, 느린 바늘은 먼 거리를 구분합니다.</div></div>
+<div class="card"><span class="tag p">BERT: 빈칸 채우기 시험</span><h3>양쪽 문맥을 다 보고 푼다</h3>
+<div class="visual"><span class="tok">[CLS]</span><span class="tok">A</span><span class="tok">cute</span><span class="tok p">[MASK]</span><span class="tok">bear</span><span class="tok">is</span><span class="tok">reading</span><span class="tok">[SEP]</span></div>
+<p>국어 시험의 빈칸 추론 문제처럼, 빈칸 앞뒤를 모두 읽고 답을 고릅니다. GPT류가 "다음 단어 이어 쓰기"라면 BERT는 "가운데 빈칸 채우기"입니다. 그래서 이해에는 강하지만 글을 이어 쓰지는 못합니다.</p>
+<div class="note"><b>한계.</b> 사람은 빈칸의 뜻을 추론하지만, 모델은 어휘 전체에 대한 확률 분포를 낼 뿐입니다.</div></div>
+</div></section>
+
+<section class="section" id="concepts"><h2>핵심 개념 카드</h2>
+<div class="grid">
+
+<article class="card must"><span class="tag p">필수 ①</span><h3>위치 정보의 세 세대</h3>
+<div class="tablewrap"><table class="cmp"><tr><th>방식</th><th>어디에 넣나</th><th>특징</th></tr>
+<tr><td>학습된 절대 위치</td><td>입력 임베딩에 더함</td><td>학습한 길이보다 긴 문장은 재학습 필요</td></tr>
+<tr><td>사인·코사인 (고정)</td><td>입력 임베딩에 더함</td><td>어떤 길이로도 확장 가능</td></tr>
+<tr><td>T5 bias</td><td>Attention 점수에 편향을 더함</td><td>헤드마다 학습되는 상대 위치 편향</td></tr>
+<tr><td>ALiBi</td><td>Attention 점수에 편향을 더함</td><td>거리에 비례하는 고정 편향, 상한 없음</td></tr>
+<tr><td><b>RoPE</b></td><td>Attention의 Q·K를 회전</td><td>상대 거리가 내적에 자연스럽게 반영. <b>현재 기본값</b></td></tr></table></div>
+<div class="why">흐름: "입력에 더하기" → "Attention 층 자체를 바꾸기". 위치가 필요한 곳이 Attention이기 때문입니다.</div></article>
+
+<article class="card must"><span class="tag p">직접 보기</span><h3>사인·코사인 위치 인코딩</h3>
+<canvas id="pe" width="520" height="210" style="width:100%;border-radius:12px;background:#fff" aria-label="위치 인코딩 히트맵. 가로는 차원, 세로는 위치"></canvas>
+<div class="ctrl" style="grid-template-columns:1fr"><label>기준 위치: <span id="pv">10</span><input id="pos" type="range" min="0" max="39" value="10"></label></div>
+<p style="font-size:14px">위: 위치(세로 0~39) × 차원(가로 0~63)의 값(분홍 +1, 보라 −1). 왼쪽 차원은 빠르게, 오른쪽은 천천히 변합니다. 아래 막대: 기준 위치와 각 위치의 내적(가장 낮은 값을 바닥으로 맞춰 차이를 키워 그림). <b>가까운 위치일수록 비슷</b>합니다.</p></article>
+
+<article class="card must"><span class="tag p">필수 ②</span><h3>Layer Normalization — 어디에 두느냐</h3>
+<div class="visual"><div class="flow"><div class="node r">Post-Norm (원본)<br><small>x → 하위층 → (+x) → <b>Norm</b></small></div><div class="arrow">→</div><div class="node g">Pre-Norm (요즘)<br><small>x → <b>Norm</b> → 하위층 → (+x)</small></div></div></div>
+<p>정규화는 각 토큰 벡터의 값 범위를 맞춰 학습을 안정시키고 수렴을 돕습니다. Pre-Norm은 잔차 통로(+x)를 정규화 없이 깨끗하게 남겨 깊은 모델에서 기울기가 잘 흐릅니다.</p>
+<p><b>RMSNorm</b>은 평균을 빼지 않고 크기(제곱평균제곱근)로만 나눕니다. 계산이 더 싸고 성능은 비슷해 요즘은 Pre-Norm + RMSNorm 조합이 흔합니다.</p></article>
+
+<article class="card along"><span class="tag y">보충 ③</span><h3>Attention 범위 줄이기</h3>
+<div class="visual"><div class="flow"><div class="node">전체 Attention<br><small>모든 쌍, n²</small></div><div class="arrow">→</div><div class="node b">슬라이딩 윈도우<br><small>앞뒤 w개만</small></div><div class="arrow">+</div><div class="node y">전역 토큰<br><small>[CLS]는 전부 봄</small></div></div></div>
+<p><b>Longformer</b>는 대부분의 토큰이 이웃만 보고, 몇 개의 전역 토큰만 전체를 봅니다. <b>Mistral 7B</b>도 슬라이딩 윈도우 Attention을 씁니다. 층을 쌓으면 간접적으로 더 먼 곳까지 닿는데, CNN의 수용 영역(receptive field)과 같은 원리입니다.</p></article>
+
+<article class="card must"><span class="tag p">필수 ④</span><h3>헤드 공유: MHA → GQA → MQA</h3>
+<div class="tablewrap"><table class="cmp"><tr><th></th><th>Q 헤드</th><th>K·V 헤드</th><th>성격</th></tr>
+<tr><td>MHA (Multi-Head)</td><td>h</td><td>h</td><td>가장 풍부, 가장 비쌈</td></tr>
+<tr><td><b>GQA (Grouped-Query)</b></td><td>h</td><td>G (1 &lt; G &lt; h)</td><td>절충. 요즘 흔한 선택</td></tr>
+<tr><td>MQA (Multi-Query)</td><td>h</td><td>1</td><td>가장 쌈, 품질 손실 가능</td></tr></table></div>
+<p>질문(Q)은 헤드마다 따로 두되, 색인과 내용(K·V)은 그룹끼리 같이 씁니다. K·V가 줄면 3장의 <b>KV 캐시</b> 메모리가 그만큼 줄어듭니다.</p></article>
+
+<article class="card must"><span class="tag p">필수 ⑤</span><h3>BERT — 인코더만 남긴 모델</h3>
+<p><b>B</b>idirectional <b>E</b>ncoder <b>R</b>epresentations from <b>T</b>ransformers (2018). 디코더를 버리고 인코더가 만든 임베딩을 투영해 예측합니다.</p>
+<div class="visual"><div class="flow"><div class="node">토큰 임베딩</div><div class="arrow">+</div><div class="node">위치 임베딩</div><div class="arrow">+</div><div class="node y">세그먼트 임베딩<br><small>문장 A / B (BERT에서 추가)</small></div><div class="arrow">→</div><div class="node v">인코더 × L</div><div class="arrow">→</div><div class="node g">[CLS] 벡터<br><small>→ 분류</small></div></div></div>
+<p>입력 처리: WordPiece 토크나이저(어휘 약 3만), 맨 앞에 <span class="tok">[CLS]</span>, 문장 사이와 끝에 <span class="tok">[SEP]</span>, 길이를 맞추는 <span class="tok x">[PAD]</span>.</p></article>
+
+<article class="card must"><span class="tag p">필수 ⑥</span><h3>사전학습 대리 과제 두 가지</h3>
+<p><b>MLM (Masked Language Modeling).</b> 입력 토큰의 15%를 예측 대상으로 뽑고, 그중</p>
+<div class="bars"><div class="bar"><span>[MASK]로</span><i style="width:80%"></i><span>80%</span></div><div class="bar"><span>무작위 단어로</span><i style="width:10%"></i><span>10%</span></div><div class="bar"><span>그대로 둠</span><i style="width:10%"></i><span>10%</span></div></div>
+<p style="margin-top:10px"><b>NSP (Next Sentence Prediction).</b> 문장 두 개를 뽑아, 절반은 실제로 이어지는 쌍, 절반은 아닌 쌍으로 만들고 "이어지는가?"를 맞힙니다. 둘 다 사람이 라벨을 붙일 필요가 없습니다.</p>
+<div class="why">10%·10%를 섞는 이유: 실제 사용 때는 [MASK]가 없으므로, 모델이 [MASK]에만 반응하지 않고 모든 위치의 표현을 잘 만들게 합니다.</div></article>
+
+<article class="card along"><span class="tag y">보충 ⑦</span><h3>미세조정과 크기</h3>
+<div class="visual"><div class="flow"><div class="node">① 사전학습<br><small>MLM + NSP</small></div><div class="arrow">→</div><div class="node v">② 미세조정<br><small>[CLS] 위에 작은 FFN</small></div><div class="arrow">→</div><div class="node g">감성 분류 등</div></div></div>
+<div class="tablewrap"><table class="cmp"><tr><th>모델</th><th>층 L</th><th>차원 H</th><th>헤드 A</th><th>파라미터</th></tr>
+<tr><td>BERT-Tiny</td><td>2</td><td>128</td><td>2</td><td>4M</td></tr><tr><td>BERT-Small</td><td>4</td><td>512</td><td>8</td><td>30M</td></tr>
+<tr><td>BERT-Base</td><td>12</td><td>768</td><td>12</td><td>110M</td></tr><tr><td>BERT-Large</td><td>24</td><td>1024</td><td>16</td><td>340M</td></tr></table></div>
+<p>요령: 이미 사전학습된 가중치를 쓰고, 앞쪽 층을 얼리면 비용 대비 성능이 좋을 때가 있으며, 라벨이 적어도 좋은 결과가 가능합니다. 용도는 문장 분류(감성)와 토큰 분류(질의응답의 답 위치)입니다.</p></article>
+
+<article class="card later"><span class="tag g">확장 ⑧</span><h3>BERT의 변형: 증류와 RoBERTa</h3>
+<p><b>증류(Distillation).</b> 큰 교사 모델의 출력 확률 분포("soft target")를 작은 학생 모델이 따라 하게 학습합니다. 정답 하나보다 "2등, 3등이 무엇인지"에 지식이 담겨 있기 때문입니다.</p>
+<div class="tablewrap"><table class="cmp"><tr><th>변형</th><th>목표</th><th>핵심</th></tr>
+<tr><td>DistilBERT</td><td>효율</td><td>12층 → 6층, 성능 약 97% 유지, 약 1.6배 빠름</td></tr>
+<tr><td>RoBERTa</td><td>성능</td><td>NSP·세그먼트 제거(영향 거의 없음), 에폭마다 다른 동적 마스킹, 데이터 16GB → 160GB, 더 오래 학습 → 같은 구조로 벤치마크 평균 약 +4%</td></tr></table></div></article>
+</div></section>
+
+<section class="section" id="math"><h2>최소 수식 해부</h2>
+<div class="grid">
+<div class="formula-box"><span class="tag y">수식 1</span><h3>사인·코사인 위치 인코딩</h3>
+<div class="equation">PE(<span class="c1">pos</span>, 2<span class="c2">i</span>) = sin( <span class="c1">pos</span> / 10000<sup>2<span class="c2">i</span>/<span class="c3">d</span></sup> )<br>PE(<span class="c1">pos</span>, 2<span class="c2">i</span>+1) = cos( <span class="c1">pos</span> / 10000<sup>2<span class="c2">i</span>/<span class="c3">d</span></sup> )</div>
+<div class="decode"><span><b>pos</b><i>포지션</i>토큰의 자리 번호 (0, 1, 2…)</span><span><b>i</b><i>아이</i>차원 쌍의 번호. 클수록 느린 파동</span><span><b>d</b><i>디</i>임베딩 차원 d<sub>model</sub></span></div>
+<div class="formula-read"><b>문장으로 읽기:</b> 자리 번호를 여러 빠르기의 파동에 넣어 읽은 값들을 나열한 것이 그 자리의 서명이다.<br><b>왜 필요한가:</b> 값을 외울 필요 없이 어떤 길이로도 만들 수 있고, 가까운 자리끼리 서명이 비슷하다.</div></div>
+
+<div class="formula-box"><span class="tag p">수식 2</span><h3>RoPE — 회전으로 넣는 위치</h3>
+<div class="equation">R(<span class="c1">m</span><span class="c2">θ</span>) = [ cos <span class="c1">m</span><span class="c2">θ</span>, −sin <span class="c1">m</span><span class="c2">θ</span> ; sin <span class="c1">m</span><span class="c2">θ</span>, cos <span class="c1">m</span><span class="c2">θ</span> ]<br>(R(<span class="c1">m</span><span class="c2">θ</span>) q) · (R(<span class="c3">n</span><span class="c2">θ</span>) k) = q · R((<span class="c3">n</span>−<span class="c1">m</span>)<span class="c2">θ</span>) k</div>
+<div class="decode"><span><b>m, n</b><i>엠, 엔</i>질문 토큰과 색인 토큰의 자리</span><span><b>θ</b><i>세타</i>한 칸당 회전 각도 (차원 쌍마다 다름)</span><span><b>R(·)</b><i>알</i>그 각도만큼 돌리는 2×2 회전 행렬</span></div>
+<div class="formula-read"><b>문장으로 읽기:</b> 둘을 각자 자리만큼 돌린 뒤 내적하면, 결과는 두 자리의 차이(n−m)에만 달려 있다.<br><b>숫자 예제:</b> q=k=[1,0], θ=30°. 자리 (2,5)면 내적 = cos(90°) = 0. 자리 (10,13)도 cos(90°) = 0. 자리 (2,3)이면 cos(30°) ≈ 0.87. 차원이 2보다 크면 2개씩 묶어 각각 돌린다.</div></div>
+
+<div class="formula-box"><span class="tag y">수식 3</span><h3>LayerNorm과 RMSNorm</h3>
+<div class="equation">LN(x) = <span class="c3">γ</span> · (x − <span class="c1">μ</span>) / <span class="c2">σ</span> + <span class="c3">β</span><br>RMSNorm(x) = <span class="c3">γ</span> · x / √( (1/d) Σ x<sub>i</sub>² )</div>
+<div class="decode"><span><b>μ</b><i>뮤</i>한 토큰 벡터 안 값들의 평균</span><span><b>σ</b><i>시그마</i>그 값들의 표준편차</span><span><b>γ, β</b><i>감마, 베타</i>학습되는 배율과 이동</span></div>
+<div class="formula-read"><b>문장으로 읽기:</b> 한 토큰의 숫자들을 평균 0, 퍼짐 1로 맞춘 뒤 모델이 원하는 만큼 다시 늘리고 옮긴다. RMSNorm은 평균 빼기를 생략한다.</div></div>
+
+<div class="formula-box"><span class="tag g">수식 4</span><h3>MLM이 실제로 건드리는 양</h3>
+<div class="equation">1,000 토큰 × 15% = 150개 예측<br>150 × (80%, 10%, 10%) = 120 [MASK], 15 무작위, 15 그대로</div>
+<div class="formula-read"><b>문장으로 읽기:</b> 한 번에 입력의 15%에서만 학습 신호가 나온다. 그래서 MLM은 다음 토큰 예측(모든 위치에서 신호)보다 같은 글에서 얻는 신호가 적고, RoBERTa처럼 더 많이·더 오래 학습하는 것이 효과적이었다.</div></div>
+</div></section>
+
+<section class="section" id="cases"><h2>실제 AI 활용 사례</h2>
+<div class="grid">
+<article class="card usecase"><div class="icon">😊</div><div><h3>BERT 감성 분류</h3><dl>
+<dt>문제</dt><dd>리뷰가 긍정인지 부정인지</dd>
+<dt>입력</dt><dd>"This teddy bear is SO CUTE!" → 소문자화 → 토큰화 → [CLS] … [SEP] [PAD]…</dd>
+<dt>배우는 것</dt><dd>사전학습된 인코더 위의 작은 분류층(과 필요하면 인코더 일부)</dd>
+<dt>출력</dt><dd>[CLS] 벡터에서 나온 긍정 확률</dd>
+<dt>이 장의 개념</dt><dd>토큰 + 위치 + 세그먼트 임베딩, 양방향 인코더, 미세조정</dd>
+<dt>한계</dt><dd>문맥 길이 제한(보통 512), 지연·비용에 민감한 서비스에는 무거움</dd></dl></div></article>
+<article class="card usecase"><div class="icon">🔎</div><div><h3>검색·추천용 임베딩</h3><dl>
+<dt>문제</dt><dd>질문과 뜻이 비슷한 문서 찾기</dd>
+<dt>입력</dt><dd>질문과 문서 조각</dd>
+<dt>배우는 것</dt><dd>뜻이 가까운 글이 가까운 벡터가 되도록 하는 인코더</dd>
+<dt>출력</dt><dd>글마다 벡터 하나, 벡터 간 유사도</dd>
+<dt>이 장의 개념</dt><dd>인코더 전용 모델. 슬라이드 표현대로 "인코딩에 관한 것이면 산업 전반에서 널리 사용"</dd>
+<dt>한계</dt><dd>글 생성은 못함. 생성이 필요하면 디코더 모델과 짝지어야 함 (<a href="ch7.html">7장 RAG</a>)</dd></dl></div></article>
+</div></section>
+
+<section class="section" id="myths"><h2>자주 하는 오해</h2>
+<div class="myth"><div class="stop">❌ "양방향이라는 말은 순방향 모델과 역방향 모델을 이어 붙였다는 뜻이다."</div><div class="ok">✅ 그것은 BERT 직전의 ELMo 방식입니다. BERT는 한 Attention 층 안에서 각 토큰이 왼쪽과 오른쪽을 <b>동시에</b> 봅니다.</div></div>
+<div class="myth"><div class="stop">❌ "RoPE는 임베딩에 위치 벡터를 더한다."</div><div class="ok">✅ 더하지 않습니다. Attention을 계산할 때 Q와 K를 자리만큼 회전시킬 뿐이고, V와 임베딩은 그대로입니다.</div></div>
+<div class="myth"><div class="stop">❌ "NSP는 BERT 성능의 핵심이다."</div><div class="ok">✅ RoBERTa와 DistilBERT는 NSP를 빼도 거의 영향이 없음을 보였습니다. 효과가 컸던 것은 더 많은 데이터와 더 긴 학습이었습니다.</div></div>
+<div class="myth"><div class="stop">❌ "디코더 전용이 주류이니 BERT는 쓸모가 없다."</div><div class="ok">✅ 분류, 검색 임베딩, 재순위화, 보상 모델(<a href="ch5.html">5장</a>)처럼 "글을 숫자로 요약"하는 일에는 지금도 인코더가 쓰입니다.</div></div>
+</section>
+
+<section class="section quiz" id="quiz"><h2>확인 퀴즈 3문항</h2><p class="lead">답을 열기 전에 소리 내어 답해 봅니다.</p>
+<details><summary>Q1. 학습 때 본 문장보다 훨씬 긴 문장이 들어왔을 때, 학습된 절대 위치 임베딩과 RoPE는 각각 어떤 상황에 놓일까?</summary><div class="answer">학습된 절대 위치는 본 적 없는 자리 번호의 벡터가 아예 없어 재학습이 필요합니다. RoPE는 자리 차이만큼의 회전으로 계산하므로 새 자리에도 같은 규칙이 적용됩니다(다만 본 적 없는 먼 거리의 품질까지 보장하는 것은 아닙니다).</div></details>
+<details><summary>Q2. MLM에서 뽑힌 토큰을 100% [MASK]로 바꾸지 않고 일부를 무작위 단어로 바꾸거나 그대로 두는 이유는?</summary><div class="answer">미세조정과 실제 사용 때는 [MASK] 토큰이 나오지 않습니다. 항상 [MASK]만 보면 모델이 그 토큰이 있을 때만 예측하는 습관이 들기 때문에, 어떤 토큰이든 문맥으로 점검하도록 섞습니다.</div></details>
+<details><summary>Q3. 헤드가 8개인 모델을 MHA에서 K·V 그룹이 2개인 GQA로 바꾸면 무엇이 줄고 무엇이 그대로일까?</summary><div class="answer">K와 V 헤드가 8 → 2로 줄어 그 가중치와, 생성 중 저장해 두는 K·V(캐시)가 약 1/4이 됩니다. Q 헤드는 8개 그대로여서 "질문의 다양성"은 유지됩니다.</div></details>
+</section>
+
+<section class="section" id="links"><h2>선수지식 · 관련 항목 · 다음 학습</h2>
+<div class="links">
+<a class="card must" href="ch1.html"><span class="tag p">선수지식</span><h3>1장 · Transformer의 탄생</h3><p>Q·K·V, 인코더·디코더, 위치 인코딩이 필요한 이유</p></a>
+<a class="card along" href="../week2.html"><span class="tag y">관련 항목</span><h3>수업 자료 2차시</h3><p>같은 강의의 수업·시험 관점 정리</p></a>
+<a class="card later" href="ch3.html"><span class="tag g">다음 학습</span><h3>3장 · LLM은 어떻게 답을 만드나</h3><p>디코더 전용 모델이 토큰을 고르는 방법</p></a>
+</div></section>
+
+<section class="section"><h2>출처</h2>
+<ul class="sources">
+<li>Amidi &amp; Amidi, <a href="https://cme295.stanford.edu/slides/fall25-cme295-lecture2.pdf">CME295 Lecture 2 슬라이드</a> (Fall 2025) — 확인일 2026-11-14</li>
+<li>Su et al., <a href="https://arxiv.org/abs/2104.09864">RoFormer: Enhanced Transformer with Rotary Position Embedding</a>, 2021</li>
+<li>Press et al., <a href="https://arxiv.org/abs/2108.12409">Train Short, Test Long (ALiBi)</a>, 2021 · Xiong et al., <a href="https://arxiv.org/abs/2002.04745">On Layer Normalization in the Transformer Architecture</a>, 2020 · Zhang &amp; Sennrich, <a href="https://arxiv.org/abs/1910.07467">RMSNorm</a>, 2019</li>
+<li>Beltagy et al., <a href="https://arxiv.org/abs/2004.05150">Longformer</a>, 2020 · Ainslie et al., <a href="https://arxiv.org/abs/2305.13245">GQA</a>, 2023</li>
+<li>Devlin et al., <a href="https://arxiv.org/abs/1810.04805">BERT</a>, 2018 · Sanh et al., <a href="https://arxiv.org/abs/1910.01108">DistilBERT</a>, 2019 · Liu et al., <a href="https://arxiv.org/abs/1907.11692">RoBERTa</a>, 2019</li>
+</ul>
+<div class="meta">id: transformer-llm-master-ch2 · area: LLM · level: 기초 · prerequisites: transformer-llm-master-ch1 · next: transformer-llm-master-ch3 · related: week2 · author: Claude · reviewer: 미지정 · status: draft · updated: 2026-11-14<br>수식은 슬라이드가 인용한 원 논문의 표준 표기입니다. RoPE 숫자 예제의 값은 설명을 위해 만든 것입니다.</div>
+</section>
+
+<label class="done"><input type="checkbox" data-chapter="ch2"> 이 장을 이해했다 (전체 지도에 표시됩니다)</label>
+<div class="pager"><a href="ch1.html"><small>← 이전</small>1장 · Transformer의 탄생</a><a class="next" href="ch3.html"><small>다음 →</small>3장 · LLM은 어떻게 답을 만드나</a></div>
+<div class="footer">AI Study · 트랜스포머와 거대언어모델 · 전문가 마스터 2장</div>
+</main>
+<script>
+(function(){
+  var cv=document.getElementById('pe'),ctx=cv.getContext('2d'),P=40,D=64,slider=document.getElementById('pos'),pv=document.getElementById('pv');
+  function pe(p,j){var i=Math.floor(j/2),a=p/Math.pow(10000,2*i/D);return j%2?Math.cos(a):Math.sin(a)}
+  function color(v){var t=(v+1)/2;return 'rgb('+Math.round(115+(239-115)*t)+','+Math.round(87+(103-87)*t)+','+Math.round(232+(151-232)*t)+')'}
+  function draw(){
+    var W=cv.width,H=cv.height,hm=140,cw=W/D,ch=hm/P,ref=+slider.value;pv.textContent=ref;
+    ctx.clearRect(0,0,W,H);
+    for(var p=0;p<P;p++)for(var j=0;j<D;j++){ctx.fillStyle=color(pe(p,j));ctx.fillRect(j*cw,p*ch,cw+.5,ch+.5)}
+    ctx.strokeStyle='#202038';ctx.lineWidth=2;ctx.strokeRect(0,ref*ch,W,ch);
+    var bw=W/P;
+    var sim=[],mn=1;for(var q=0;q<P;q++){var s=0;for(var k=0;k<D;k++)s+=pe(ref,k)*pe(q,k);s=s/(D/2);sim.push(s);if(s<mn)mn=s}
+    for(q=0;q<P;q++){var h=4+(sim[q]-mn)/(1-mn+1e-9)*48;ctx.fillStyle=q===ref?'#ef6797':'#7357e8';ctx.fillRect(q*bw+1,H-h,bw-2,h)}
+  }
+  slider.addEventListener('input',draw);draw();
+})();
+</script>
+<script src="master.js"></script><script src="../../../assets/inline-terms.js" defer></script></body></html>

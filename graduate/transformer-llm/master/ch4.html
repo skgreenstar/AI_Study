@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="4장 LLM 학습 — 사전학습과 스케일링 법칙, 분산 학습과 FlashAttention, 혼합 정밀도, SFT, LoRA와 QLoRA">
+<title>4장 · LLM 학습 | 전문가 마스터</title>
+<link rel="stylesheet" href="master.css">
+<link rel="stylesheet" href="../../../assets/inline-terms.css">
+</head>
+<body><main class="wrap">
+<div class="topbar"><a href="index.html">← 전문가 마스터 전체 지도</a>
+<nav class="tabs" aria-label="보기 전환"><a href="../index.html">📚 수업 자료</a><a class="on" href="index.html">🎓 전문가 마스터</a></nav></div>
+
+<header class="hero"><span class="pill">4장 · CME295 LECTURE 4</span>
+<h1>LLM 학습</h1>
+<p>3장의 확률을 만들어 내는 가중치는 어디서 올까요. <b>먼저 언어 자체를 배우고(사전학습), 그다음 원하는 행동을 배웁니다(미세조정).</b> 이 과정이 왜 메모리 싸움인지, 작은 GPU로도 튜닝할 수 있게 한 LoRA까지 봅니다.</p>
+<div class="goals"><div><b>이 장을 마치면</b>사전학습과 SFT의 목적·데이터 차이를 말할 수 있다</div><div><b>이 장을 마치면</b>학습 때 GPU 메모리를 차지하는 네 가지를 댈 수 있다</div><div><b>이 장을 마치면</b>LoRA가 학습 파라미터를 얼마나 줄이는지 계산할 수 있다</div></div></header>
+<nav class="route"><a href="#big">큰 그림</a><a href="#analogy">비유</a><a href="#concepts">핵심 개념</a><a href="#math">수식 해부</a><a href="#cases">활용 사례</a><a href="#myths">오해</a><a href="#quiz">퀴즈</a><a href="#links">연결</a></nav>
+
+<section class="section" id="big"><h2>한눈에 보는 큰 그림</h2>
+<p class="lead">전통적 ML은 과제마다 모델을 처음부터 학습했습니다. LLM은 한 번 크게 학습한 모델을 여러 과제에 맞춰 조정합니다(전이 학습).</p>
+<div class="big-picture"><div class="flow">
+<div class="node">초기화된 모델<br><small>무작위 가중치</small></div><div class="arrow">→</div>
+<div class="node p">① Pre-training<br><small>수조 토큰, 다음 토큰 맞히기</small></div><div class="arrow">→</div>
+<div class="node">언어·코드의<br>"기초 지식"</div><div class="arrow">→</div>
+<div class="node y">② Fine-tuning (SFT)<br><small>수천~수백만 예시</small></div><div class="arrow">→</div>
+<div class="node">과제에 맞는 행동<br><small>도움 되는 비서</small></div><div class="arrow">→</div>
+<div class="node g">③ 선호 튜닝<br><small><a href="ch5.html" style="color:inherit">5장</a></small></div></div>
+<p>사전학습만 한 모델에 "곰 인형을 세탁기에 넣어도 돼?"라고 물으면 곰 인형의 재질을 줄줄 이어 씁니다. 글을 <b>이어 쓰도록</b> 배웠기 때문입니다. SFT를 거치면 "아니요, 손상될 수 있어요. 손세탁하세요."라고 <b>대답</b>합니다.</p></div></section>
+
+<section class="section" id="analogy"><h2>생활 비유</h2>
+<div class="grid">
+<div class="card"><span class="tag p">사전학습과 미세조정</span><h3>도서관 통독 → 직무 교육</h3>
+<p><b>사전학습</b>은 도서관의 책을 전부 읽으며 "다음에 올 말"을 맞히는 훈련입니다. 문법, 상식, 코드 관용구가 그 부산물로 쌓입니다. <b>SFT</b>는 입사 후 직무 교육입니다. "질문을 받으면 이렇게 답한다"는 예시를 보고 태도를 익힙니다.</p>
+<div class="note"><b>한계.</b> 사람은 읽은 것을 이해하고 출처를 기억하지만, 모델은 통계적 패턴을 가중치에 녹일 뿐입니다. 그래서 지식을 한 줄만 고치기 어렵고(편집 곤란), 학습 시점 이후는 모릅니다(지식 컷오프).</div></div>
+<div class="card"><span class="tag p">LoRA</span><h3>교과서에 붙이는 포스트잇</h3>
+<p>두꺼운 교과서(원래 가중치 W<sub>0</sub>)를 다시 인쇄하는 대신, 얇은 포스트잇(BA)만 써서 붙입니다. 과목이 바뀌면 포스트잇 묶음만 바꿔 끼웁니다. 교과서는 한 권, 포스트잇 묶음은 과제마다 하나.</p>
+<div class="note"><b>한계.</b> 포스트잇에 적을 수 있는 변화는 "낮은 랭크"로 제한됩니다. 원래 모델과 아주 다른 능력을 새로 넣기에는 부족할 수 있습니다.</div></div>
+</div></section>
+
+<section class="section" id="concepts"><h2>핵심 개념 카드</h2>
+<div class="grid">
+
+<article class="card must"><span class="tag p">필수 ①</span><h3>Pre-training — 무엇을, 얼마나</h3>
+<p><b>목표.</b> 언어와 코드의 패턴 학습. <b>목적 함수.</b> 다음 토큰 예측. <b>데이터.</b> 웹 수집(Common Crawl, Wikipedia), 코드(GitHub, StackOverflow), 다국어.</p>
+<div class="tablewrap"><table class="cmp"><tr><th>모델</th><th>사전학습 토큰 수</th><th>SFT 예시 수</th></tr>
+<tr><td>GPT-3 (2020)</td><td>3,000억</td><td>약 1.3만</td></tr><tr><td>LLaMA 3 (2024)</td><td>15조</td><td>약 1,000만</td></tr></table></div>
+<div class="stop"><b>과제.</b> 비용(최소 수백만 달러, 시간, 전력) · 지식 컷오프 · 지식 편집의 어려움 · 학습 데이터를 그대로 뱉는 "표절" 위험.</div></article>
+
+<article class="card along"><span class="tag y">보충 ②</span><h3>스케일링 법칙과 Chinchilla</h3>
+<p><b>FLOPs</b>(부동소수점 연산 <b>횟수</b>, 일의 양)와 <b>FLOP/s</b>(초당 연산 수, 하드웨어 속도)를 구분합니다.</p>
+<div class="visual"><div class="flow"><div class="node">연산 예산 ↑</div><div class="node">데이터 ↑</div><div class="node">파라미터 ↑</div><div class="arrow">→</div><div class="node g">손실 ↓<br><small>(예측 가능한 곡선)</small></div></div></div>
+<p>Kaplan et al.(2020): 세 가지를 키우면 성능이 꾸준히 좋아지고, 큰 모델일수록 같은 데이터에서 더 많이 배웁니다(표본 효율). Hoffmann et al.(2022, <b>Chinchilla</b>): 연산 예산이 정해져 있으면 모델 크기와 데이터를 함께 키워야 하며, 당시 큰 모델들은 크기에 비해 데이터가 부족했습니다(경험적으로 파라미터 1개당 약 20토큰).</p></article>
+
+<article class="card must"><span class="tag p">필수 ③</span><h3>학습 한 스텝과 메모리</h3>
+<div class="visual"><div class="flow"><div class="node v">순전파<br><small>활성값 저장<br>→ 손실</small></div><div class="arrow">→</div><div class="node v">역전파<br><small>기울기 계산</small></div><div class="arrow">→</div><div class="node v">가중치 갱신<br><small>Adam 상태 사용</small></div></div></div>
+<div class="tablewrap"><table class="cmp"><tr><th>메모리를 차지하는 것</th><th>크기를 정하는 것</th></tr>
+<tr><td>파라미터</td><td>모델 크기 (수십억~수천억)</td></tr><tr><td>활성값</td><td>모델 크기 × 배치 크기 × 문맥 길이</td></tr><tr><td>기울기</td><td>파라미터와 같은 크기</td></tr><tr><td>옵티마이저 상태</td><td>Adam은 파라미터의 2배 (1차·2차 모멘트)</td></tr></table></div>
+<div class="why">GPU 한 장의 메모리는 수십 GB입니다. <b>병목은 연산이 아니라 메모리</b>이고, 아래 기법들은 전부 메모리를 다룹니다.</div></article>
+
+<article class="card must"><span class="tag p">필수 ④</span><h3>여러 GPU에 나누기</h3>
+<p><b>데이터 병렬.</b> 모델을 GPU마다 복제하고 배치를 나눕니다. 문제는 모든 GPU가 같은 것을 중복 보관한다는 점. <b>ZeRO</b>(Zero Redundancy Optimization)는 그 중복을 쪼개 나눠 갖습니다.</p>
+<div class="tablewrap"><table class="cmp"><tr><th>단계</th><th>나눠 갖는 것</th></tr><tr><td>ZeRO-1</td><td>옵티마이저 상태</td></tr><tr><td>ZeRO-2</td><td>+ 기울기</td></tr><tr><td>ZeRO-3</td><td>+ 파라미터</td></tr></table></div>
+<p><b>모델 병렬.</b> 모델 계산 자체를 여러 장치로 나눕니다. 텐서(TP)·파이프라인(PP)·시퀀스(SP)·컨텍스트(CP)·전문가(EP) 병렬.</p></article>
+
+<article class="card along"><span class="tag y">보충 ⑤</span><h3>FlashAttention — GPU 메모리 구조를 이용</h3>
+<div class="visual"><div class="flow"><div class="node r">HBM<br><small>크고 느림</small></div><div class="arrow">⇄</div><div class="node g">SRAM<br><small>작고 빠름</small></div><div class="arrow">⇄</div><div class="node">연산 장치</div></div></div>
+<p>일반 Attention은 큰 중간 행렬(점수 S, 확률 P)을 HBM에 썼다 읽었다 합니다. FlashAttention은 ① Q·K·V를 <b>블록(타일)</b>으로 잘라 SRAM에서 끝까지 계산해 결과만 HBM에 쓰고, ② 역전파 때는 중간값을 저장하지 않고 <b>다시 계산</b>합니다.</p>
+<div class="ok">연산 횟수(FLOPs)는 오히려 늘지만 실행 시간은 줄어듭니다. 결과는 근사가 아니라 <b>정확히 같습니다</b>.</div></article>
+
+<article class="card along"><span class="tag y">보충 ⑥</span><h3>숫자 정밀도와 혼합 정밀도 학습</h3>
+<div class="tablewrap"><table class="cmp"><tr><th>형식</th><th>부호</th><th>지수</th><th>가수</th></tr>
+<tr><td>FP16</td><td>1</td><td>5</td><td>10</td></tr><tr><td>BFLOAT16</td><td>1</td><td>8</td><td>7</td></tr><tr><td>FP32</td><td>1</td><td>8</td><td>23</td></tr><tr><td>FP64</td><td>1</td><td>11</td><td>52</td></tr></table></div>
+<p>정밀도가 낮을수록 빠르고 메모리가 적게 듭니다. <b>혼합 정밀도</b>: 순전파 활성값과 역전파 기울기는 낮은 정밀도로, 가중치 자체는 높은 정밀도로 유지합니다. BFLOAT16은 FP32와 지수 비트가 같아 표현 범위가 넓습니다.</p></article>
+
+<article class="card must"><span class="tag p">필수 ⑦</span><h3>SFT · Instruction tuning</h3>
+<p><b>SFT</b>(Supervised Fine-Tuning): 원하는 행동의 입력·출력 쌍을 모아, 입력이 주어졌을 때의 다음 토큰 예측으로 학습합니다. 지시를 따르는 데이터로 하면 <b>instruction tuning</b>. 데이터는 비서 대화, 합성 지시문, 수학·추론·코드, 안전 정렬 등.</p>
+<div class="stop"><b>과제.</b> 아주 고품질 데이터 필요 · 프롬프트 분포에 민감 · 일반화 · 평가가 어려움 · 연산 비용.</div>
+<div class="why">벤치마크: 지식 MMLU, 기초 추론 ARC, 수학 GSM8K, 코드 HumanEval. 사용자 A/B 투표로 "느낌"에 숫자를 매기는 Chatbot Arena도 있지만 노출 불균형, 조작 가능성, 사실성 판단의 한계가 있습니다. 평가는 <a href="ch8.html">8장</a>에서.</div></article>
+
+<article class="card must"><span class="tag p">필수 ⑧</span><h3>LoRA · QLoRA</h3>
+<div class="visual"><div class="flow"><div class="node x" style="background:#eee">W<sub>0</sub> ❄<br><small>d×k, 고정</small></div><div class="arrow">+</div><div class="node p">B 🔥<br><small>d×r</small></div><div class="arrow">×</div><div class="node p">A 🔥<br><small>r×k</small></div></div></div>
+<p><b>LoRA</b>: 가중치 변화량을 두 개의 낮은 랭크 행렬의 곱으로 근사합니다. 일부 파라미터만 학습해도 비슷한 성능. B·A만 바꿔 끼우면 과제가 바뀝니다.</p>
+<p><b>최근 지침</b>(Schulman et al., 2025): 원 논문은 Attention 행렬에 적용했지만 지금은 FFN(MLP) 쪽이 가장 중요한 위치로 권장됩니다. 전체 미세조정보다 높은 학습률이 필요하고, 큰 배치에서는 불리합니다.</p>
+<p><b>QLoRA</b>: 고정된 W<sub>0</sub>를 4비트로 양자화해 저장하고, B·A는 온전한 정밀도로 둡니다. 정규분포 분위수에 맞춘 NF4와 이중 양자화를 씁니다. LLaMA 65B 기준 미세조정 VRAM 약 16배 절감, 이중 양자화로 약 6% 추가 절감.</p></article>
+</div></section>
+
+<section class="section" id="math"><h2>최소 수식 해부</h2>
+<div class="grid">
+<div class="formula-box"><span class="tag p">수식 1</span><h3>다음 토큰 예측 손실</h3>
+<div class="equation">L = − Σ<sub><span class="c1">t</span></sub> log <span class="c2">P<sub>θ</sub></span>( <span class="c3">x<sub>t</sub></span> | x<sub>1</sub>, …, x<sub>t−1</sub> )</div>
+<div class="decode"><span><b>x<sub>t</sub></b><i>엑스 티</i>t번째 실제 토큰(정답)</span><span><b>P<sub>θ</sub></b><i>피 세타</i>가중치 θ인 모델이 준 확률</span><span><b>− log</b><i>마이너스 로그</i>확률이 낮을수록 큰 벌점</span></div>
+<div class="formula-read"><b>문장으로 읽기:</b> 모든 자리에서, 앞 토큰들을 보고 실제 다음 토큰에 준 확률이 낮을수록 벌점을 준다. 사전학습과 SFT 모두 <b>같은 손실</b>이고 데이터만 다르다.<br><b>숫자:</b> 정답에 0.5를 주면 −log 0.5 ≈ 0.69, 0.9를 주면 ≈ 0.11.</div></div>
+
+<div class="formula-box"><span class="tag p">수식 2</span><h3>LoRA</h3>
+<div class="equation">W = <span class="c2">W<sub>0</sub></span> + <span class="c1">B</span><span class="c1">A</span> , &nbsp; B ∈ ℝ<sup>d×<span class="c4">r</span></sup>, A ∈ ℝ<sup><span class="c4">r</span>×k</sup>, &nbsp; <span class="c4">r</span> ≪ min(d,k)</div>
+<div class="decode"><span><b>W<sub>0</sub></b><i>더블유 제로</i>사전학습된 가중치. 고정</span><span><b>B, A</b><i>비, 에이</i>학습되는 두 작은 행렬</span><span><b>r</b><i>알 (랭크)</i>포스트잇의 두께. 보통 한 자리~두 자리 수</span></div>
+<div class="formula-read"><b>숫자 예제.</b> d = k = 4,096인 행렬 하나.<br>전체 학습: 4,096 × 4,096 = <b>16,777,216</b>개<br>LoRA r = 8: 8 × (4,096 + 4,096) = <b>65,536</b>개 → 약 <b>0.39%</b><br><b>왜 가능한가:</b> 미세조정으로 생기는 변화는 낮은 차원에 몰려 있다는 가설.</div></div>
+
+<div class="formula-box"><span class="tag y">수식 3</span><h3>Adam이 메모리를 더 쓰는 이유</h3>
+<div class="equation"><span class="c1">m</span> ← β<sub>1</sub><span class="c1">m</span> + (1−β<sub>1</sub>) g<br><span class="c2">v</span> ← β<sub>2</sub><span class="c2">v</span> + (1−β<sub>2</sub>) g²<br>θ ← θ − <span class="c4">η</span> · m̂ / (√v̂ + ε)</div>
+<div class="decode"><span><b>g</b><i>지</i>이번 스텝의 기울기</span><span><b>m, v</b><i>엠, 브이</i>기울기와 기울기 제곱의 이동 평균</span><span><b>η</b><i>에타</i>학습률</span></div>
+<div class="formula-read"><b>문장으로 읽기:</b> 최근 기울기의 평균 방향으로, 최근 기울기 크기에 맞춘 보폭으로 움직인다. m과 v를 파라미터마다 하나씩 들고 있어야 하므로 <b>옵티마이저 상태 = 파라미터의 2배</b>. (m̂, v̂의 편향 보정식은 생략.)</div></div>
+
+<div class="formula-box"><span class="tag g">수식 4</span><h3>정밀도와 메모리 어림</h3>
+<div class="equation">메모리 ≈ 파라미터 수 × 비트 수 / 8</div>
+<div class="tablewrap"><table class="cmp"><tr><th>70억 파라미터</th><th>가중치만</th></tr><tr><td>FP32 (4바이트)</td><td>28 GB</td></tr><tr><td>FP16 / BF16 (2바이트)</td><td>14 GB</td></tr><tr><td>4비트 양자화</td><td>3.5 GB</td></tr></table></div>
+<div class="formula-read"><b>문장으로 읽기:</b> 같은 모델도 숫자 하나를 몇 비트로 적느냐에 따라 필요한 메모리가 8배까지 달라진다. 학습 때는 여기에 기울기·옵티마이저 상태·활성값이 더해진다.</div></div>
+</div></section>
+
+<section class="section" id="cases"><h2>실제 AI 활용 사례</h2>
+<div class="grid">
+<article class="card usecase"><div class="icon">🏢</div><div><h3>사내 문서 말투로 답하는 비서</h3><dl>
+<dt>문제</dt><dd>범용 모델이 회사 용어·양식을 모름</dd>
+<dt>입력</dt><dd>질문·모범 답변 쌍 수천 건</dd>
+<dt>배우는 것</dt><dd>LoRA의 B·A (원 모델은 고정)</dd>
+<dt>출력</dt><dd>수십 MB짜리 어댑터 파일</dd>
+<dt>이 장의 개념</dt><dd>SFT + LoRA. 부서별 어댑터를 바꿔 끼워 한 모델로 여러 과제</dd>
+<dt>한계</dt><dd>데이터 품질과 프롬프트 분포에 민감. 자주 바뀌는 사실은 튜닝보다 검색(<a href="ch7.html">7장</a>)이 적합</dd></dl></div></article>
+<article class="card usecase"><div class="icon">💻</div><div><h3>GPU 한 장으로 미세조정</h3><dl>
+<dt>문제</dt><dd>큰 모델은 가중치만으로 메모리 초과</dd>
+<dt>입력</dt><dd>공개 사전학습 모델 + 과제 데이터</dd>
+<dt>배우는 것</dt><dd>온전한 정밀도의 LoRA 행렬</dd>
+<dt>출력</dt><dd>4비트 기반 모델 + 어댑터</dd>
+<dt>이 장의 개념</dt><dd>QLoRA: 고정 가중치는 NF4로 저장, 계산은 온전한 정밀도</dd>
+<dt>한계</dt><dd>양자화 오차. 품질과 메모리의 맞교환이므로 과제에서 직접 확인 필요</dd></dl></div></article>
+</div></section>
+
+<section class="section" id="myths"><h2>자주 하는 오해</h2>
+<div class="myth"><div class="stop">❌ "SFT는 사전학습과 다른 특별한 손실 함수를 쓴다."</div><div class="ok">✅ 같은 다음 토큰 예측입니다. 바뀌는 것은 데이터(지시 → 응답)와 규모입니다.</div></div>
+<div class="myth"><div class="stop">❌ "FLOPs가 적어야 빠르다."</div><div class="ok">✅ FlashAttention은 연산을 더 하고도 빠릅니다. 실제 시간은 메모리를 오가는 비용이 좌우합니다.</div></div>
+<div class="myth"><div class="stop">❌ "LoRA는 모델을 작게 만든다."</div><div class="ok">✅ 추론 때 모델 크기는 그대로입니다(W<sub>0</sub> + BA). 줄어드는 것은 <b>학습할</b> 파라미터와 저장할 어댑터 크기입니다. 모델 자체를 줄이는 것은 양자화·증류입니다.</div></div>
+<div class="myth"><div class="stop">❌ "사전학습 데이터가 많으니 최신 정보도 안다."</div><div class="ok">✅ 학습 시점까지만 압니다(지식 컷오프). 이후 정보는 외부에서 넣어 줘야 합니다.</div></div>
+</section>
+
+<section class="section quiz" id="quiz"><h2>확인 퀴즈 3문항</h2><p class="lead">답을 열기 전에 소리 내어 답해 봅니다.</p>
+<details><summary>Q1. 사전학습만 마친 모델에 질문을 하면 왜 엉뚱하게 글을 이어 쓸까? 무엇을 해야 답하게 될까?</summary><div class="answer">사전학습의 목표가 "주어진 글 다음에 올 법한 토큰"이기 때문에 질문도 이어 쓸 글의 앞부분으로 취급합니다. 지시·응답 쌍으로 SFT(instruction tuning)를 하면 질문 뒤에 답이 오는 패턴을 배웁니다.</div></details>
+<details><summary>Q2. d = k = 1,000인 가중치 행렬에 r = 4인 LoRA를 붙이면 학습 파라미터는 원래의 몇 %일까?</summary><div class="answer">원래 1,000 × 1,000 = 1,000,000개. LoRA는 4 × (1,000 + 1,000) = 8,000개로 0.8%입니다.</div></details>
+<details><summary>Q3. ZeRO-1, 2, 3으로 갈수록 무엇이 더 나뉘고, 그 대가는 무엇일까?</summary><div class="answer">옵티마이저 상태 → 기울기 → 파라미터 순으로 GPU 간에 나눠 갖습니다. 중복 보관이 줄어 메모리는 아끼지만, 필요한 조각을 다른 GPU에서 받아 와야 해서 통신이 늘어납니다.</div></details>
+</section>
+
+<section class="section" id="links"><h2>선수지식 · 관련 항목 · 다음 학습</h2>
+<div class="links">
+<a class="card must" href="ch3.html"><span class="tag p">선수지식</span><h3>3장 · LLM의 생성</h3><p>다음 토큰 확률, 디코더 전용 구조</p></a>
+<a class="card along" href="../week4.html"><span class="tag y">관련 항목</span><h3>수업 자료 4차시</h3><p>같은 강의의 수업·시험 관점 정리</p></a>
+<a class="card later" href="ch5.html"><span class="tag g">다음 학습</span><h3>5장 · 선호 튜닝</h3><p>"더 나은 답"을 가르치는 법</p></a>
+</div></section>
+
+<section class="section"><h2>출처</h2>
+<ul class="sources">
+<li>Amidi &amp; Amidi, <a href="https://cme295.stanford.edu/slides/fall25-cme295-lecture4.pdf">CME295 Lecture 4 슬라이드</a> (Fall 2025) — 확인일 2026-11-14</li>
+<li>Kaplan et al., <a href="https://arxiv.org/abs/2001.08361">Scaling Laws for Neural Language Models</a>, 2020 · Hoffmann et al., <a href="https://arxiv.org/abs/2203.15556">Training Compute-Optimal LLMs (Chinchilla)</a>, 2022</li>
+<li>Rajbhandari et al., <a href="https://arxiv.org/abs/1910.02054">ZeRO</a>, 2019 · Dao et al., <a href="https://arxiv.org/abs/2205.14135">FlashAttention</a>, 2022 · Micikevicius et al., <a href="https://arxiv.org/abs/1710.03740">Mixed Precision Training</a>, 2017</li>
+<li>Wei et al., <a href="https://arxiv.org/abs/2109.01652">Finetuned Language Models Are Zero-Shot Learners</a>, 2022 · Meta, <a href="https://arxiv.org/abs/2407.21783">The Llama 3 Herd of Models</a>, 2024</li>
+<li>Hu et al., <a href="https://arxiv.org/abs/2106.09685">LoRA</a>, 2021 · Dettmers et al., <a href="https://arxiv.org/abs/2305.14314">QLoRA</a>, 2023 · Schulman et al., LoRA Without Regret, 2025</li>
+</ul>
+<div class="meta">id: transformer-llm-master-ch4 · area: LLM · level: 기초 · prerequisites: transformer-llm-master-ch3 · next: transformer-llm-master-ch5 · related: week4 · author: Claude · reviewer: 미지정 · status: draft · updated: 2026-11-14<br>토큰·예시 수와 절감률은 슬라이드에 인용된 수치입니다. "파라미터당 약 20토큰"은 Chinchilla 논문의 경험적 결과이고, 메모리 어림 표는 계산 예시입니다.</div>
+</section>
+
+<label class="done"><input type="checkbox" data-chapter="ch4"> 이 장을 이해했다 (전체 지도에 표시됩니다)</label>
+<div class="pager"><a href="ch3.html"><small>← 이전</small>3장 · LLM은 어떻게 답을 만드나</a><a class="next" href="ch5.html"><small>다음 →</small>5장 · 선호 튜닝</a></div>
+<div class="footer">AI Study · 트랜스포머와 거대언어모델 · 전문가 마스터 4장</div>
+</main><script src="master.js"></script><script src="../../../assets/inline-terms.js" defer></script></body></html>

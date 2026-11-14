@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="1장 Transformer의 탄생 — 토큰화, 임베딩, RNN의 한계, Self-Attention, 인코더·디코더 구조를 그림과 숫자 예제로 이해">
+<title>1장 · Transformer의 탄생 | 전문가 마스터</title>
+<link rel="stylesheet" href="master.css">
+<link rel="stylesheet" href="../../../assets/inline-terms.css">
+</head>
+<body><main class="wrap">
+<div class="topbar"><a href="index.html">← 전문가 마스터 전체 지도</a>
+<nav class="tabs" aria-label="보기 전환"><a href="../index.html">📚 수업 자료</a><a class="on" href="index.html">🎓 전문가 마스터</a></nav></div>
+
+<header class="hero"><span class="pill">1장 · CME295 LECTURE 1</span>
+<h1>Transformer의 탄생</h1>
+<p>글자를 숫자로 바꾸는 법에서 출발해, 왜 RNN을 버리고 <b>"서로를 직접 참고하는"</b> 구조가 나왔는지, 그리고 그 구조가 번역 한 문장을 만드는 전 과정을 따라갑니다.</p>
+<div class="goals"><div><b>이 장을 마치면</b>문장이 토큰·벡터가 되는 과정을 설명할 수 있다</div><div><b>이 장을 마치면</b>Self-Attention 값을 손으로 계산할 수 있다</div><div><b>이 장을 마치면</b>인코더·디코더 각 층의 역할을 말할 수 있다</div></div></header>
+<nav class="route"><a href="#big">큰 그림</a><a href="#analogy">비유</a><a href="#concepts">핵심 개념</a><a href="#math">수식 해부</a><a href="#cases">활용 사례</a><a href="#myths">오해</a><a href="#quiz">퀴즈</a><a href="#links">연결</a></nav>
+
+<section class="section" id="big"><h2>한눈에 보는 큰 그림</h2>
+<p class="lead">Transformer는 "문장을 넣으면 문장이 나오는" 기계입니다. 안에서는 아래 순서로 모양이 바뀝니다.</p>
+<div class="big-picture"><div class="flow">
+<div class="node">문장<br><small>A cute teddy bear…</small></div><div class="arrow">→</div>
+<div class="node p">Token<br><small>조각으로 자르기</small></div><div class="arrow">→</div>
+<div class="node p">Embedding<br><small>조각 → 벡터</small></div><div class="arrow">→</div>
+<div class="node y">위치 정보 더하기<br><small>순서 표시</small></div><div class="arrow">→</div>
+<div class="node v">인코더 × N<br><small>문맥을 담은 벡터</small></div><div class="arrow">→</div>
+<div class="node v">디코더 × N<br><small>한 토큰씩 생성</small></div><div class="arrow">→</div>
+<div class="node g">Softmax<br><small>다음 단어 확률</small></div></div>
+<p><b>역사 한 줄.</b> 1980년대 RNN → 1997 LSTM → 2013 Word2vec → 2014 Attention(번역용) → <b>2017 Transformer</b> → 2020년대 LLM. 이론은 오래됐고, 데이터와 연산이 따라오면서 폭발했습니다.</p></div>
+
+<div class="grid g3" style="margin-top:16px">
+<div class="card"><span class="tag v">NLP 과제 ①</span><h3>분류</h3><p>문장 전체 → 라벨 하나. 감성 분석, 의도 파악, 언어 감지.</p><div class="why">지표: 정확도, 정밀도, 재현율, F1</div></div>
+<div class="card"><span class="tag v">NLP 과제 ②</span><h3>토큰별 분류</h3><p>토큰마다 라벨 하나. 품사 태깅, 개체명 인식(NER).</p><div class="why">지표: 토큰 단위·개체 유형별 정밀도·재현율·F1</div></div>
+<div class="card"><span class="tag v">NLP 과제 ③</span><h3>생성</h3><p>문장 → 문장. 번역, 질의응답, 요약.</p><div class="why">지표: BLEU(정밀도 성격), ROUGE(재현율 성격), Perplexity(모델이 얼마나 "놀라는지")</div></div>
+</div></section>
+
+<section class="section" id="analogy"><h2>생활 비유: 회의실의 통역사들</h2>
+<div class="grid">
+<div class="card"><span class="tag y">RNN = 귓속말 전달</span><h3>앞사람 말만 듣는다</h3>
+<div class="visual"><div class="flow"><div class="node">A</div><div class="arrow">→</div><div class="node">cute</div><div class="arrow">→</div><div class="node">teddy bear</div><div class="arrow">→</div><div class="node">is</div><div class="arrow">→</div><div class="node r">reading<br><small>"A"는 흐릿</small></div></div></div>
+<p>한 사람씩 요약을 귓속말로 넘깁니다. 줄이 길면 처음 말이 흐려지고(장기 의존성 문제), 앞사람이 끝나야 다음 사람이 시작합니다(병렬 불가).</p></div>
+<div class="card"><span class="tag p">Self-Attention = 원탁 회의</span><h3>모두가 모두를 본다</h3>
+<div class="visual"><div class="flow"><div class="node">A</div><div class="node">cute</div><div class="node p">teddy bear</div><div class="node">is</div><div class="node v">reading<br><small>누가 읽지? → bear</small></div></div></div>
+<p>각 단어가 탁자 위 모든 단어에게 "나와 관련 있니?"라고 묻고, 관련 깊은 단어의 정보를 더 많이 가져옵니다. 거리와 상관없이 한 번에 연결되고, 모든 단어가 동시에 계산됩니다.</p></div>
+</div>
+<div class="note" style="margin-top:14px"><b>비유의 한계.</b> 실제 모델은 "관련 있다"를 뜻으로 판단하지 않습니다. 벡터끼리의 내적이라는 숫자 계산일 뿐이고, 어떤 방향이 관련을 뜻하는지는 학습으로 정해집니다. 또 원탁에는 자리 순서가 없으므로, 순서 정보는 따로 넣어 줘야 합니다(위치 인코딩).</div></section>
+
+<section class="section" id="concepts"><h2>핵심 개념 카드</h2>
+<p class="lead">문장이 모델에 들어가기 전(①~③), 옛 방식의 한계(④), 그리고 Transformer의 부품(⑤~⑧) 순서입니다.</p>
+<div class="grid">
+
+<article class="card must"><span class="tag p">필수 ①</span><h3>Tokenization — 문장을 조각으로</h3>
+<div class="visual"><p style="margin:0 0 6px"><b>단어 단위</b> <span class="tok">A</span><span class="tok">cute</span><span class="tok">teddy</span><span class="tok">bear</span><span class="tok">is</span><span class="tok">reading</span><span class="tok">.</span></p>
+<p style="margin:0 0 6px"><b>서브워드</b> <span class="tok">A</span><span class="tok">cute</span><span class="tok p">ted</span><span class="tok p">##dy</span><span class="tok">bear</span><span class="tok">is</span><span class="tok p">read</span><span class="tok p">##ing</span><span class="tok">.</span></p>
+<p style="margin:0"><b>문자 단위</b> <span class="tok y">A</span><span class="tok y">_</span><span class="tok y">c</span><span class="tok y">u</span><span class="tok y">t</span><span class="tok y">e</span><span class="tok y">_</span><span class="tok y">t</span><span class="tok y">e</span><span class="tok y">d</span>…</p></div>
+<div class="tablewrap"><table class="cmp"><tr><th>방식</th><th>장점</th><th>단점</th></tr>
+<tr><td>단어</td><td>단순, 해석 쉬움</td><td>사전에 없는 단어(OOV) 위험, 어근 지식 활용 못함</td></tr>
+<tr><td><b>서브워드</b><br>WordPiece, BPE</td><td>접두·접미 활용, 데이터에서 학습</td><td>OOV 위험이 남지만 단어 단위보다 적음</td></tr>
+<tr><td>문자</td><td>OOV 거의 없음, 대소문자·오타에 강함</td><td>시퀀스가 길어져 느림, 임베딩 해석 어려움</td></tr></table></div>
+<div class="why">요즘 LLM은 거의 서브워드를 씁니다. "reading"을 몰라도 "read"+"ing"으로 뜻을 조립할 수 있기 때문입니다.</div></article>
+
+<article class="card must"><span class="tag p">필수 ②</span><h3>Embedding — 조각을 벡터로</h3>
+<div class="visual"><div class="flow"><div class="node r">원-핫<br><small>[0,1,0,0,0,0]<br>모든 단어가 서로 직각</small></div><div class="arrow">→</div><div class="node g">학습된 임베딩<br><small>[0.8, 0.4]<br>비슷한 뜻 = 가까운 방향</small></div></div></div>
+<p>원-핫은 단어 수(V)만큼 길고, "cute"와 "adorable"이 "cute"와 "tax"만큼 다릅니다. 임베딩은 V×d 크기의 <b>조회표</b>로, 학습을 통해 비슷한 단어가 가까워집니다.</p></article>
+
+<article class="card along"><span class="tag y">보충 ③</span><h3>Word2vec — 임베딩을 얻는 첫 방법 (2013)</h3>
+<div class="visual"><div class="flow"><div class="node">입력 V<br><small>원-핫</small></div><div class="arrow">→</div><div class="node v">은닉 d<br><small>= 임베딩</small></div><div class="arrow">→</div><div class="node">출력 V<br><small>단어 확률</small></div></div></div>
+<p>"주변 단어 맞히기"라는 <b>대리 과제</b>를 수십억 단어에 대해 풉니다. <b>CBOW</b>는 주변 → 가운데 단어, <b>Skip-gram</b>은 가운데 → 주변 단어를 맞힙니다. 과제 자체보다 그 과정에서 생긴 은닉층 가중치가 목적입니다.</p>
+<div class="stop"><b>한계.</b> 단어 순서를 보지 않고, 문맥과 무관하게 단어당 벡터가 하나입니다. "bank"(은행/강둑)를 구분하지 못합니다.</div></article>
+
+<article class="card along"><span class="tag y">보충 ④</span><h3>RNN과 LSTM — 순서를 보는 옛 방식</h3>
+<div class="tablewrap"><table class="cmp"><tr><th>방식</th><th>장점</th><th>단점</th></tr>
+<tr><td>Word2vec</td><td>아주 단순하지만 강력, 직관적 임베딩</td><td>순서 무시, 문맥 반영 없음</td></tr>
+<tr><td>RNN / LSTM</td><td>순서 반영, 한때 최고 성능</td><td>기울기 소실, 느린 계산</td></tr></table></div>
+<p>RNN은 은닉 상태를 한 칸씩 넘기며 읽습니다. LSTM(1997)은 그 상태를 더 구조적으로 관리해 오래 기억하게 했지만, 여전히 순차 계산입니다.</p>
+<div class="why"><b>2014년의 전환점.</b> 번역 모델(seq2seq)이 긴 문장 앞부분을 "기억"하지 못하자, 출력할 때마다 입력 전체를 다시 훑어보는 <b>Attention</b>이 도입됐습니다. Transformer는 이 Attention만 남기고 RNN을 없앤 것입니다.</div></article>
+
+<article class="card must"><span class="tag p">필수 ⑤</span><h3>Self-Attention — 서로 참고하기</h3>
+<div class="visual"><div class="flow"><div class="node b">Query<br><small>"내가 찾는 것"</small></div><div class="arrow">×</div><div class="node y">Key<br><small>"내가 가진 것의 표지"</small></div><div class="arrow">→</div><div class="node">점수 → softmax<br><small>가중치</small></div><div class="arrow">×</div><div class="node g">Value<br><small>"실제로 줄 내용"</small></div></div></div>
+<p>각 토큰의 임베딩에 세 행렬(W<sub>q</sub>, W<sub>k</sub>, W<sub>v</sub>)을 곱해 Q, K, V를 만듭니다. 결과는 <b>"V들의 가중 평균"</b>이고, 가중치는 Q와 K가 얼마나 맞는지로 정해집니다. 행렬 한 번의 곱으로 모든 토큰 쌍을 동시에 계산합니다.</p></article>
+
+<article class="card must"><span class="tag p">필수 ⑥</span><h3>Multi-Head Attention — 여러 관점 동시에</h3>
+<div class="visual"><div class="flow"><div class="node v">헤드 1<br><small>누가 주어?</small></div><div class="node v">헤드 2<br><small>무엇을 꾸미나?</small></div><div class="node v">헤드 h<br><small>대명사가 가리키는 것?</small></div><div class="arrow">→</div><div class="node">이어 붙이고 W<sub>o</sub></div></div></div>
+<p>Self-Attention을 h개 병렬로 돌립니다. 헤드마다 다른 종류의 관계를 잡을 수 있습니다. 컴퓨터 비전에서 합성곱 층이 여러 필터를 쓰는 것과 같은 발상입니다. (헤드별 "역할"은 설명을 위한 예시이고, 실제로는 학습이 정합니다.)</p></article>
+
+<article class="card must"><span class="tag p">필수 ⑦</span><h3>인코더와 디코더</h3>
+<div class="tablewrap"><table class="cmp"><tr><th></th><th>인코더 (이해)</th><th>디코더 (생성)</th></tr>
+<tr><td>층 구성</td><td>Self-Attention → FFN</td><td>Self-Attention(미래 가림) → 인코더-디코더 Attention → FFN</td></tr>
+<tr><td>입력</td><td>원문 전체</td><td>지금까지 만든 출력("오른쪽으로 한 칸 민" 문장, [BOS]로 시작)</td></tr>
+<tr><td>출력</td><td>문맥을 담은 벡터들</td><td>다음 토큰 확률</td></tr></table></div>
+<p>각 하위 층 뒤에는 잔차 연결과 정규화가 붙습니다. 하이퍼파라미터: N(쌓는 층 수), h(헤드 수), d<sub>model</sub>(임베딩 차원), d<sub>FF</sub>(FFN 안쪽 차원), V(어휘 크기).</p></article>
+
+<article class="card along"><span class="tag y">보충 ⑧</span><h3>위치 인코딩과 Label Smoothing</h3>
+<p><b>위치 인코딩.</b> Attention은 순서를 모르므로 임베딩에 위치 벡터를 더합니다. 학습할 수도 있고 사인·코사인으로 고정할 수도 있습니다. 목표는 모델이 <b>상대 위치</b>를 알아채게 하는 것. 자세한 내용은 <a href="ch2.html">2장</a>.</p>
+<p><b>Label Smoothing.</b> 정답 라벨을 1.0 대신 0.9처럼 살짝 흐리게 줍니다. 모델의 과신을 막는 일반 기법으로, 원 논문에서 정확도와 BLEU가 올랐습니다.</p></article>
+</div>
+
+<div class="card" style="margin-top:16px"><span class="tag v">끝에서 끝까지</span><h3>번역 한 문장이 만들어지는 과정</h3>
+<div class="visual"><div class="flow">
+<div class="node">① 토큰화<br><small>[BOS] A cute teddy bear is reading . [EOS]</small></div><div class="arrow">→</div>
+<div class="node">② 임베딩 + 위치</div><div class="arrow">→</div>
+<div class="node v">③ 인코더<br><small>Q·K·V → 가중 평균 → FFN</small></div><div class="arrow">→</div>
+<div class="node v">④ 디코더에 [BOS]</div><div class="arrow">→</div>
+<div class="node v">⑤ 인코더 출력을 참고</div><div class="arrow">→</div>
+<div class="node g">⑥ Softmax → "Un"</div></div></div>
+<p>⑥에서 나온 "Un"을 디코더 입력에 붙여 [BOS] Un → "ours", [BOS] Un ours → "en" … 을 반복합니다. <span class="tok g">Un</span><span class="tok g">ours</span><span class="tok g">en</span><span class="tok g">peluche</span><span class="tok g">mignon</span><span class="tok g">lit</span><span class="tok x">[EOS]</span>가 나오면 멈춥니다. <b>인코더는 한 번만</b> 돌고, 디코더는 토큰 수만큼 돕니다.</p></div>
+</section>
+
+<section class="section" id="math"><h2>최소 수식 해부</h2>
+<div class="grid">
+<div class="formula-box"><span class="tag p">핵심 수식 1</span><h3>Scaled Dot-Product Attention</h3>
+<div class="equation">Attention(<span class="c2">Q</span>,<span class="c4">K</span>,<span class="c3">V</span>) = softmax( <span class="c2">Q</span><span class="c4">K</span><sup>T</sup> / √<span class="c1">d<sub>k</sub></span> ) <span class="c3">V</span></div>
+<div class="decode"><span><b>Q</b><i>큐 (쿼리)</i>지금 토큰이 찾는 것</span><span><b>K</b><i>케이 (키)</i>각 토큰의 색인표</span><span><b>V</b><i>브이 (밸류)</i>각 토큰이 내줄 내용</span><span><b>QK<sup>T</sup></b><i>큐 케이 트랜스포즈</i>모든 쌍의 내적 = 궁합 점수</span><span><b>√d<sub>k</sub></b><i>루트 디 케이</i>키 차원의 제곱근. 점수 크기 조절</span><span><b>softmax</b><i>소프트맥스</i>점수 → 합이 1인 가중치</span></div>
+<div class="formula-read"><b>문장으로 읽기:</b> 각 토큰의 질문과 모든 토큰의 색인을 내적해 점수를 내고, 크기를 줄인 뒤 비율로 바꿔, 그 비율대로 내용을 섞는다.<br><b>왜 √d<sub>k</sub>로 나누나:</b> 차원이 크면 내적이 커져 softmax가 한 곳에 몰리고 기울기가 사라집니다. (유도는 생략합니다.)</div></div>
+
+<div class="formula-box"><span class="tag v">숫자 예제</span><h3>"bear"가 누구를 얼마나 볼까</h3>
+<p style="font-size:14px">d<sub>k</sub>=2. bear의 질문 q = [1, 0].</p>
+<div class="tablewrap"><table class="cmp"><tr><th>토큰</th><th>키 k</th><th>q·k</th><th>÷√2</th><th>softmax</th><th>값 v</th></tr>
+<tr><td>cute</td><td>[1, 1]</td><td>1</td><td>0.707</td><td><b>0.284</b></td><td>[1, 0]</td></tr>
+<tr><td>teddy</td><td>[2, 0]</td><td>2</td><td>1.414</td><td><b>0.576</b></td><td>[0, 1]</td></tr>
+<tr><td>reading</td><td>[0, 1]</td><td>0</td><td>0</td><td><b>0.140</b></td><td>[1, 1]</td></tr></table></div>
+<div class="mono">e^0.707=2.028, e^1.414=4.113, e^0=1 → 합 7.141
+출력 = 0.284·[1,0] + 0.576·[0,1] + 0.140·[1,1] = [0.424, 0.716]</div>
+<div class="ok">"bear"의 새 벡터는 teddy의 내용을 57.6% 담습니다. 이것이 <b>문맥을 반영한 임베딩</b>입니다.</div></div>
+
+<div class="formula-box"><span class="tag y">핵심 수식 2</span><h3>다음 토큰 확률 (출력층)</h3>
+<div class="equation">P(토큰 <span class="c1">i</span>) = e<sup><span class="c2">z<sub>i</sub></span></sup> / Σ<sub>j</sub> e<sup><span class="c2">z<sub>j</sub></span></sup></div>
+<div class="decode"><span><b>z<sub>i</sub></b><i>제트 아이 (로짓)</i>토큰 i의 점수. 디코더 출력에 선형층을 곱한 값</span><span><b>Σ<sub>j</sub></b><i>시그마</i>어휘 V개 전부에 대한 합</span><span><b>P</b><i>피</i>확률. 전부 더하면 1</span></div>
+<div class="formula-read"><b>문장으로 읽기:</b> 생성은 결국 "V개 중 하나를 고르는 분류 문제"다. 클래스 = 단어.</div></div>
+
+<div class="formula-box"><span class="tag g">참고</span><h3>계산량 감각</h3>
+<div class="tablewrap"><table class="cmp"><tr><th></th><th>RNN</th><th>Self-Attention</th></tr>
+<tr><td>두 토큰 사이 거리</td><td>떨어진 칸 수만큼</td><td>항상 1</td></tr>
+<tr><td>병렬 계산</td><td>불가 (순차)</td><td>가능 (행렬 곱)</td></tr>
+<tr><td>토큰 n개의 비용</td><td>n에 비례</td><td>n²에 비례 (모든 쌍)</td></tr></table></div>
+<div class="why">n² 비용은 긴 문맥에서 문제가 됩니다. 2~4장의 여러 기법(희소 Attention, KV 캐시, FlashAttention)이 이 비용을 다룹니다.</div></div>
+</div></section>
+
+<section class="section" id="cases"><h2>실제 AI 활용 사례</h2>
+<div class="grid">
+<article class="card usecase"><div class="icon">🌐</div><div><h3>기계 번역</h3><dl>
+<dt>문제</dt><dd>한 언어 문장을 다른 언어로 옮기기</dd>
+<dt>입력</dt><dd>원문 토큰 (예: WMT'14 영-프, 영-독 문장 쌍)</dd>
+<dt>배우는 것</dt><dd>원문을 참고해 번역문의 다음 토큰을 맞히기</dd>
+<dt>출력</dt><dd>번역문 토큰열</dd>
+<dt>이 장의 개념</dt><dd>인코더가 원문을 이해, 디코더의 인코더-디코더 Attention이 "지금 어느 원문 단어를 볼지" 결정</dd>
+<dt>한계</dt><dd>BLEU는 단어 겹침만 봐서 뜻이 같은 다른 표현을 낮게 평가</dd></dl></div></article>
+<article class="card usecase"><div class="icon">🏷️</div><div><h3>개체명 인식 (NER)</h3><dl>
+<dt>문제</dt><dd>문장에서 사람·기관·장소 이름 찾기</dd>
+<dt>입력</dt><dd>문장 토큰 (예: CoNLL-2003 뉴스 기사)</dd>
+<dt>배우는 것</dt><dd>토큰마다 개체 유형 라벨</dd>
+<dt>출력</dt><dd>토큰별 라벨</dd>
+<dt>이 장의 개념</dt><dd>Self-Attention이 만든 문맥 벡터 덕분에 "Apple"이 회사인지 과일인지 구분</dd>
+<dt>한계</dt><dd>서브워드로 쪼개진 이름은 조각 라벨을 다시 합쳐야 함</dd></dl></div></article>
+</div></section>
+
+<section class="section" id="myths"><h2>자주 하는 오해</h2>
+<div class="myth"><div class="stop">❌ "Attention은 중요한 단어를 찾는 장치다."</div><div class="ok">✅ 토큰마다 <b>다른</b> 가중치를 갖습니다. "bear"가 보는 곳과 "reading"이 보는 곳이 다르고, 헤드마다도 다릅니다.</div></div>
+<div class="myth"><div class="stop">❌ "Transformer는 단어 순서를 원래 안다."</div><div class="ok">✅ Attention 자체는 순서를 모릅니다. 위치 인코딩을 더해 줘야 "개가 사람을 문다"와 "사람이 개를 문다"를 구분합니다.</div></div>
+<div class="myth"><div class="stop">❌ "디코더는 문장을 한 번에 출력한다."</div><div class="ok">✅ 추론 때는 한 토큰씩 만들고 그것을 다시 입력에 붙입니다. 학습 때만 정답 문장을 통째로 넣고 미래를 가려 병렬로 계산합니다.</div></div>
+<div class="myth"><div class="stop">❌ "토큰 = 단어다."</div><div class="ok">✅ 대부분 서브워드입니다. 한 단어가 여러 토큰이 되기도 하고, 문장부호와 [BOS]·[EOS] 같은 특수 토큰도 토큰입니다.</div></div>
+</section>
+
+<section class="section quiz" id="quiz"><h2>확인 퀴즈 3문항</h2><p class="lead">답을 열기 전에 소리 내어 답해 봅니다.</p>
+<details><summary>Q1. 단어 단위 대신 서브워드 토큰화를 쓰면 무엇이 좋아지고, 문자 단위까지 가지 않는 이유는 무엇일까?</summary><div class="answer">서브워드는 처음 보는 단어도 아는 조각으로 나눠 표현하므로 OOV가 줄고 어근·접사 지식을 재사용합니다. 문자 단위는 OOV가 거의 없지만 시퀀스가 훨씬 길어져 계산이 느리고 조각 하나하나에 뜻이 없습니다.</div></details>
+<details><summary>Q2. 위 숫자 예제에서 teddy의 키가 [2,0]이 아니라 [0,0]이었다면 "bear"의 Attention 가중치는 어떻게 바뀔까?</summary><div class="answer">점수가 cute 1, teddy 0, reading 0이 됩니다. √2로 나누면 0.707, 0, 0이고 softmax는 약 0.503, 0.248, 0.248. teddy의 몫이 줄고 cute가 가장 커집니다. 키가 질문과 맞지 않으면 그 토큰의 내용은 덜 섞입니다.</div></details>
+<details><summary>Q3. 번역할 때 인코더와 디코더는 각각 몇 번 실행될까? 왜 그럴까?</summary><div class="answer">인코더는 원문에 대해 한 번, 디코더는 출력 토큰 수만큼입니다. 원문은 이미 전부 주어져 한 번에 이해할 수 있지만, 번역문은 앞 토큰이 정해져야 다음 토큰을 정할 수 있기 때문입니다.</div></details>
+</section>
+
+<section class="section" id="links"><h2>선수지식 · 관련 항목 · 다음 학습</h2>
+<div class="links">
+<div class="card must"><span class="tag p">선수지식</span><h3>ML·선형대수 기초</h3><p>벡터 내적, 행렬 곱, 신경망의 학습(손실·기울기). <a href="../week0.html">0차시: 전체 지도와 선수지식</a></p></div>
+<a class="card along" href="../week1.html"><span class="tag y">관련 항목</span><h3>수업 자료 1차시</h3><p>같은 강의를 수업 진도·시험 관점으로 정리한 페이지</p></a>
+<a class="card later" href="ch2.html"><span class="tag g">다음 학습</span><h3>2장 · 개량과 BERT</h3><p>위치 정보를 더 잘 넣는 법, 그리고 인코더만 쓰는 모델</p></a>
+</div></section>
+
+<section class="section"><h2>출처</h2>
+<ul class="sources">
+<li>Amidi &amp; Amidi, <a href="https://cme295.stanford.edu/slides/fall25-cme295-lecture1.pdf">CME295 Lecture 1 슬라이드</a> (Fall 2025) — 확인일 2026-11-14</li>
+<li>Vaswani et al., <a href="https://arxiv.org/abs/1706.03762">Attention Is All You Need</a>, 2017</li>
+<li>Mikolov et al., <a href="https://arxiv.org/abs/1301.3781">Efficient Estimation of Word Representations in Vector Space</a>, 2013</li>
+<li>Bahdanau et al., <a href="https://arxiv.org/abs/1409.0473">Neural Machine Translation by Jointly Learning to Align and Translate</a>, 2014</li>
+</ul>
+<div class="meta">id: transformer-llm-master-ch1 · area: LLM · level: 입문 · prerequisites: week0 · next: transformer-llm-master-ch2 · related: week1 · author: Claude · reviewer: 미지정 · status: draft · updated: 2026-11-14<br>숫자 예제의 벡터 값은 설명을 위해 만든 것입니다.</div>
+</section>
+
+<label class="done"><input type="checkbox" data-chapter="ch1"> 이 장을 이해했다 (전체 지도에 표시됩니다)</label>
+<div class="pager"><a href="index.html"><small>← 이전</small>전체 지도</a><a class="next" href="ch2.html"><small>다음 →</small>2장 · Transformer의 개량과 BERT</a></div>
+<div class="footer">AI Study · 트랜스포머와 거대언어모델 · 전문가 마스터 1장</div>
+</main><script src="master.js"></script><script src="../../../assets/inline-terms.js" defer></script></body></html>

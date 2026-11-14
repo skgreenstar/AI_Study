@@ -163,6 +163,7 @@ AI_Study/
 ├── graduate/
 │   ├── index.html                    # 반응형 대학원 과목 화면
 │   ├── transformer-llm/              # index.html + week0~7.html (Stanford Lecture 단위 시각 자료)
+│   │   └── master/                   # 🎓 전문가 마스터 탭: index.html + ch1~9.html + master.css/js
 │   ├── diffusion-lvm/                # index.html + week0~7.html
 │   └── industrial-ai/                # index.html + week0~1.html + ai-history-map.html
 ├── university/
@@ -197,6 +198,10 @@ AI_Study/
 
 에이전트 공통 규칙은 [AGENTS.md](AGENTS.md), 사람의 협업 규칙은 [CONTRIBUTING.md](CONTRIBUTING.md)를 확인하세요.
 
+
+## 전문가 마스터 탭
+
+- [트랜스포머와 거대언어모델 · 전문가 마스터](graduate/transformer-llm/master/index.html): 수업 진도와 별개로 Stanford CME295 (Fall 2025) 1~9강을 한 강의 = 한 장으로 정리. 장마다 큰 그림 흐름도, 생활 비유와 한계, 기호별 수식 해부, 숫자 예제, 실무 사례, 자주 하는 오해, 퀴즈 3문항, 출처. 온도·top-k·top-p 실험기(3장), 위치 인코딩 히트맵(2장), Pass@k·Pass^k 계산기(8장) 포함 (2026-11-14).
 
 ## 중간고사 복습 자료
 

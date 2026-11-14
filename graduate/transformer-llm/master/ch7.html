@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="7장 에이전틱 LLM — RAG의 검색 2단계와 지표, 도구 호출, MCP, ReAct 에이전트, A2A, 안전">
+<title>7장 · 에이전틱 LLM | 전문가 마스터</title>
+<link rel="stylesheet" href="master.css">
+<link rel="stylesheet" href="../../../assets/inline-terms.css">
+</head>
+<body><main class="wrap">
+<div class="topbar"><a href="index.html">← 전문가 마스터 전체 지도</a>
+<nav class="tabs" aria-label="보기 전환"><a href="../index.html">📚 수업 자료</a><a class="on" href="index.html">🎓 전문가 마스터</a></nav></div>
+
+<header class="hero"><span class="pill">7장 · CME295 LECTURE 7</span>
+<h1>에이전틱 LLM</h1>
+<p>학습이 끝난 LLM은 <b>아는 것이 고정</b>되어 있고 <b>아무 행동도 못 합니다</b>. 가중치를 건드리지 않고 바깥에서 이 둘을 메우는 세 단계 — 찾아보기(RAG), 도구 쓰기, 스스로 반복하기(에이전트) — 를 봅니다.</p>
+<div class="goals"><div><b>이 장을 마치면</b>RAG의 검색을 후보 추출과 재순위로 나눠 설명할 수 있다</div><div><b>이 장을 마치면</b>도구 호출의 3단계에서 LLM이 하는 일을 구분할 수 있다</div><div><b>이 장을 마치면</b>ReAct 루프를 예시로 따라갈 수 있다</div></div></header>
+<nav class="route"><a href="#big">큰 그림</a><a href="#analogy">비유</a><a href="#concepts">핵심 개념</a><a href="#math">수식 해부</a><a href="#cases">활용 사례</a><a href="#myths">오해</a><a href="#quiz">퀴즈</a><a href="#links">연결</a></nav>
+
+<section class="section" id="big"><h2>한눈에 보는 큰 그림</h2>
+<p class="lead">세 기법은 "LLM에게 무엇을 더 쥐여 주는가"로 구분됩니다.</p>
+<div class="big-picture">
+<div class="grid g3" style="color:var(--ink)">
+<div class="card"><span class="tag p">① RAG</span><h3>읽을거리를 쥐여 준다</h3><div class="flow"><div class="node">질문</div><div class="arrow">→</div><div class="node p">검색</div><div class="arrow">→</div><div class="node">질문 + 자료</div><div class="arrow">→</div><div class="node g">LLM 답</div></div><p style="font-size:14px">비정형 문서. 호출 1번.</p></div>
+<div class="card"><span class="tag y">② 도구 호출</span><h3>함수를 쥐여 준다</h3><div class="flow"><div class="node">질문 + API 설명</div><div class="arrow">→</div><div class="node y">LLM이 인자 작성</div><div class="arrow">→</div><div class="node">실행</div><div class="arrow">→</div><div class="node g">LLM 답</div></div><p style="font-size:14px">정형 데이터·계산·행동.</p></div>
+<div class="card"><span class="tag g">③ 에이전트</span><h3>반복할 권한을 준다</h3><div class="flow"><div class="node">입력</div><div class="arrow">→</div><div class="node g">관찰 → 계획 → 행동</div><div class="arrow">↺</div><div class="node g">출력</div></div><p style="font-size:14px">목표를 이룰 때까지 여러 번 호출.</p></div>
+</div>
+<p><b>RAG가 필요한 이유 네 가지.</b> 지식이 사전학습 데이터에 갇혀 있다 · 컨텍스트 크기에 한계가 있다 · 쓸모없는 정보가 섞이면 LLM이 산만해진다 · 요금이 입출력 토큰 단위다. 즉 "전부 넣기"가 아니라 "필요한 것만 넣기"가 답입니다.</p></div></section>
+
+<section class="section" id="analogy"><h2>생활 비유: 오픈북 시험을 보는 신입 사원</h2>
+<div class="grid">
+<div class="card"><span class="tag p">RAG</span><h3>사서가 먼저 책을 추려 준다</h3>
+<p>암기한 것만으로 답하는 대신, 사서가 <b>서가 전체에서 관련 있어 보이는 책 50권</b>을 빠르게 꺼내고(후보 추출), 그중 <b>정말 쓸 만한 5쪽</b>을 꼼꼼히 골라(재순위) 책상에 올려 줍니다. 신입은 그 5쪽을 읽고 답을 씁니다.</p>
+<div class="note"><b>한계.</b> 사서가 엉뚱한 쪽을 주면 신입은 그럴듯한 오답을 씁니다. 답의 품질은 검색 품질을 넘지 못합니다.</div></div>
+<div class="card"><span class="tag p">도구와 에이전트</span><h3>전화기와 업무 권한</h3>
+<p><b>도구 호출</b>은 신입에게 사내 전화번호부를 주는 것입니다. 신입은 "누구에게 무엇을 물을지"만 적고, 실제 통화는 비서(백엔드)가 한 뒤 결과를 전해 줍니다. <b>에이전트</b>는 "문제가 풀릴 때까지 알아서 확인하고, 계획하고, 조치하라"는 위임입니다.</p>
+<div class="note"><b>한계.</b> 권한을 준 만큼 실수의 결과도 현실에 닿습니다. 메일을 잘못 보내거나 데이터를 밖으로 내보낼 수 있습니다.</div></div>
+</div></section>
+
+<section class="section" id="concepts"><h2>핵심 개념 카드</h2>
+<div class="grid">
+
+<article class="card must"><span class="tag p">필수 ①</span><h3>RAG — Retrieve, Augment, Generate</h3>
+<div class="visual"><div class="flow"><div class="node">① 검색<br><small>지식 베이스에서 유사도로 관련 조각 찾기</small></div><div class="arrow">→</div><div class="node">② 보강<br><small>찾은 내용을 프롬프트에 붙이기</small></div><div class="arrow">→</div><div class="node g">③ 생성<br><small>LLM이 답 작성</small></div></div></div>
+<p><b>사전 준비: 지식 베이스.</b> 문서를 모으고(collect) → 조각으로 나누고(divide) → 조각마다 임베딩 벡터로 바꿉니다(embed). 하이퍼파라미터: 임베딩 차원, 조각 크기, 조각 간 겹침.</p></article>
+
+<article class="card must"><span class="tag p">필수 ②</span><h3>검색 2단계</h3>
+<div class="tablewrap"><table class="cmp"><tr><th></th><th>🎣 1단계 후보 추출</th><th>💯 2단계 재순위</th></tr>
+<tr><td>목표</td><td>재현율 최대화 (놓치지 않기)</td><td>정밀도 최대화 (정확히 고르기)</td></tr>
+<tr><td>대상</td><td>지식 베이스 전체</td><td>추려진 소수 후보</td></tr>
+<tr><td>모델</td><td><b>Bi-encoder</b>: 질문과 조각을 따로 인코딩해 벡터 유사도</td><td><b>Cross-encoder</b>: 질문과 조각을 함께 넣어 관련도 점수</td></tr>
+<tr><td>성격</td><td>빠름. 조각 벡터를 미리 계산</td><td>느리지만 정확</td></tr></table></div></article>
+
+<article class="card must"><span class="tag p">필수 ③</span><h3>후보 추출의 세 방법</h3>
+<p>질문: "Where is Cuddly?" (Cuddly는 곰 이름)</p>
+<div class="tablewrap"><table class="cmp"><tr><th>방법</th><th>잘 잡는 것</th><th>놓치는 것</th></tr>
+<tr><td>의미 검색 (임베딩)</td><td>"Huggy likes to work downstairs" 같은 뜻이 가까운 문장</td><td>고유명사를 일반 단어로 오해 ("in a cuddly mood")</td></tr>
+<tr><td>키워드 검색 (BM25)</td><td>"Cuddly"가 글자 그대로 들어간 문장</td><td>단어는 다르지만 뜻이 같은 문장</td></tr>
+<tr><td><b>하이브리드</b></td><td colspan="2">둘을 결합해 서로의 약점을 보완</td></tr></table></div></article>
+
+<article class="card along"><span class="tag y">보충 ④</span><h3>검색을 돕는 두 확장</h3>
+<p><b>가짜 문서 만들기 (HyDE).</b> 질문과 문서는 글의 성격이 다릅니다. LLM에게 먼저 가상의 답 문서를 쓰게 하고("Cuddly is in…"), 그 가짜 문서의 임베딩으로 검색합니다.</p>
+<p><b>조각에 맥락 붙이기 (Contextual Retrieval).</b> 조각만 떼어 놓으면 "그는"이 누구인지 모릅니다. 문서 전체와 조각을 LLM에 주고 "이 조각이 문서에서 어떤 위치인지 짧게 설명하라"고 해 그 설명을 조각 앞에 붙입니다. 같은 문서를 반복해 넣으므로 <b>프롬프트 캐싱</b>으로 비용을 줄입니다.</p></article>
+
+<article class="card must"><span class="tag p">필수 ⑤</span><h3>Tool calling — 3단계</h3>
+<div class="visual"><div class="flow"><div class="node y">① LLM<br><small>함수와 인자 결정<br>find_teddy_bear(location=(37.42,−122.17))</small></div><div class="arrow">→</div><div class="node">② 백엔드<br><small>실제 실행<br>{"name":"Teddy",…}</small></div><div class="arrow">→</div><div class="node g">③ LLM<br><small>결과를 읽고 답 작성</small></div></div></div>
+<p>LLM은 함수를 <b>실행하지 않습니다</b>. 어떤 함수를 어떤 인자로 부를지 글로 쓸 뿐입니다. 좋은 도구는 설명이 잘 된 API를 갖고, 무언가를 반환합니다.</p>
+<p><b>가르치는 법.</b> ① 학습: (대화 기록 → 원하는 도구 호출·응답) 쌍으로 SFT. ② 프롬프트: API와 자세한 사용 설명을 넣기. 그 설명문은 SFT 쌍을 평가 세트로 삼아 강력한 추론 모델에게 쓰게 하는 방법이 있습니다.</p>
+<div class="why">용도: 정보(웹·DB 검색, 날씨, 코드베이스) · 계산(계산기, 코드 실행) · 행동(메일·메시지 전송 등).</div></article>
+
+<article class="card along"><span class="tag y">보충 ⑥</span><h3>도구가 많아질 때: 선택과 MCP</h3>
+<p><b>문제.</b> 도구가 늘수록 성능이 떨어지고, 컨텍스트는 유한하며, 도구마다 정의하는 수고가 큽니다.</p>
+<p><b>도구 선택.</b> 라우터가 먼저 관련 도구 몇 개만 고르고, 그 API만 LLM에 넘깁니다. 지연이 줄고 성능이 오릅니다.</p>
+<div class="visual"><div class="flow"><div class="node">LLM 1</div><div class="node">LLM 2</div><div class="node">LLM 3</div><div class="arrow">⇄</div><div class="node v">MCP</div><div class="arrow">⇄</div><div class="node">도구 1</div><div class="node">도구 2</div><div class="node">도구 3</div></div></div>
+<p><b>MCP</b>(Model Context Protocol, Anthropic 2024): 도구·데이터를 LLM에 연결하는 표준. 없으면 LLM 3종 × 도구 3종 = 9개 연결을 따로 만들어야 합니다. 구성: 호스트(앱) 안의 <b>클라이언트</b> ⇄ <b>서버</b>가 제공하는 도구·프롬프트·리소스.</p></article>
+
+<article class="card must"><span class="tag p">필수 ⑦</span><h3>에이전트와 ReAct</h3>
+<p>에이전트: 사용자를 대신해 <b>자율적으로</b> 목표를 추구하고 과제를 완수하는 시스템. ReAct = Reason + Act.</p>
+<div class="tablewrap"><table class="cmp"><tr><th>단계</th><th>예: "곰 인형이 추워해요. 뭔가 해 주세요."</th></tr>
+<tr><td>관찰</td><td>곰이 추운 것은 방 온도 때문일 수 있는데, 현재 온도를 모른다.</td></tr>
+<tr><td>계획</td><td>방 온도를 확인한다.</td></tr>
+<tr><td>행동</td><td><code>get_current_room_temperature()</code> → 65°F</td></tr>
+<tr><td>관찰</td><td>평균보다 5°F 낮다. 온도를 올려야 한다.</td></tr>
+<tr><td>계획 → 행동</td><td><code>increase_temperature(value=5)</code></td></tr>
+<tr><td>관찰 → 출력</td><td>"온도를 70°F로 맞췄어요. 곧 따뜻해질 거예요."</td></tr></table></div>
+<p>관찰은 지금까지의 행동과 아는 것을 정리하는, 추론이 많이 드는 단계입니다(<a href="ch6.html">6장</a>의 추론 능력이 여기서 쓰입니다). 입력은 사용자 질문일 수도, 지표가 임계값을 넘는 외부 사건일 수도 있습니다.</p></article>
+
+<article class="card later"><span class="tag g">확장 ⑧</span><h3>A2A와 안전</h3>
+<p><b>A2A</b>(Agent2Agent, Google 2025): 에이전트끼리 대화하는 표준. 온도 조절·재실 감지·공기질·에너지 관리 에이전트가 서로 협력해야 할 때 씁니다. 에이전트는 자신의 <b>카드</b>(이름, 주소, 버전, 할 수 있는 기술 목록)를 공개하고, <b>실행기</b>가 요청을 처리합니다. MCP가 "에이전트 ↔ 도구"라면 A2A는 "에이전트 ↔ 에이전트".</p>
+<div class="stop"><b>안전.</b> 현실 세계에 해를 끼칠 수 있습니다(예: 데이터 유출). 대응: 학습 단계의 정렬, 추론 시 안전장치, Agent-SafetyBench 같은 벤치마크.</div>
+<div class="why"><b>강의의 맺음말.</b> 환각은 큰 문제다 · 추론 능력이 병목이다 · 평가가 어렵다 · 단순하게 시작해 점차 키워라 · 유능한 모델로 시작해 나중에 크기를 줄여라 · 투명성과 관찰 가능성이 신뢰와 디버깅을 돕는다.</div></article>
+</div></section>
+
+<section class="section" id="math"><h2>최소 수식 해부</h2>
+<p class="lead">검색 품질을 재는 네 지표. 같은 예시로 계산합니다: 관련 조각이 전체에 <b>3개</b> 있고, 상위 4개 결과의 관련 여부가 <b>[✗, ✓, ✓, ✗]</b>.</p>
+<div class="grid">
+<div class="formula-box"><span class="tag p">수식 1·2</span><h3>Precision@k와 Recall@k</h3>
+<div class="equation">Precision@<span class="c4">k</span> = (상위 k 중 관련 조각 수) / <span class="c4">k</span><br>Recall@<span class="c4">k</span> = (상위 k 중 관련 조각 수) / (<span class="c1">전체 관련 조각 수</span>)</div>
+<div class="formula-read"><b>숫자 예제.</b> Precision@4 = 2/4 = <b>0.50</b>. Recall@4 = 2/3 ≈ <b>0.67</b>.<br><b>문장으로 읽기:</b> 정밀도는 "가져온 것 중 쓸모 있는 비율", 재현율은 "쓸모 있는 것 중 가져온 비율". 1단계는 재현율, 2단계는 정밀도를 겨냥한다.</div></div>
+
+<div class="formula-box"><span class="tag y">수식 3</span><h3>Reciprocal Rank@k</h3>
+<div class="equation">RR@<span class="c4">k</span> = 1 / (<span class="c1">첫 번째 관련 조각의 순위</span>)</div>
+<div class="formula-read"><b>숫자 예제.</b> 첫 관련 조각이 2위 → RR = 1/2 = <b>0.50</b>. 1위였다면 1.0, 상위 k 안에 없으면 0.<br><b>문장으로 읽기:</b> "쓸 만한 것이 얼마나 빨리 나오나". 하나만 찾으면 되는 질문에 맞는 지표.</div></div>
+
+<div class="formula-box" style="grid-column:1/-1"><span class="tag p">수식 4</span><h3>NDCG@k — 순위까지 반영</h3>
+<div class="equation">DCG@<span class="c4">k</span> = Σ<sub>i=1..k</sub> <span class="c3">rel<sub>i</sub></span> / log<sub>2</sub>(<span class="c1">i</span>+1) , &nbsp; NDCG@<span class="c4">k</span> = DCG@k / <span class="c2">IDCG@k</span></div>
+<div class="decode"><span><b>rel<sub>i</sub></b><i>렐 아이</i>i위 결과의 관련도 (여기서는 0 또는 1)</span><span><b>log<sub>2</sub>(i+1)</b><i>할인</i>순위가 낮을수록 점수를 깎는 분모</span><span><b>IDCG</b><i>아이 디시지</i>순위가 완벽했을 때의 DCG</span></div>
+<div class="formula-read"><b>숫자 예제.</b> 할인 분모: 1위 log₂2=1, 2위 log₂3≈1.585, 3위 log₂4=2, 4위 log₂5≈2.322.<br>DCG = 0/1 + 1/1.585 + 1/2 + 0/2.322 = 0.631 + 0.5 = <b>1.131</b><br>이상적 순서 [✓,✓,✓,✗]의 IDCG = 1 + 0.631 + 0.5 = <b>2.131</b><br>NDCG@4 = 1.131 / 2.131 ≈ <b>0.53</b><br><b>문장으로 읽기:</b> 관련 있는 것을 위쪽에 둘수록 점수가 높고, 완벽한 순서일 때 1이다.</div></div>
+</div></section>
+
+<section class="section" id="cases"><h2>실제 AI 활용 사례</h2>
+<div class="grid">
+<article class="card usecase"><div class="icon">📚</div><div><h3>사내 규정 질의응답</h3><dl>
+<dt>문제</dt><dd>LLM이 회사 내부 문서를 모름</dd>
+<dt>입력</dt><dd>직원 질문 + 조각·임베딩된 규정 문서</dd>
+<dt>배우는 것</dt><dd>LLM은 그대로. 필요하면 임베딩·재순위 모델만 조정</dd>
+<dt>출력</dt><dd>근거 조각을 바탕으로 한 답</dd>
+<dt>이 장의 개념</dt><dd>하이브리드 후보 추출 → cross-encoder 재순위 → 보강 → 생성</dd>
+<dt>한계</dt><dd>조각 크기·겹침에 민감. 검색이 틀리면 답도 틀림. 지표(NDCG, Recall)로 검색부터 따로 평가해야 함</dd></dl></div></article>
+<article class="card usecase"><div class="icon">🧑‍💻</div><div><h3>코딩 에이전트</h3><dl>
+<dt>문제</dt><dd>여러 파일을 읽고 고치고 테스트해야 하는 작업</dd>
+<dt>입력</dt><dd>작업 지시 + 파일 읽기·쓰기·명령 실행 도구</dd>
+<dt>배우는 것</dt><dd>없음(추론 시 루프). 모델은 도구 사용을 학습해 둔 상태</dd>
+<dt>출력</dt><dd>수정된 코드와 설명</dd>
+<dt>이 장의 개념</dt><dd>ReAct 루프, 도구 호출, MCP. 강사들이 꼽은 "개인적으로 가장 좋아하는 사용 사례"</dd>
+<dt>한계</dt><dd>루프가 길수록 오류가 누적. 실행 권한이 있어 안전장치와 관찰 가능성이 필수</dd></dl></div></article>
+</div></section>
+
+<section class="section" id="myths"><h2>자주 하는 오해</h2>
+<div class="myth"><div class="stop">❌ "RAG를 붙이면 환각이 사라진다."</div><div class="ok">✅ 줄어들 뿐입니다. 검색이 틀리거나, 맞는 자료를 주어도 모델이 무시하거나 잘못 읽을 수 있습니다.</div></div>
+<div class="myth"><div class="stop">❌ "도구 호출에서 LLM이 함수를 직접 실행한다."</div><div class="ok">✅ LLM은 호출문을 <b>글로 출력</b>할 뿐입니다. 실행은 바깥의 프로그램이 하고 결과를 다시 넣어 줍니다.</div></div>
+<div class="myth"><div class="stop">❌ "에이전트 = LLM을 한 번 부르는 챗봇에 도구를 붙인 것."</div><div class="ok">✅ 핵심은 <b>반복</b>입니다. 결과를 보고 다음 행동을 스스로 정하는 루프가 있어야 에이전트입니다.</div></div>
+<div class="myth"><div class="stop">❌ "MCP와 A2A는 같은 종류의 표준이다."</div><div class="ok">✅ MCP는 모델과 도구·데이터 사이, A2A는 에이전트와 에이전트 사이의 약속입니다.</div></div>
+</section>
+
+<section class="section quiz" id="quiz"><h2>확인 퀴즈 3문항</h2><p class="lead">답을 열기 전에 소리 내어 답해 봅니다.</p>
+<details><summary>Q1. 검색을 한 번에 cross-encoder로 하지 않고 bi-encoder → cross-encoder 두 단계로 나누는 이유는?</summary><div class="answer">Cross-encoder는 질문과 조각을 한 쌍씩 함께 읽어야 해서 지식 베이스 전체에 돌리기엔 너무 느립니다. Bi-encoder는 조각 벡터를 미리 계산해 둘 수 있어 빠르게 후보를 추리고(재현율), 그 소수에만 정확한 cross-encoder를 씁니다(정밀도).</div></details>
+<details><summary>Q2. 관련 조각이 전체에 2개 있고 상위 3개 결과가 [✓, ✗, ✓]일 때 Precision@3, Recall@3, RR@3은?</summary><div class="answer">Precision@3 = 2/3 ≈ 0.67, Recall@3 = 2/2 = 1.0, 첫 관련 조각이 1위이므로 RR@3 = 1.0입니다.</div></details>
+<details><summary>Q3. "곰 인형이 추워해요" 예시에서 에이전트가 온도를 바로 올리지 않고 먼저 온도를 조회한 이유를 ReAct 단계로 설명해 보자.</summary><div class="answer">첫 관찰 단계에서 "원인이 방 온도일 수 있지만 현재 온도를 모른다"는 것을 정리했고, 그래서 계획이 "온도 확인"이 되었습니다. 조회 결과(65°F, 평균보다 5°F 낮음)를 다시 관찰한 뒤에야 "5°F 올리기"라는 다음 계획이 나옵니다. 모르는 것을 먼저 확인하는 것이 루프의 요점입니다.</div></details>
+</section>
+
+<section class="section" id="links"><h2>선수지식 · 관련 항목 · 다음 학습</h2>
+<div class="links">
+<a class="card must" href="ch6.html"><span class="tag p">선수지식</span><h3>6장 · 추론 모델</h3><p>관찰·계획 단계를 받치는 추론 능력 · <a href="ch2.html">2장</a>의 인코더(임베딩)</p></a>
+<a class="card along" href="../week7.html"><span class="tag y">관련 항목</span><h3>수업 자료 7차시</h3><p>같은 강의의 수업·시험 관점 정리</p></a>
+<a class="card later" href="ch8.html"><span class="tag g">다음 학습</span><h3>8장 · LLM 평가</h3><p>이 시스템이 잘하는지 어떻게 재나, 에이전트는 어디서 실패하나</p></a>
+</div></section>
+
+<section class="section"><h2>출처</h2>
+<ul class="sources">
+<li>Amidi &amp; Amidi, <a href="https://cme295.stanford.edu/slides/fall25-cme295-lecture7.pdf">CME295 Lecture 7 슬라이드</a> (Fall 2025) — 확인일 2026-11-14</li>
+<li>Lewis et al., <a href="https://arxiv.org/abs/2005.11401">Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</a>, 2020 · Reimers &amp; Gurevych, <a href="https://arxiv.org/abs/1908.10084">Sentence-BERT</a>, 2019</li>
+<li>Gao et al., <a href="https://arxiv.org/abs/2212.10496">Precise Zero-Shot Dense Retrieval without Relevance Labels (HyDE)</a>, 2022 · Anthropic, <a href="https://www.anthropic.com/news/contextual-retrieval">Introducing Contextual Retrieval</a>, 2024</li>
+<li>Anthropic, <a href="https://www.anthropic.com/news/model-context-protocol">Introducing the Model Context Protocol</a>, 2024 · Google, Announcing the Agent2Agent Protocol, 2025</li>
+<li>Yao et al., <a href="https://arxiv.org/abs/2210.03629">ReAct: Synergizing Reasoning and Acting in Language Models</a>, 2022 · Ye et al., ToolSword, 2024</li>
+</ul>
+<div class="meta">id: transformer-llm-master-ch7 · area: LLM · level: 중급 · prerequisites: transformer-llm-master-ch6, transformer-llm-master-ch2 · next: transformer-llm-master-ch8 · related: week7 · author: Claude · reviewer: 미지정 · status: draft · updated: 2026-11-14<br>지표의 숫자 예제는 설명을 위해 만든 것입니다. 지표 수식은 표준 정의입니다.</div>
+</section>
+
+<label class="done"><input type="checkbox" data-chapter="ch7"> 이 장을 이해했다 (전체 지도에 표시됩니다)</label>
+<div class="pager"><a href="ch6.html"><small>← 이전</small>6장 · 추론 모델</a><a class="next" href="ch8.html"><small>다음 →</small>8장 · LLM 평가</a></div>
+<div class="footer">AI Study · 트랜스포머와 거대언어모델 · 전문가 마스터 7장</div>
+</main><script src="master.js"></script><script src="../../../assets/inline-terms.js" defer></script></body></html>

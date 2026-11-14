@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="5장 선호 튜닝 — 선호 데이터, 보상 모델과 Bradley-Terry, PPO 기반 RLHF, Best-of-N, DPO">
+<title>5장 · 선호 튜닝 | 전문가 마스터</title>
+<link rel="stylesheet" href="master.css">
+<link rel="stylesheet" href="../../../assets/inline-terms.css">
+</head>
+<body><main class="wrap">
+<div class="topbar"><a href="index.html">← 전문가 마스터 전체 지도</a>
+<nav class="tabs" aria-label="보기 전환"><a href="../index.html">📚 수업 자료</a><a class="on" href="index.html">🎓 전문가 마스터</a></nav></div>
+
+<header class="hero"><span class="pill">5장 · CME295 LECTURE 5</span>
+<h1>선호 튜닝</h1>
+<p>SFT를 마친 모델도 "곰 인형과 시간을 보내지 마세요" 같은 엉뚱한 답을 합니다. 정답을 일일이 써 주는 대신 <b>"A가 B보다 낫다"</b>는 신호로 모델을 사람의 선호에 맞추는 방법을 봅니다.</p>
+<div class="goals"><div><b>이 장을 마치면</b>왜 SFT만으로 부족한지 설명할 수 있다</div><div><b>이 장을 마치면</b>RLHF의 두 단계와 필요한 모델 4개를 댈 수 있다</div><div><b>이 장을 마치면</b>DPO가 무엇을 없앴는지 수식으로 읽을 수 있다</div></div></header>
+<nav class="route"><a href="#big">큰 그림</a><a href="#analogy">비유</a><a href="#concepts">핵심 개념</a><a href="#math">수식 해부</a><a href="#cases">활용 사례</a><a href="#myths">오해</a><a href="#quiz">퀴즈</a><a href="#links">연결</a></nav>
+
+<section class="section" id="big"><h2>한눈에 보는 큰 그림</h2>
+<p class="lead">같은 선호 데이터에서 출발해 두 길로 갈립니다.</p>
+<div class="big-picture">
+<div class="flow"><div class="node">SFT 모델</div><div class="arrow">→</div><div class="node y">선호 데이터<br><small>(프롬프트, 좋은 답 ŷ<sub>w</sub>, 나쁜 답 ŷ<sub>l</sub>)</small></div></div>
+<div class="grid" style="margin-top:16px;color:var(--ink)">
+<div class="card"><span class="tag p">길 1 · RLHF (2단계)</span><div class="flow"><div class="node p">① 보상 모델 학습<br><small>좋고 나쁨을 점수로</small></div><div class="arrow">→</div><div class="node p">② 강화학습 (PPO)<br><small>점수가 높아지게 LLM 조정</small></div></div><p style="font-size:14px">필요한 모델: 정책(LLM), 가치 함수, 보상 모델, 기준 모델 = 4개</p></div>
+<div class="card"><span class="tag g">길 2 · DPO (1단계)</span><div class="flow"><div class="node g">지도학습 손실 하나<br><small>선호 쌍에서 바로 LLM 조정</small></div></div><p style="font-size:14px">필요한 모델: 정책(LLM), 기준 모델 = 2개. 보상 모델 없음</p></div>
+</div>
+<p>결과: "곰 인형을 세탁기에 넣어도 돼?" → SFT 모델: "아니요, 손상될 수 있어요. 손세탁하세요." → 선호 튜닝 후: "안 하는 게 좋아요. 곰 인형이 다칠 수 있어요! 부드럽게 손세탁하는 편이 안전해요." 내용은 같고 <b>말투와 태도</b>가 사람이 선호하는 쪽으로 옮겨 갑니다.</p></div></section>
+
+<section class="section" id="analogy"><h2>생활 비유: 요리 대회 심사</h2>
+<div class="grid">
+<div class="card"><span class="tag p">왜 "비교"인가</span><h3>레시피를 쓰기보다 맛을 비교하기가 쉽다</h3>
+<p>완벽한 요리의 레시피를 처음부터 쓰라면 어렵지만, 두 접시 중 어느 쪽이 나은지는 누구나 말할 수 있습니다. SFT는 모범 레시피를 요구하고, 선호 튜닝은 "이 접시가 저 접시보다 낫다"만 요구합니다.</p></div>
+<div class="card"><span class="tag p">RLHF와 DPO</span><h3>심사위원을 길러 쓸까, 기록지를 바로 쓸까</h3>
+<p><b>RLHF</b>: 사람의 비교 기록으로 <b>심사위원(보상 모델)</b>을 먼저 길러 놓고, 요리사가 새 요리를 낼 때마다 심사위원 점수를 받아 고쳐 나갑니다. <b>DPO</b>: 심사위원 없이, 요리사가 비교 기록지를 직접 보고 "이긴 접시처럼, 진 접시와는 다르게" 손을 고칩니다.</p>
+<div class="note"><b>한계.</b> 심사위원도 모델이라 속일 수 있습니다. 요리사가 맛이 아니라 심사위원의 버릇을 공략하면(reward hacking) 점수만 오릅니다. 그래서 "원래 실력에서 너무 벗어나지 말라"는 제약이 붙습니다.</div></div>
+</div></section>
+
+<section class="section" id="concepts"><h2>핵심 개념 카드</h2>
+<div class="grid">
+
+<article class="card must"><span class="tag p">필수 ①</span><h3>왜 선호 튜닝이 필요한가</h3>
+<ul style="padding-left:20px;margin:6px 0">
+<li>생성(A를 처음부터 쓰기)보다 비교(A가 B보다 낫다)가 쉽다.</li>
+<li>SFT는 데이터 분포에 민감해 "망치기" 쉽다.</li>
+<li>SFT용 고품질 데이터는 구하기 어려워 확장이 안 된다.</li>
+<li>SFT는 "하지 말아야 할 것"이라는 <b>부정 신호</b>를 직접 주지 못한다.</li></ul>
+<div class="why">다만 모델이 이상하게 굴면 SFT 데이터 품질부터 의심해 보라는 신호이기도 합니다.</div></article>
+
+<article class="card must"><span class="tag p">필수 ②</span><h3>선호 데이터의 세 형태</h3>
+<div class="tablewrap"><table class="cmp"><tr><th>형태</th><th>예</th></tr>
+<tr><td>Pointwise</td><td>관측마다 점수: 0.4, 0.9, 0.1, 0.2</td></tr>
+<tr><td><b>Pairwise</b></td><td>둘씩 비교: 1 &lt; 2, 1 &gt; 3, 1 &gt; 4, 2 &gt; 3</td></tr>
+<tr><td>Listwise</td><td>전체 순위: 2 &gt; 1 &gt; 4 &gt; 3</td></tr></table></div>
+<p><b>쌍 데이터 만드는 법.</b> ① 같은 프롬프트에 답 두 개 생성(로그나 기준 분포의 입력 + SFT 모델·합성·고쳐쓰기로 출력). ② 승패 라벨: 사람 평가 또는 대리 지표(LLM 심판, BLEU, ROUGE). 이분법 또는 세밀한 척도.</p></article>
+
+<article class="card along"><span class="tag y">보충 ③</span><h3>Reinforcement Learning 용어 대응</h3>
+<div class="tablewrap"><table class="cmp"><tr><th>강화학습</th><th>LLM에서는</th></tr>
+<tr><td>에이전트</td><td>LLM</td></tr><tr><td>상태</td><td>지금까지의 입력</td></tr><tr><td>행동</td><td>다음 토큰</td></tr><tr><td>환경</td><td>토큰(어휘)</td></tr><tr><td>정책 π</td><td>다음 토큰의 확률 분포</td></tr><tr><td>보상</td><td>사람의 선호</td></tr></table></div>
+<div class="why">목표: 정책 π가 사람의 선호와 맞도록 학습한다.</div></article>
+
+<article class="card must"><span class="tag p">필수 ④</span><h3>RLHF 1단계 — 보상 모델</h3>
+<div class="visual"><div class="flow"><div class="node">(프롬프트, 답)</div><div class="arrow">→</div><div class="node p">보상 모델 RM</div><div class="arrow">→</div><div class="node g">점수 r<br><small>예: 0.8 / −2</small></div></div></div>
+<p><b>입력</b> (프롬프트, 답) → <b>출력</b> 숫자 점수. 쌍 선호 데이터로 "이긴 답의 점수가 더 높게" 학습합니다(Bradley-Terry). 데이터는 약 1만 건 규모, 라벨은 사람 평가(RL<b>HF</b>의 "Human Feedback").</p>
+<p>모델: 사전학습된 LLM에 다음 토큰 예측 대신 분류 헤드를 붙이거나, BERT류 인코더의 [CLS] 투영을 씁니다.</p></article>
+
+<article class="card must"><span class="tag p">필수 ⑤</span><h3>RLHF 2단계 — 강화학습</h3>
+<div class="visual"><div class="flow"><div class="node">프롬프트</div><div class="arrow">→</div><div class="node p">LLM 🔥<br><small>학습됨</small></div><div class="arrow">→</div><div class="node">답</div><div class="arrow">→</div><div class="node b">RM ❄<br><small>고정</small></div><div class="arrow">→</div><div class="node g">점수</div><div class="arrow">↺</div></div></div>
+<p>LLM이 낸 답에 고정된 보상 모델이 점수를 매기고, 그 점수가 높아지도록 LLM 가중치를 바꿉니다. 데이터 약 10만 건 규모, 라벨은 보상 모델 점수, 시작점은 SFT 모델.</p>
+<div class="stop"><b>목적 함수의 두 항.</b> 보상을 최대화하되, 기준 모델에서 너무 멀어지지 않기. 뒤의 항이 없으면 reward hacking과 학습 불안정이 생깁니다.</div></article>
+
+<article class="card along"><span class="tag y">보충 ⑥</span><h3>PPO — 조금씩만 바꾸기</h3>
+<p>Proximal Policy Optimization. 실제로는 보상 그 자체가 아니라 <b>어드밴티지</b>(보상 − 기준선)를 최대화합니다. 기준선은 <b>가치 함수</b>가 줍니다: 토큰 단위로 "이 정책을 따르면 받을 보상"을 예측하며, 정책과 함께 학습됩니다(GAE로 추정).</p>
+<div class="tablewrap"><table class="cmp"><tr><th>변형</th><th>"조금씩"을 지키는 법</th></tr>
+<tr><td>PPO-Clip</td><td>새 정책과 옛 정책의 확률 <b>비율</b>을 [1−ε, 1+ε]로 자름</td></tr>
+<tr><td>PPO-KL penalty</td><td>두 정책 분포의 차이(KL)에 벌점. 요즘은 기준(base) 모델과의 KL을 씀</td></tr></table></div>
+<div class="why">용어 주의: 슬라이드도 지적하듯, 이것은 "최대화"하는 목적 함수이지 손실이 아니고, 식의 r은 보상이 아니라 비율(ratio)입니다.</div></article>
+
+<article class="card along"><span class="tag y">보충 ⑦</span><h3>RL의 어려움과 Best-of-N</h3>
+<p><b>어려움.</b> 보상 모델을 따로 학습(2단계) · 하이퍼파라미터 많음 · 학습 불안정 · 지켜볼 지표가 불분명 · 생성의 다양성 필요 · 선호 튜닝에 꼭 RL이 필요한지 분명치 않음.</p>
+<div class="visual"><div class="bars"><div class="bar"><span>영화 보기</span><i style="width:80%"></i><span>0.8 ①</span></div><div class="bar"><span>소풍 가기</span><i style="width:50%"></i><span>0.2 ②</span></div><div class="bar off"><span>놀지 마라</span><i style="width:4%"></i><span>−2 ③</span></div></div></div>
+<p><b>Best-of-N.</b> RL을 건너뛰고, SFT 모델로 답을 N개 만든 뒤 보상 모델 점수가 가장 높은 것을 고릅니다. 학습은 필요 없지만 <b>매 요청마다 N배 생성</b>이라 추론 비용이 큽니다.</p></article>
+
+<article class="card must"><span class="tag p">필수 ⑧</span><h3>DPO — 지도학습으로 바꾸기</h3>
+<p>Direct Preference Optimization. PPO 목적 함수에서 출발해 최적 정책을 풀고, 거기서 "보상" 항을 찾아 Bradley-Terry 식에 넣으면 <b>보상 모델이 사라진</b> 손실이 나옵니다.</p>
+<div class="tablewrap"><table class="cmp"><tr><th></th><th>RLHF (PPO)</th><th>DPO</th></tr>
+<tr><td>학습</td><td>여러 단계</td><td>지도학습 한 번</td></tr>
+<tr><td>추가 모델</td><td>보상·가치·기준 모델</td><td>기준 모델만</td></tr>
+<tr><td>데이터</td><td>보상 모델 점수</td><td>선호 쌍을 직접 사용</td></tr>
+<tr><td>성능</td><td colspan="2">뚜렷한 합의 없음. 과제와 구현에 따라 다름</td></tr></table></div></article>
+</div></section>
+
+<section class="section" id="math"><h2>최소 수식 해부</h2>
+<div class="grid">
+<div class="formula-box"><span class="tag p">수식 1</span><h3>Bradley-Terry와 보상 모델 손실</h3>
+<div class="equation">P(<span class="c3">y<sub>w</sub></span> ≻ <span class="c1">y<sub>l</sub></span>) = e<sup><span class="c3">r<sub>w</sub></span></sup> / (e<sup><span class="c3">r<sub>w</sub></span></sup> + e<sup><span class="c1">r<sub>l</sub></span></sup>) = σ(<span class="c3">r<sub>w</sub></span> − <span class="c1">r<sub>l</sub></span>)<br>L<sub>RM</sub> = − log σ(<span class="c3">r<sub>w</sub></span> − <span class="c1">r<sub>l</sub></span>)</div>
+<div class="decode"><span><b>y<sub>w</sub>, y<sub>l</sub></b><i>와이 더블유, 와이 엘</i>이긴(winner) 답과 진(loser) 답</span><span><b>r<sub>w</sub>, r<sub>l</sub></b><i>알</i>보상 모델이 각 답에 준 점수</span><span><b>σ</b><i>시그마 (시그모이드)</i>아무 숫자를 0~1로 바꾸는 함수</span></div>
+<div class="formula-read"><b>문장으로 읽기:</b> 이긴 답이 실제로 이길 확률은 두 점수의 <b>차이</b>로 정해진다. 그 확률이 낮으면 벌점.<br><b>숫자 예제.</b> r<sub>w</sub>=0.8, r<sub>l</sub>=−2 → 차이 2.8 → σ(2.8) ≈ 0.943 → 손실 ≈ 0.059 (잘 맞힘).<br>반대로 r<sub>w</sub>=−2, r<sub>l</sub>=0.8 → σ(−2.8) ≈ 0.057 → 손실 ≈ 2.86 (크게 틀림).</div></div>
+
+<div class="formula-box"><span class="tag p">수식 2</span><h3>RLHF의 목적 함수</h3>
+<div class="equation">max<sub>π</sub> &nbsp; E[ <span class="c3">r(x, y)</span> ] − <span class="c4">β</span> · <span class="c1">KL</span>( π ‖ <span class="c2">π<sub>ref</sub></span> )</div>
+<div class="decode"><span><b>π</b><i>파이</i>지금 학습 중인 정책(LLM)</span><span><b>r(x,y)</b><i>알</i>프롬프트 x에 대한 답 y의 보상 점수</span><span><b>π<sub>ref</sub></b><i>파이 레프</i>기준 모델(SFT 모델), 고정</span><span><b>KL</b><i>케이엘</i>두 분포가 얼마나 다른지</span><span><b>β</b><i>베타</i>"멀어지지 마" 항의 세기</span><span><b>E[·]</b><i>기댓값</i>여러 프롬프트·답에 대한 평균</span></div>
+<div class="formula-read"><b>문장으로 읽기:</b> 평균 보상을 높이되, 기준 모델과 달라진 만큼 감점한다.</div></div>
+
+<div class="formula-box"><span class="tag y">수식 3</span><h3>PPO-Clip</h3>
+<div class="equation">L<sup>clip</sup> = E[ min( <span class="c2">ρ</span> · <span class="c3">A</span> , clip(<span class="c2">ρ</span>, 1−<span class="c4">ε</span>, 1+<span class="c4">ε</span>) · <span class="c3">A</span> ) ]<br><span class="c2">ρ</span> = π<sub>new</sub>(a|s) / π<sub>old</sub>(a|s)</div>
+<div class="decode"><span><b>ρ</b><i>로 (비율)</i>새 정책이 그 토큰에 준 확률 ÷ 옛 정책의 확률. 논문에서는 r<sub>t</sub></span><span><b>A</b><i>에이 (어드밴티지)</i>보상 − 기준선. 평소보다 얼마나 좋았나</span><span><b>ε</b><i>엡실론</i>허용 변화 폭 (예: 0.2)</span></div>
+<div class="formula-read"><b>숫자 예제 (ε = 0.2).</b><br>ρ=1.5, A=+2 → min(3.0, 1.2×2=2.4) = <b>2.4</b>. 좋은 행동이라도 확률을 20% 넘게 올린 몫은 인정하지 않는다.<br>ρ=0.5, A=−1 → min(−0.5, 0.8×(−1)=−0.8) = <b>−0.8</b>. 불리한 쪽으로는 더 비관적인 값을 쓴다.</div></div>
+
+<div class="formula-box"><span class="tag g">수식 4</span><h3>DPO 손실</h3>
+<div class="equation">L<sub>DPO</sub> = − log σ( <span class="c4">β</span> [ log <span class="c3">π(y<sub>w</sub>|x)</span>/<span class="c2">π<sub>ref</sub>(y<sub>w</sub>|x)</span> − log <span class="c1">π(y<sub>l</sub>|x)</span>/<span class="c2">π<sub>ref</sub>(y<sub>l</sub>|x)</span> ] )</div>
+<div class="decode"><span><b>π(y<sub>w</sub>|x)</b><i>파이</i>학습 중인 모델이 이긴 답에 주는 확률</span><span><b>π<sub>ref</sub></b><i>파이 레프</i>기준 모델이 같은 답에 주는 확률</span><span><b>log π/π<sub>ref</sub></b><i>로그 비</i>기준보다 얼마나 더 밀어주는가 = 숨은 "보상"</span></div>
+<div class="formula-read"><b>문장으로 읽기:</b> 수식 1의 r 자리에 "기준 모델 대비 로그 확률 비"를 넣은 것. 이긴 답은 기준보다 더, 진 답은 기준보다 덜 나오게 한다.<br><b>유도 5단계(생략된 계산):</b> PPO 목적 → 최적 정책 → "보상" 항 식별 → Bradley-Terry 대입 → DPO 손실. 논문 제목처럼 "언어 모델이 곧 보상 모델"이다.</div></div>
+</div></section>
+
+<section class="section" id="cases"><h2>실제 AI 활용 사례</h2>
+<div class="grid">
+<article class="card usecase"><div class="icon">🛡️</div><div><h3>비서 모델의 말투·안전 정렬</h3><dl>
+<dt>문제</dt><dd>SFT 모델이 가끔 무례하거나 해로운 답을 함</dd>
+<dt>입력</dt><dd>같은 프롬프트에 대한 답 쌍과 사람의 선택</dd>
+<dt>배우는 것</dt><dd>보상 모델 → 그 점수를 높이는 LLM (RLHF), 또는 DPO 손실로 직접</dd>
+<dt>출력</dt><dd>도움이 되고 해롭지 않은 쪽으로 기운 모델</dd>
+<dt>이 장의 개념</dt><dd>부정 신호 주입, KL 제약</dd>
+<dt>한계</dt><dd>평가자의 선호가 곧 기준. 평가자 집단의 편향이 그대로 들어감</dd></dl></div></article>
+<article class="card usecase"><div class="icon">🏆</div><div><h3>보상 모델을 재순위기로 쓰기</h3><dl>
+<dt>문제</dt><dd>RL 학습 없이 답 품질을 올리고 싶음</dd>
+<dt>입력</dt><dd>프롬프트 하나, 후보 답 N개</dd>
+<dt>배우는 것</dt><dd>보상 모델만 (LLM은 그대로)</dd>
+<dt>출력</dt><dd>점수 1등 답</dd>
+<dt>이 장의 개념</dt><dd>Best-of-N</dd>
+<dt>한계</dt><dd>추론 비용 N배. 후보가 다 나쁘면 그중 덜 나쁜 것을 고를 뿐</dd></dl></div></article>
+</div></section>
+
+<section class="section" id="myths"><h2>자주 하는 오해</h2>
+<div class="myth"><div class="stop">❌ "RLHF는 사람이 학습 내내 실시간으로 점수를 준다."</div><div class="ok">✅ 사람은 처음에 선호 데이터를 만들 때만 참여합니다. 강화학습 단계에서는 그 데이터로 학습한 <b>보상 모델</b>이 점수를 줍니다.</div></div>
+<div class="myth"><div class="stop">❌ "보상을 최대화하는 것이 목표의 전부다."</div><div class="ok">✅ KL 제약이 절반입니다. 제약이 없으면 보상 모델의 허점을 파고드는 이상한 답으로 무너집니다.</div></div>
+<div class="myth"><div class="stop">❌ "DPO는 RLHF보다 항상 낫다."</div><div class="ok">✅ 구현이 쉬운 것은 맞지만 성능 우열에는 합의가 없습니다. 과제와 구현 세부에 따라 달라집니다.</div></div>
+<div class="myth"><div class="stop">❌ "선호 튜닝은 모델에 새 지식을 넣는다."</div><div class="ok">✅ 이미 낼 수 있는 답들 중 어느 쪽을 더 내게 할지 조정합니다. 지식은 사전학습·SFT·검색의 몫입니다.</div></div>
+</section>
+
+<section class="section quiz" id="quiz"><h2>확인 퀴즈 3문항</h2><p class="lead">답을 열기 전에 소리 내어 답해 봅니다.</p>
+<details><summary>Q1. 보상 모델이 이긴 답에 1.0, 진 답에 1.0을 줬다면 Bradley-Terry 확률과 손실은 얼마일까? 이 상황은 무엇을 뜻할까?</summary><div class="answer">차이가 0이므로 σ(0) = 0.5, 손실은 −log 0.5 ≈ 0.69입니다. 보상 모델이 두 답을 전혀 구분하지 못하고 동전 던지기를 하고 있다는 뜻입니다.</div></details>
+<details><summary>Q2. PPO 기반 RLHF에 필요한 모델 4개는 무엇이고, DPO에서는 그중 무엇이 빠질까?</summary><div class="answer">정책(학습되는 LLM), 가치 함수, 보상 모델, 기준(base) 모델입니다. DPO는 보상 모델과 가치 함수가 필요 없고 정책과 기준 모델만 씁니다.</div></details>
+<details><summary>Q3. Best-of-N과 DPO는 둘 다 RL을 피합니다. 비용이 발생하는 시점은 어떻게 다를까?</summary><div class="answer">Best-of-N은 학습 비용이 없지만 요청마다 N개를 생성하므로 추론 때마다 비용이 듭니다. DPO는 학습 때 한 번 비용을 치르고, 추론은 평소와 같은 한 번 생성입니다.</div></details>
+</section>
+
+<section class="section" id="links"><h2>선수지식 · 관련 항목 · 다음 학습</h2>
+<div class="links">
+<a class="card must" href="ch4.html"><span class="tag p">선수지식</span><h3>4장 · LLM 학습</h3><p>사전학습과 SFT, 다음 토큰 손실</p></a>
+<a class="card along" href="../week5.html"><span class="tag y">관련 항목</span><h3>수업 자료 5차시</h3><p>같은 강의의 수업·시험 관점 정리</p></a>
+<a class="card later" href="ch6.html"><span class="tag g">다음 학습</span><h3>6장 · 추론 모델</h3><p>같은 RL 도구를 "생각하는 법"에 쓰기</p></a>
+</div></section>
+
+<section class="section"><h2>출처</h2>
+<ul class="sources">
+<li>Amidi &amp; Amidi, <a href="https://cme295.stanford.edu/slides/fall25-cme295-lecture5.pdf">CME295 Lecture 5 슬라이드</a> (Fall 2025) — 확인일 2026-11-14</li>
+<li>Ouyang et al., <a href="https://arxiv.org/abs/2203.02155">Training language models to follow instructions with human feedback</a>, 2022</li>
+<li>Schulman et al., <a href="https://arxiv.org/abs/1707.06347">Proximal Policy Optimization Algorithms</a>, 2017 · <a href="https://arxiv.org/abs/1506.02438">Generalized Advantage Estimation</a>, 2015</li>
+<li>Rafailov et al., <a href="https://arxiv.org/abs/2305.18290">Direct Preference Optimization</a>, 2023 · Xu et al., Is DPO Superior to PPO for LLM Alignment?, 2024</li>
+<li>Bradley &amp; Terry, The rank analysis of incomplete block designs, 1952 · Lambert et al., <a href="https://arxiv.org/abs/2403.13787">RewardBench</a>, 2024</li>
+</ul>
+<div class="meta">id: transformer-llm-master-ch5 · area: LLM · level: 중급 · prerequisites: transformer-llm-master-ch4 · next: transformer-llm-master-ch6 · related: week5 · author: Claude · reviewer: 미지정 · status: draft · updated: 2026-11-14<br>수식은 원 논문의 표준 표기입니다. 보상 점수 0.8 / −2 / 0.2는 슬라이드의 예시이고, 나머지 숫자 예제는 설명을 위해 만든 것입니다.</div>
+</section>
+
+<label class="done"><input type="checkbox" data-chapter="ch5"> 이 장을 이해했다 (전체 지도에 표시됩니다)</label>
+<div class="pager"><a href="ch4.html"><small>← 이전</small>4장 · LLM 학습</a><a class="next" href="ch6.html"><small>다음 →</small>6장 · 추론 모델</a></div>
+<div class="footer">AI Study · 트랜스포머와 거대언어모델 · 전문가 마스터 5장</div>
+</main><script src="master.js"></script><script src="../../../assets/inline-terms.js" defer></script></body></html>

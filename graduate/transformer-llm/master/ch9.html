@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="9장 트랜스포머 너머와 앞으로 — 한 학기 복습, ViT와 VLM, 디퓨전 LLM, 모달리티 교차, 하드웨어, 남은 과제">
+<title>9장 · 트랜스포머 너머와 앞으로 | 전문가 마스터</title>
+<link rel="stylesheet" href="master.css">
+<link rel="stylesheet" href="../../../assets/inline-terms.css">
+</head>
+<body><main class="wrap">
+<div class="topbar"><a href="index.html">← 전문가 마스터 전체 지도</a>
+<nav class="tabs" aria-label="보기 전환"><a href="../index.html">📚 수업 자료</a><a class="on" href="index.html">🎓 전문가 마스터</a></nav></div>
+
+<header class="hero"><span class="pill">9장 · CME295 LECTURE 9</span>
+<h1>트랜스포머 너머와 앞으로</h1>
+<p>마지막 장은 세 가지를 합니다. 1~8장을 한 장으로 <b>되감고</b>, Transformer가 글 밖(이미지)으로 나간 모습을 보고, "한 토큰씩"이라는 전제 자체를 바꾸려는 <b>디퓨전 LLM</b>과 남은 과제를 정리합니다.</p>
+<div class="goals"><div><b>이 장을 마치면</b>1~8장의 핵심을 한 문장씩 말할 수 있다</div><div><b>이 장을 마치면</b>이미지가 Transformer의 토큰이 되는 과정을 설명할 수 있다</div><div><b>이 장을 마치면</b>자기회귀와 마스크 디퓨전 생성의 차이를 그릴 수 있다</div></div></header>
+<nav class="route"><a href="#big">큰 그림</a><a href="#recap">전체 복습</a><a href="#analogy">비유</a><a href="#concepts">핵심 개념</a><a href="#math">수식 해부</a><a href="#cases">활용 사례</a><a href="#myths">오해</a><a href="#quiz">퀴즈</a><a href="#links">연결</a></nav>
+
+<section class="section" id="big"><h2>한눈에 보는 큰 그림</h2>
+<p class="lead">Transformer는 2017년 번역을 위해 나왔지만, 핵심인 Query·Key·Value Attention은 "순서 있는 조각들"이면 무엇에든 쓸 수 있습니다.</p>
+<div class="big-picture">
+<div class="flow"><div class="node v">Transformer<br><small>Self-Attention<br>약한 귀납 편향 → 높은 범용성</small></div><div class="arrow">→</div><div class="node">글 생성<br><small>LLM (1~8장)</small></div><div class="node b">이미지 이해<br><small>ViT</small></div><div class="node p">이미지 + 글<br><small>VLM</small></div><div class="node y">이미지 생성<br><small>DiT, MM-DiT</small></div><div class="node">추천·음성 등</div></div>
+<p style="text-align:center">▼ 생성 방식의 대안</p>
+<div class="flow"><div class="node r">자기회귀 (ARM)<br><small>왼쪽부터 한 토큰씩<br>추론을 병렬화할 수 없음</small></div><div class="arrow">vs</div><div class="node g">마스크 디퓨전 (MDM)<br><small>전부 가린 뒤 여러 자리를 동시에 채움<br>더 적은 순전파</small></div></div>
+<p><b>귀납 편향이 약하다</b>는 것은 "이웃 픽셀이 중요하다" 같은 가정을 구조에 덜 박아 두었다는 뜻입니다. 데이터가 충분하면 그런 규칙을 스스로 배우므로 여러 분야로 옮겨 가기 쉽습니다.</p></div></section>
+
+<section class="section" id="recap"><h2>한 학기 되감기</h2>
+<p class="lead">각 줄을 가리고 스스로 말해 본 뒤 확인합니다.</p>
+<div class="tablewrap"><table class="cmp">
+<tr><th>장</th><th>한 문장</th><th>꼭 기억할 것</th></tr>
+<tr><td><a href="ch1.html">1 Transformer</a></td><td>글을 토큰·벡터로 바꾸고, 모든 토큰이 서로를 직접 참고한다.</td><td>softmax(QK<sup>T</sup>/√d<sub>k</sub>)V</td></tr>
+<tr><td><a href="ch2.html">2 개량과 BERT</a></td><td>위치는 회전으로, 정규화는 앞에서, K·V 헤드는 공유한다. 인코더만 쓰면 BERT.</td><td>RoPE, Pre-Norm, GQA, MLM</td></tr>
+<tr><td><a href="ch3.html">3 LLM의 생성</a></td><td>다음 토큰 확률에서 규칙에 따라 하나를 뽑아 이어 붙인다.</td><td>온도, top-p, KV 캐시, MoE</td></tr>
+<tr><td><a href="ch4.html">4 학습</a></td><td>거대한 글로 언어를 배우고(사전학습), 예시로 행동을 배운다(SFT).</td><td>다음 토큰 손실, LoRA: W<sub>0</sub>+BA</td></tr>
+<tr><td><a href="ch5.html">5 선호 튜닝</a></td><td>"A가 B보다 낫다"는 신호로 사람의 선호에 맞춘다.</td><td>보상 모델, PPO, DPO</td></tr>
+<tr><td><a href="ch6.html">6 추론 모델</a></td><td>검증 가능한 보상으로 "답하기 전에 생각하는" 습관을 강화한다.</td><td>GRPO: 조 평균 대비 어드밴티지</td></tr>
+<tr><td><a href="ch7.html">7 에이전틱</a></td><td>찾아보고(RAG), 도구를 쓰고, 목표까지 반복한다(에이전트).</td><td>검색 2단계, ReAct, MCP</td></tr>
+<tr><td><a href="ch8.html">8 평가</a></td><td>사람·규칙·LLM 심판으로 재되, 숫자를 맹신하지 않는다.</td><td>LaaJ 편향, Pass^k, 굿하트</td></tr>
+</table></div>
+<div class="visual"><div class="flow"><div class="node">초기화</div><div class="arrow">→</div><div class="node p">사전학습</div><div class="arrow">→</div><div class="node y">미세조정</div><div class="arrow">→</div><div class="node g">선호 튜닝</div><div class="arrow">→</div><div class="node v">추론 강화</div><div class="arrow">→</div><div class="node">RAG·도구·에이전트</div><div class="arrow">→</div><div class="node">평가</div></div></div>
+</section>
+
+<section class="section" id="analogy"><h2>생활 비유</h2>
+<div class="grid">
+<div class="card"><span class="tag p">ViT</span><h3>그림을 직소 퍼즐 조각으로</h3>
+<p>사진을 같은 크기의 정사각형 조각으로 잘라 한 줄로 늘어놓으면, 각 조각은 "단어"처럼 다룰 수 있습니다. 조각마다 원래 자리 번호를 붙이고 Transformer 인코더에 넣으면, 조각들이 서로를 참고해 "이 그림은 곰 인형"이라고 판단합니다.</p>
+<div class="note"><b>한계.</b> 퍼즐을 맞추는 사람은 가장자리 모양으로 이웃을 압니다. ViT는 그런 사전 지식이 없어 위치 임베딩과 많은 데이터로 배워야 합니다.</div></div>
+<div class="card"><span class="tag p">디퓨전</span><h3>대리석에서 조각상 꺼내기</h3>
+<p>슬라이드가 인용한 미켈란젤로의 말처럼, 조각상은 이미 돌 안에 있고 조각가는 군더더기를 깎아 낼 뿐입니다. 디퓨전 모델은 순수한 잡음(대리석 덩어리)에서 시작해 불필요한 것을 단계적으로 걷어 내 결과물에 이릅니다. 글에서는 "잡음" 대신 <b>가림([MASK])</b>을 씁니다. 타자기(자기회귀)가 왼쪽부터 한 글자씩 친다면, 디퓨전은 십자말풀이처럼 확신 있는 칸부터 여러 칸을 동시에 채웁니다.</p>
+<div class="note"><b>한계.</b> 십자말풀이는 한 번 쓴 칸을 고칠 수 있지만, 기본 마스크 디퓨전은 한 번 드러낸 토큰을 다시 가리지 않습니다(변형은 연구 중).</div></div>
+</div></section>
+
+<section class="section" id="concepts"><h2>핵심 개념 카드</h2>
+<div class="grid">
+
+<article class="card must"><span class="tag p">필수 ①</span><h3>Vision Transformer (ViT)</h3>
+<div class="visual"><div class="flow"><div class="node">이미지<br><small>H×W×C</small></div><div class="arrow">→</div><div class="node">P×P 패치로 자르기</div><div class="arrow">→</div><div class="node">선형 투영<br><small>패치 → D차원</small></div><div class="arrow">→</div><div class="node y">[CLS] + 위치 임베딩</div><div class="arrow">→</div><div class="node v">인코더</div><div class="arrow">→</div><div class="node g">[CLS] → FFN → 분류</div></div></div>
+<p>논문 제목 그대로 "이미지 한 장은 16×16 단어의 가치". <a href="ch2.html">2장</a>의 BERT와 같은 구조입니다: 인코더 전용, [CLS] 토큰, 위치 임베딩, [CLS] 벡터를 투영해 분류. 달라진 것은 토큰을 만드는 방법뿐입니다.</p></article>
+
+<article class="card must"><span class="tag p">필수 ②</span><h3>Vision Language Model (VLM)</h3>
+<p>"이 곰 인형 얼마나 귀여워?" + 사진 → "아주 귀여워요!"</p>
+<div class="tablewrap"><table class="cmp"><tr><th>방법</th><th>구조</th><th>예</th></tr>
+<tr><td>① 디코더 전용 재활용</td><td>이미지를 인코더로 벡터화 → 글 토큰 임베딩 공간으로 투영 → 글 토큰과 한 줄로 이어 평범한 LLM에 입력</td><td>LLaVA (Visual Instruction Tuning)</td></tr>
+<tr><td>② 교차 Attention</td><td>디코더 안에 교차 Attention 층을 넣어 글 토큰이 이미지 표현을 참고</td><td>Llama 3 계열 비전 모델</td></tr></table></div>
+<div class="why">②는 <a href="ch1.html">1장</a>의 인코더-디코더 Attention과 같은 발상입니다. "원문" 자리에 이미지가 들어갔을 뿐입니다.</div></article>
+
+<article class="card must"><span class="tag p">필수 ③</span><h3>자기회귀의 한계</h3>
+<div class="visual"><span class="tok x">[BOS]</span> → <span class="tok g">A</span> → <span class="tok g">teddy</span> → <span class="tok g">bear</span> → <span class="tok g">is</span> → <span class="tok p">?</span></div>
+<p>지금까지 본 모든 LLM은 <b>자기회귀 모델(ARM)</b>입니다. 앞 토큰이 정해져야 다음 토큰을 계산하므로 <b>추론을 병렬화할 수 없습니다</b>. 학습 때는 정답 문장 전체가 있어 병렬로 계산하지만, 생성 때는 토큰 수만큼 순전파를 반복합니다.</p></article>
+
+<article class="card must"><span class="tag p">필수 ④</span><h3>Diffusion — 이미지에서 글로</h3>
+<div class="tablewrap"><table class="cmp"><tr><th></th><th>이미지 디퓨전</th><th>글 디퓨전 (마스크)</th></tr>
+<tr><td>정방향 (망가뜨리기)</td><td>이미지에 잡음을 더함</td><td>토큰을 어떤 확률로 [MASK]로 가림</td></tr>
+<tr><td>역방향 (학습 대상)</td><td>잡음을 걷어 내기</td><td>가린 토큰을 맞히기</td></tr>
+<tr><td>출발점</td><td>순수 잡음</td><td>전부 [MASK]</td></tr></table></div>
+<div class="visual"><p style="margin:0 0 6px"><b>정방향</b> <span class="tok">A</span><span class="tok">teddy</span><span class="tok">bear</span><span class="tok">is</span><span class="tok">reading</span> → <span class="tok">A</span><span class="tok x">MASK</span><span class="tok">bear</span><span class="tok">is</span><span class="tok x">MASK</span> → <span class="tok x">MASK</span><span class="tok x">MASK</span><span class="tok x">MASK</span><span class="tok x">MASK</span><span class="tok x">MASK</span></p>
+<p style="margin:0"><b>역방향</b> <span class="tok x">MASK</span><span class="tok x">MASK</span><span class="tok x">MASK</span><span class="tok x">MASK</span><span class="tok x">MASK</span> → <span class="tok g">A</span><span class="tok x">MASK</span><span class="tok g">bear</span><span class="tok g">is</span><span class="tok x">MASK</span> → <span class="tok g">A</span><span class="tok g">teddy</span><span class="tok g">bear</span><span class="tok g">is</span><span class="tok g">reading</span></p></div>
+<p>잡음은 뽑기 쉽고, 변환은 학습되며, 수학적으로 잘 정의됩니다. 글은 이산적이라 "조금 흐리게"가 안 되므로 가림이 잡음 역할을 합니다. 이런 모델을 <b>MDM</b>(Masked Diffusion Model)이라 합니다.</p></article>
+
+<article class="card along"><span class="tag y">보충 ⑤</span><h3>디퓨전 LLM의 장점과 과제</h3>
+<div class="tablewrap"><table class="cmp"><tr><th>장점</th><th>과제·진행 중인 연구</th></tr>
+<tr><td>⚡ 한 번의 순전파로 여러 토큰을 드러내, 자기회귀 대비 초당 출력 토큰 약 10배 (슬라이드 수치)</td><td>성능: 아직 최고 자기회귀 모델에 못 미침</td></tr>
+<tr><td>💻 일부 과제에 더 적합 (양쪽 문맥을 보고 가운데를 채우는 편집 등)</td><td>KV 캐시 등 자기회귀용 기법을 그대로 못 써 새로 맞춰야 함</td></tr></table></div>
+<p style="font-size:14px">2025년 동향(슬라이드): Google이 I/O(5월 20일)에서 디퓨전 기반 LLM을 시연, Inception과 ByteDance도 발표.</p></article>
+
+<article class="card along"><span class="tag y">보충 ⑥</span><h3>모달리티 간 아이디어 교환</h3>
+<div class="tablewrap"><table class="cmp"><tr><th>무엇이</th><th>어디서 어디로</th></tr>
+<tr><td>디퓨전 학습</td><td>이미지 → 글 출력 (Large Language Diffusion Models)</td></tr>
+<tr><td>Transformer 구조</td><td>글 → 이미지 생성 (Diffusion Transformer, DiT)</td></tr>
+<tr><td>입력 표현</td><td>글을 이미지로 넣어 압축 (DeepSeek-OCR)</td></tr>
+<tr><td>RoPE 변형</td><td>글의 1차원 회전 → 이미지의 2차원 위치 (Qwen-Image)</td></tr></table></div></article>
+
+<article class="card later"><span class="tag g">확장 ⑦</span><h3>아직 정해지지 않은 기초</h3>
+<p><b>미시 설계.</b> 논문마다 여전히 다릅니다: 옵티마이저(AdamW 대 Muon 계열), 정규화 방식, MHA·MQA·GQA, 활성화 함수, MoE 사용 여부, 층 수.</p>
+<p><b>연료.</b> 앞으로 고품질 데이터는 어디서 오나. 모델이 만든 데이터로 다시 학습하면 모델이 잊어버린다는 연구가 있습니다.</p>
+<p><b>초점 이동.</b> "최고 성능"에서 "품질 대 비용의 최적 맞교환"으로(<a href="ch8.html">8장</a>의 파레토 전선).</p>
+<p><b>하드웨어.</b> 현재 GPU는 행렬 연산에 최적화되어 있지만, Attention은 K·V를 자주 읽고 쓰며 메모리 이동이 비용을 지배합니다. KV 캐시를 전용 셀에 두고 아날로그 신호로 계산하는 방식이 제안되었고, 논문은 H100 대비 지연 최대 약 100배·에너지 약 7만 배 절감을 보고합니다.</p></article>
+
+<article class="card later"><span class="tag g">확장 ⑧</span><h3>남은 과제와 따라가는 법</h3>
+<div class="stop"><b>개선이 필요한 영역.</b> 가중치가 고정됨(지속 학습 아님) · 환각 · 개인화 · 해석 가능성 · 안전.</div>
+<p><b>앞으로의 사용.</b> 지금: 코딩, 대화형 비서, 창작, 학습. 가까운 미래: 에이전트의 대중화, 브라우저·운영체제 수준 통합. 먼 미래: 큰 책임을 지는 자율 에이전트.</p>
+<div class="why"><b>최신 흐름 따라가기.</b> 논문: arXiv cs.CL, NeurIPS·ICML·ICLR·ACL·EMNLP · 코드: 논문의 GitHub, Hugging Face 트렌딩 · 그 외: 연구자 SNS, 유튜브(Two Minute Papers, Yannic Kilcher, Andrej Karpathy 등), 기업·대학 기술 블로그 · 강의 요약본: <a href="https://github.com/afshinea/stanford-cme-295-transformers-large-language-models">VIP Cheatsheet</a>(한국어 포함).</div></article>
+</div></section>
+
+<section class="section" id="math"><h2>최소 수식 해부</h2>
+<div class="grid">
+<div class="formula-box"><span class="tag p">수식 1</span><h3>ViT의 토큰 수</h3>
+<div class="equation"><span class="c1">N</span> = (<span class="c2">H</span> × <span class="c2">W</span>) / <span class="c4">P</span>² , &nbsp; 패치 하나의 길이 = <span class="c4">P</span>² × <span class="c3">C</span></div>
+<div class="decode"><span><b>H, W, C</b><i>에이치, 더블유, 시</i>이미지 높이, 너비, 채널 수</span><span><b>P</b><i>피</i>패치 한 변의 픽셀 수</span><span><b>N</b><i>엔</i>패치(토큰) 개수</span></div>
+<div class="formula-read"><b>숫자 예제.</b> 224×224 컬러(C=3), P=16 → N = 224²/16² = 14×14 = <b>196개</b>. 패치 하나는 16×16×3 = <b>768개 숫자</b>이고 선형 투영으로 D차원이 된다. [CLS]를 더해 인코더 입력은 197토큰.<br><b>문장으로 읽기:</b> 패치를 절반 크기(P=8)로 줄이면 토큰이 4배(784개), Attention 비용은 그 제곱으로 늘어난다.</div></div>
+
+<div class="formula-box"><span class="tag p">수식 2</span><h3>마스크 디퓨전의 학습 손실</h3>
+<div class="equation">L = − E<sub><span class="c4">t</span>, x<sub>0</sub>, x<sub>t</sub></sub> [ (1/<span class="c4">t</span>) Σ<sub>i</sub> <span class="c1">1</span>[x<sub>t</sub><sup>i</sup> = MASK] · log <span class="c2">p<sub>θ</sub></span>( <span class="c3">x<sub>0</sub><sup>i</sup></span> | x<sub>t</sub> ) ]</div>
+<div class="decode"><span><b>t</b><i>티</i>가림 비율 (0~1에서 무작위로 뽑음)</span><span><b>x<sub>0</sub>, x<sub>t</sub></b><i>엑스 제로, 엑스 티</i>원문과, t만큼 가린 문장</span><span><b>1[·]</b><i>지시 함수</i>가려진 자리만 계산</span><span><b>p<sub>θ</sub></b><i>피 세타</i>모델이 그 자리의 원래 토큰에 준 확률</span><span><b>1/t</b><i>티 분의 일</i>가림 비율에 따른 가중치</span><span><b>E</b><i>기댓값</i>여러 문장·비율에 대한 평균</span></div>
+<div class="formula-read"><b>문장으로 읽기:</b> 문장을 무작위 비율로 가리고, 가려진 자리마다 원래 토큰을 맞히게 한다. <a href="ch2.html">2장</a> BERT의 MLM과 닮았지만, 가림 비율이 15% 고정이 아니라 <b>0~100% 전 구간</b>이어서 "전부 가린 상태"에서 시작하는 생성이 가능하다. (Large Language Diffusion Models의 형태. 유도는 생략.)</div></div>
+
+<div class="formula-box"><span class="tag y">수식 3</span><h3>순전파 횟수 비교</h3>
+<div class="equation">자기회귀: <span class="c1">N</span>번 &nbsp; vs &nbsp; 디퓨전: <span class="c3">T</span>번 (<span class="c3">T</span> &lt; <span class="c1">N</span>)</div>
+<div class="formula-read"><b>숫자 예제.</b> 256토큰 답. 자기회귀는 순전파 256번(KV 캐시로 각 회는 가벼움). 디퓨전이 16단계로 끝내면 순전파 <b>16번</b>, 단계마다 평균 16토큰을 드러낸다.<br><b>주의:</b> 디퓨전의 한 번은 문장 전체를 다시 계산하므로 한 회가 더 무겁다. 단계 수 T를 줄이면 빨라지지만 품질이 떨어지는 맞교환이 있다.</div></div>
+
+<div class="formula-box"><span class="tag g">수식 4</span><h3>파레토 최적의 정의</h3>
+<div class="equation">모델 A가 전선 위 ⟺ <span class="c1">품질도 더 높고 비용도 더 낮은</span> 다른 모델이 없다</div>
+<div class="formula-read"><b>숫자 예제.</b> (품질, 비용): A(90, 10), B(85, 3), C(80, 5). C는 B보다 품질도 낮고 비용도 높으므로 탈락. A와 B가 전선이다. A와 B 중 무엇을 고를지는 예산이 정한다.</div></div>
+</div></section>
+
+<section class="section" id="cases"><h2>실제 AI 활용 사례</h2>
+<div class="grid">
+<article class="card usecase"><div class="icon">🧾</div><div><h3>문서·사진 이해 (VLM)</h3><dl>
+<dt>문제</dt><dd>영수증, 도표, 화면 캡처에 대해 묻고 답하기</dd>
+<dt>입력</dt><dd>이미지 + 질문</dd>
+<dt>배우는 것</dt><dd>이미지 표현을 글 공간에 잇는 투영층(과 필요하면 LLM 일부)</dd>
+<dt>출력</dt><dd>글 답변</dd>
+<dt>이 장의 개념</dt><dd>ViT로 패치 토큰화 → 디코더 전용 LLM에 이어 붙이기 또는 교차 Attention</dd>
+<dt>한계</dt><dd>이미지 토큰이 컨텍스트를 많이 차지. 작은 글씨·세부 묘사에서 환각</dd></dl></div></article>
+<article class="card usecase"><div class="icon">✏️</div><div><h3>빠른 코드 편집 (디퓨전 LLM)</h3><dl>
+<dt>문제</dt><dd>긴 파일의 중간 부분을 지연 없이 고치기</dd>
+<dt>입력</dt><dd>앞뒤 코드와 가려진 가운데 영역</dd>
+<dt>배우는 것</dt><dd>임의 비율로 가린 토큰을 복원</dd>
+<dt>출력</dt><dd>여러 자리가 동시에 채워진 코드</dd>
+<dt>이 장의 개념</dt><dd>마스크 디퓨전: 양쪽 문맥 사용, 적은 순전파</dd>
+<dt>한계</dt><dd>현재는 품질이 최고 자기회귀 모델에 못 미치고, 추론·도구 사용 등 기존 기법의 이식이 진행 중</dd></dl></div></article>
+</div></section>
+
+<section class="section" id="myths"><h2>자주 하는 오해</h2>
+<div class="myth"><div class="stop">❌ "디퓨전 LLM은 Transformer를 버린 모델이다."</div><div class="ok">✅ 바뀐 것은 <b>생성 절차와 학습 목표</b>입니다. 신경망 본체는 여전히 Transformer인 경우가 대부분입니다(미래를 가리지 않는 양방향 Attention).</div></div>
+<div class="myth"><div class="stop">❌ "ViT는 이미지 전용으로 새로 설계된 구조다."</div><div class="ok">✅ 인코더는 그대로이고, 입력을 패치 토큰으로 만드는 앞단만 다릅니다.</div></div>
+<div class="myth"><div class="stop">❌ "자기회귀 모델은 학습도 한 토큰씩 느리게 한다."</div><div class="ok">✅ 학습은 정답 문장 전체를 넣고 미래를 가려 병렬로 합니다. 병렬이 안 되는 것은 추론입니다.</div></div>
+<div class="myth"><div class="stop">❌ "Transformer가 최종 답으로 확정됐다."</div><div class="ok">✅ 강의는 "Transformer가 최선의 구조인가?"를 열린 질문으로 남깁니다. 기초 설계 선택조차 아직 논문마다 다릅니다.</div></div>
+</section>
+
+<section class="section quiz" id="quiz"><h2>확인 퀴즈 3문항</h2><p class="lead">답을 열기 전에 소리 내어 답해 봅니다.</p>
+<details><summary>Q1. 384×384 컬러 이미지를 16×16 패치로 자르면 ViT 인코더에 들어가는 토큰은 몇 개일까?</summary><div class="answer">384/16 = 24이므로 24×24 = 576개 패치, [CLS]를 더해 577토큰입니다.</div></details>
+<details><summary>Q2. BERT의 MLM과 마스크 디퓨전 LLM은 둘 다 가린 토큰을 맞힌다. 왜 BERT는 글을 생성하지 못하고 디퓨전 LLM은 할 수 있을까?</summary><div class="answer">BERT는 15% 정도만 가린 상태에서만 학습해, 거의 다 가려진 문장을 다루는 법을 모릅니다. 마스크 디퓨전은 0~100%의 모든 가림 비율로 학습하므로 전부 [MASK]인 상태에서 출발해 단계적으로 드러내는 생성이 가능합니다.</div></details>
+<details><summary>Q3. 이 과정 전체에서 "가중치를 바꾸는" 기법과 "가중치는 그대로 두고 바깥에서 돕는" 기법을 각각 셋씩 들어 보자.</summary><div class="answer">가중치를 바꾸는 것: 사전학습, SFT(LoRA 포함), 선호 튜닝(RLHF·DPO), 추론 강화(GRPO). 그대로 두는 것: 프롬프팅(few-shot, CoT), 디코딩 설정(온도, top-p), RAG, 도구 호출·에이전트 루프, KV 캐시 같은 추론 최적화.</div></details>
+</section>
+
+<section class="section" id="links"><h2>선수지식 · 관련 항목 · 다음 학습</h2>
+<div class="links">
+<a class="card must" href="ch8.html"><span class="tag p">선수지식</span><h3>8장 · LLM 평가</h3><p>그리고 1~7장 전체. 막히는 줄이 있으면 위 되감기 표에서 해당 장으로</p></a>
+<a class="card along" href="../../../topics/diffusion-prerequisites.html"><span class="tag y">관련 항목</span><h3>디퓨전 선수지식 전체</h3><p>이미지 디퓨전의 정방향·역방향과 수식 기초</p></a>
+<a class="card later" href="index.html"><span class="tag g">다음 학습</span><h3>전체 지도로 돌아가기</h3><p>이해 완료 표시를 확인하고, 약한 장을 다시 읽기. 후속 장(멀티모달·디퓨전 심화)은 예정</p></a>
+</div></section>
+
+<section class="section"><h2>출처</h2>
+<ul class="sources">
+<li>Amidi &amp; Amidi, <a href="https://cme295.stanford.edu/slides/fall25-cme295-lecture9.pdf">CME295 Lecture 9 슬라이드</a> (Fall 2025) — 확인일 2026-11-14</li>
+<li>Dosovitskiy et al., <a href="https://arxiv.org/abs/2010.11929">An Image is Worth 16x16 Words</a>, 2020 · Liu et al., <a href="https://arxiv.org/abs/2304.08485">Visual Instruction Tuning (LLaVA)</a>, 2023 · Meta, <a href="https://arxiv.org/abs/2407.21783">The Llama 3 Herd of Models</a>, 2024</li>
+<li>Ho et al., <a href="https://arxiv.org/abs/2006.11239">Denoising Diffusion Probabilistic Models</a>, 2020 · Peebles &amp; Xie, <a href="https://arxiv.org/abs/2212.09748">Scalable Diffusion Models with Transformers (DiT)</a>, 2022</li>
+<li>Nie et al., <a href="https://arxiv.org/abs/2502.09992">Large Language Diffusion Models</a>, 2025 · Sahoo et al., <a href="https://arxiv.org/abs/2406.07524">Simple and Effective Masked Diffusion Language Models</a>, 2024 · Lou et al., <a href="https://arxiv.org/abs/2310.16834">Discrete Diffusion Modeling by Estimating the Ratios of the Data Distribution</a>, 2023</li>
+<li>Shumailov et al., <a href="https://arxiv.org/abs/2305.17493">The Curse of Recursion</a>, 2023 · Leroux et al., Analog in-memory computing attention mechanism for fast and energy-efficient large language models, 2025</li>
+</ul>
+<div class="meta">id: transformer-llm-master-ch9 · area: LLM · level: 중급 · prerequisites: transformer-llm-master-ch8 · next: (예정) · related: diffusion-prerequisites · author: Claude · reviewer: 미지정 · status: draft · updated: 2026-11-14<br>속도·에너지 수치는 슬라이드가 인용한 논문·발표의 주장입니다. 동향은 2025년 12월 강의 시점 기준이며, 숫자 예제는 설명을 위해 만든 것입니다.</div>
+</section>
+
+<label class="done"><input type="checkbox" data-chapter="ch9"> 이 장을 이해했다 (전체 지도에 표시됩니다)</label>
+<div class="pager"><a href="ch8.html"><small>← 이전</small>8장 · LLM 평가</a><a class="next" href="index.html"><small>처음으로 →</small>전체 지도</a></div>
+<div class="footer">AI Study · 트랜스포머와 거대언어모델 · 전문가 마스터 9장</div>
+</main><script src="master.js"></script><script src="../../../assets/inline-terms.js" defer></script></body></html>
