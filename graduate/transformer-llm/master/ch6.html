@@ -19,6 +19,15 @@
 <nav class="route"><a href="#big">큰 그림</a><a href="#analogy">비유</a><a href="#concepts">핵심 개념</a><a href="#math">수식 해부</a><a href="#cases">활용 사례</a><a href="#myths">오해</a><a href="#quiz">퀴즈</a><a href="#links">연결</a></nav>
 
 <section class="section" id="big"><h2>한눈에 보는 큰 그림</h2>
+<div class="puzzle-bridge">
+<p class="puzzle-label">앞에서 가져온 조각 → 여기서 해결 → 다음 질문</p>
+<div class="puzzle-context"><div><b><a href="ch5.html#concepts">앞 조각 · 5장</a></b><p>5장에서 보상으로 행동을 고치는 법을 배웠다. 수학·코드는 취향 대신 정답이나 테스트로 채점할 수 있다.</p></div><div><b>지금 맞출 조각</b><p>확인 가능한 결과를 보상으로 삼고, 같은 질문의 여러 답을 비교해 학습한다.</p></div><div><b><a href="ch7.html#big">다음 조각 · 7장</a></b><p>풀이 능력이 좋아도 최신 지식이나 외부 실행 능력이 자동으로 생기지는 않는다.</p></div></div>
+<ol class="puzzle-steps" aria-label="이 장의 개념이 이어지는 이유"><li><a href="#piece-6-2"><b>1. 정답·테스트로 결과를 채점한다</b></a><p><b>왜 필요한가</b> 취향 채점 대신 자동으로 확인 가능한 문제에서 신호를 얻는다.</p></li>
+<li><a href="#piece-6-3"><b>2. 같은 질문의 답 묶음 안에서 비교한다</b></a><p><b>왜 필요한가</b> 별도 가치 모델 대신 묶음의 보상 통계를 기준선으로 삼는다.</p></li>
+<li><a href="#piece-6-4"><b>3. 생성 중 쓸 계산량을 조절한다</b></a><p><b>왜 필요한가</b> 학습 때 고치는 것과 실행 때 더 길게 풀거나 여러 번 시도하는 것은 다르다.</p></li>
+<li><a href="#link-6-3"><b>4. 여러 학습 단계를 연결한다</b></a><p><b>왜 필요한가</b> 강화학습 하나만이 아니라 초기 데이터·추가 학습·정제 등의 역할을 함께 본다.</p></li></ol>
+<p class="memory-scope">화살표는 이해를 위한 연결입니다. 모두를 반드시 순서대로 적용하는 시스템 구성도는 아닙니다.</p>
+</div>
 <p class="lead">평범한 LLM의 약점 네 가지: 제한된 추론, 고정된 지식, 행동 불가, 평가의 어려움. 이 장은 첫째를 다룹니다(둘째·셋째는 <a href="ch7.html">7장</a>, 넷째는 <a href="ch8.html">8장</a>).</p>
 <div class="big-picture">
 <div class="flow"><div class="node">질문</div><div class="arrow">→</div><div class="node">LLM</div><div class="arrow">→</div><div class="node">답</div></div>
@@ -39,7 +48,13 @@
 <section class="section" id="concepts"><h2>핵심 개념 카드</h2>
 <div class="grid">
 
-<article class="card must"><span class="tag p">필수 ①</span><h3>추론이란</h3>
+<article class="card must"><span class="tag p">필수 ①</span><h3 id="piece-6-1">추론이란</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>Reasoning = 중간 단계를 거쳐 답을 푸는 과정</p>
+<p><b>작은 예</b> 17×23을 17×20 + 17×3으로 나눠 계산한다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>Inference는 학습된 모델의 실행 전반, Reasoning은 그 안에서 문제를 단계적으로 푸는 능력·과정이다.</p><p><b>비유의 경계</b> 한국어로 둘 다 ‘추론’이라 부르지만 같은 범위가 아니다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>실행 전체 / 단계적 문제 풀이</b> — Reasoning = 중간 단계를 거쳐 답을 푸는 과정</p></details>
+</div>
 <p>잠정적 정의: <b>문제를 푸는 능력</b>.</p>
 <div class="tablewrap"><table class="cmp"><tr><th>추론이 아님 (기억)</th><th>추론</th></tr>
 <tr><td>"스탠퍼드 Transformers &amp; LLMs 수업의 과목 코드는?"</td><td>"이 곰은 2020년에 태어났다. 지금 몇 살인가?"</td></tr></table></div>
@@ -54,12 +69,24 @@
 <tr><td>Pass@1</td><td>k = 1인 특수한 경우</td><td>한 번의 생성이 중요할 때</td></tr>
 <tr><td>Cons@k</td><td>k번의 다수결 답이 정답인가</td><td>자기 일관성을 쓸 때</td></tr></table></div></article>
 
-<article class="card must"><span class="tag p">필수 ③</span><h3>검증 가능한 보상으로 RL</h3>
+<article class="card must"><span class="tag p">필수 ③</span><h3 id="piece-6-2">검증 가능한 보상으로 RL</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>검증 보상 = 정답 비교나 테스트 결과로 주는 점수</p>
+<p><b>작은 예</b> 코드가 테스트를 통과하면 1점, 실패하면 0점처럼 설계할 수 있다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>검증기는 답을 확인하는 규칙이나 프로그램이다. 모든 과제에 자동 검증기가 있는 것은 아니다.</p><p><b>비유의 경계</b> 테스트 통과가 모든 상황의 정답이나 안전을 보장하지는 않는다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>정답·실행 결과로 채점</b> — 검증 보상 = 정답 비교나 테스트 결과로 주는 점수</p></details>
+</div>
 <p>왜 SFT가 아니라 RL인가: 추론 사슬을 손으로 쓰기는 비현실적이고, 사람 풀이에 모델을 가두고 싶지 않으며, "풀었나?"라는 자연스러운 예/아니오 보상이 있습니다.</p>
 <div class="visual"><div class="flow"><div class="node y">보상 1 · 형식<br><small>&lt;think&gt;…&lt;/think&gt; 뒤에 답이 있는가</small></div><div class="arrow">+</div><div class="node g">보상 2 · 정확도<br><small>테스트 통과 / 정답 일치</small></div><div class="arrow">=</div><div class="node p">보상</div></div></div>
 <div class="why">5장의 보상 모델과 달리 <b>사람 평가도, 학습된 심판도 필요 없습니다</b>. 규칙으로 채점하므로 속일 여지가 적습니다.</div></article>
 
-<article class="card must"><span class="tag p">필수 ④</span><h3>GRPO — Group Relative Policy Optimization</h3>
+<article class="card must"><span class="tag p">필수 ④</span><h3 id="piece-6-3">GRPO — Group Relative Policy Optimization</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>GRPO = 같은 질문의 여러 답 중 상대적으로 좋은 답을 더 배우기</p>
+<p><b>작은 예</b> 보상 0·0·1·1인 답 묶음에서 1점 답은 평균보다 좋은 쪽이다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>그룹은 같은 질문에서 생성한 답 묶음이다. 원형 GRPO는 평균과 표준편차로 보상을 정규화한다.</p><p><b>비유의 경계</b> 그룹 점수로 비교한다는 뜻이며, 언제나 사람 선호 보상을 쓰는 것은 아니다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>한 질문의 답끼리 상대 평가</b> — GRPO = 같은 질문의 여러 답 중 상대적으로 좋은 답을 더 배우기</p></details>
+</div>
 <div class="visual"><div class="flow"><div class="node">질문 q</div><div class="arrow">→</div><div class="node v">정책이 답 G개 생성</div><div class="arrow">→</div><div class="node">각각 채점<br><small>r<sub>1</sub>…r<sub>G</sub></small></div><div class="arrow">→</div><div class="node p">조 평균과 비교<br><small>= 어드밴티지</small></div></div></div>
 <div class="tablewrap"><table class="cmp"><tr><th></th><th>PPO (5장)</th><th>GRPO</th></tr>
 <tr><td>확률 비율, 클리핑</td><td>있음</td><td>있음 (같음)</td></tr>
@@ -79,7 +106,13 @@
 <tr><td>Dr. GRPO</td><td>(1/G) Σ<sub>i</sub> Σ<sub>t</sub> — 길이로 나누지 않음</td></tr></table></div>
 <p><b>그 밖의 조정.</b> 난이도 편향: 어드밴티지를 표준편차로 나누면 문제 난이도에 따라 신호 크기가 왜곡되어, 이 나눗셈을 빼는 방법이 있습니다. 다양성 장려: 클리핑 범위를 [1−ε, 1+ε]에서 [1−ε<sub>low</sub>, 1+ε<sub>high</sub>]로 위아래를 따로 둡니다(DAPO).</p></article>
 
-<article class="card along"><span class="tag y">보충 ⑥</span><h3>추론 시 "생각량" 조절</h3>
+<article class="card along"><span class="tag y">보충 ⑥</span><h3 id="piece-6-4">추론 시 "생각량" 조절</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>생각량 = 실행할 때 풀이 토큰이나 시도에 쓰는 계산량</p>
+<p><b>작은 예</b> 한 번 길게 풀거나 여러 답을 만들고 검사하는 식으로 비용을 더 쓸 수 있다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>Test-time compute는 모델을 사용하는 시점에 쓰는 연산이다. 추가 학습과 다르다.</p><p><b>비유의 경계</b> 더 길게 쓴 풀이가 항상 더 정확한 것은 아니다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>실행할 때 더 계산하기</b> — 생각량 = 실행할 때 풀이 토큰이나 시도에 쓰는 계산량</p></details>
+</div>
 <p>모든 질문이 같은 양의 생각을 필요로 하지 않습니다.</p>
 <div class="tablewrap"><table class="cmp"><tr><th>방법</th><th>내용</th></tr>
 <tr><td>동적 예산</td><td>질문에 따라 생각 토큰 한도를 달리 줌</td></tr>
@@ -88,7 +121,7 @@
 <tr><td>"연속" 생각</td><td>글이 아닌 잠재 벡터 공간에서 추론</td></tr></table></div>
 <div class="why">추론 때 더 많이 계산해 성능을 올리는 것을 <b>test-time scaling</b>이라고 합니다.</div></article>
 
-<article class="card must" style="grid-column:1/-1"><span class="tag p">필수 ⑦</span><h3>DeepSeek-R1의 학습 파이프라인</h3>
+<article class="card must" style="grid-column:1/-1"><span class="tag p">필수 ⑦</span><h3 id="link-6-3">DeepSeek-R1의 학습 파이프라인</h3>
 <p><b>R1-Zero (개념 증명).</b> 사전학습 모델 V3-Base(MoE, 전체 약 671B · 활성 약 37B)에 SFT 없이 바로 GRPO. 장점: SFT 없이도 추론 능력 획득. 문제: 추론 사슬의 형식과 가독성이 나쁨.</p>
 <div class="visual"><div class="flow">
 <div class="node">① 사전학습<br><small>V3-Base</small></div><div class="arrow">→</div>
@@ -113,7 +146,13 @@
 <div class="decode"><span><b>|o<sub>i</sub>|</b><i>오 아이의 길이</i>i번째 답의 토큰 수</span><span><b>ρ<sub>i,t</sub></b><i>로</i>t번째 토큰에서 새/옛 정책 확률 비</span><span><b>β KL</b><i>베타 케이엘</i>기준 모델에서 멀어지면 감점</span></div>
 <div class="formula-read"><b>문장으로 읽기:</b> PPO-Clip과 같은 모양인데, 어드밴티지는 조 평균으로 구하고 KL은 따로 뺀다.<br><b>길이 문제의 출처:</b> 1/|o<sub>i</sub>|. 긴 답일수록 토큰 하나가 받는 신호가 작아진다. DAPO·Dr. GRPO는 이 나눗셈을 바꾼다.</div></div>
 
-<div class="formula-box"><span class="tag y">수식 3</span><h3>Pass@k</h3>
+<div class="formula-box"><span class="tag y">수식 3</span><h3 id="piece-6-5">Pass@k</h3>
+<div class="memory-piece">
+<p class="memory-plain"><b>한 문장으로</b>Pass@k = k번의 시도 안에 한 번이라도 맞힐 가능성</p>
+<p><b>작은 예</b> 독립 시도 한 번의 성공률이 0.5라면 2번 중 한 번 이상 성공할 확률은 0.75다.</p>
+<details class="memory-decode"><summary>말을 더 풀어 보면</summary><p>여기 숫자는 독립·동일 성공률의 설명용 예다. 실제 벤치마크는 유한 샘플 추정식을 쓸 수 있다.</p><p><b>비유의 경계</b> 정답을 알아서 골라주는 제품 성공률이나 모든 시도 성공률과는 다르다.</p></details>
+<details class="memory-recall"><summary>잠깐 가리고 떠올리기 · 이 개념의 역할은?</summary><p><b>여러 번 중 한 번 이상</b> — Pass@k = k번의 시도 안에 한 번이라도 맞힐 가능성</p></details>
+</div>
 <div class="equation">Pass@<span class="c4">k</span> = 1 − C(<span class="c1">n</span>−<span class="c3">c</span>, <span class="c4">k</span>) / C(<span class="c1">n</span>, <span class="c4">k</span>) &nbsp; ≈ &nbsp; 1 − (1 − <span class="c2">p</span>)<sup><span class="c4">k</span></sup></div>
 <div class="decode"><span><b>n, c</b><i>엔, 시</i>시도 횟수와 그중 성공 횟수</span><span><b>C(n−c, k)</b><i>조합</i>실패한 것들에서만 k개를 뽑는 경우의 수</span><span><b>p</b><i>피</i>한 번 시도의 성공 확률 (≈ c/n)</span></div>
 <div class="formula-read"><b>문장으로 읽기:</b> n개 답안에서 k개를 뽑았을 때 전부 실패작일 확률을 1에서 뺀다.<br><b>숫자 예제.</b> 10번 중 3번 성공(n=10, c=3), k=5 → 1 − C(7,5)/C(10,5) = 1 − 21/252 ≈ <b>0.92</b>. 독립 어림 1 − 0.7⁵ ≈ 0.83.<br>한 번에 30%밖에 못 푸는 모델도 5번 기회를 주면 80~90%가 된다. Pass@k만 보고 "잘한다"고 판단하면 안 되는 이유. <a href="ch8.html">8장</a>의 Pass^k(전부 성공)와 대비해 보자.</div></div>
@@ -159,6 +198,7 @@
 </section>
 
 <section class="section" id="links"><h2>선수지식 · 관련 항목 · 다음 학습</h2>
+<div class="puzzle-check"><details><summary>연결 확인 · 왜 이 장이 필요했을까?</summary><p><b>이전 한계</b> 5장에서 보상으로 행동을 고치는 법을 배웠다. 수학·코드는 취향 대신 정답이나 테스트로 채점할 수 있다.</p><p><b>해결한 것</b> 확인 가능한 결과를 보상으로 삼고, 같은 질문의 여러 답을 비교해 학습한다.</p><p><b>남은 질문</b> 풀이 능력이 좋아도 최신 지식이나 외부 실행 능력이 자동으로 생기지는 않는다.</p></details><p><a href="ch5.html#concepts">앞 조각 · 5장</a> <span aria-hidden="true"> · </span> <a href="index.html#puzzle-map">전체 연결 지도</a> <span aria-hidden="true"> · </span> <a href="ch7.html#big">다음 조각 · 7장</a></p></div>
 <div class="links">
 <a class="card must" href="ch5.html"><span class="tag p">선수지식</span><h3>5장 · 선호 튜닝</h3><p>RL 용어, PPO의 비율과 클리핑</p></a>
 <a class="card along" href="../week6.html"><span class="tag y">관련 항목</span><h3>수업 자료 6차시</h3><p>같은 강의의 수업·시험 관점 정리</p></a>
@@ -166,7 +206,7 @@
 </div></section>
 
 <section class="section"><h2>출처</h2>
-<ul class="sources">
+<ul class="sources"><li>GRPO 용어·연결 설명: <a href="https://arxiv.org/abs/2402.03300">DeepSeekMath 원 논문</a> — 확인일 2026-11-14</li>
 <li>Amidi &amp; Amidi, <a href="https://cme295.stanford.edu/slides/fall25-cme295-lecture6.pdf">CME295 Lecture 6 슬라이드</a> (Fall 2025) — 확인일 2026-11-14</li>
 <li>DeepSeek-AI, <a href="https://arxiv.org/abs/2501.12948">DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning</a>, 2025 · <a href="https://arxiv.org/abs/2412.19437">DeepSeek-V3 Technical Report</a>, 2024</li>
 <li>Shao et al., <a href="https://arxiv.org/abs/2402.03300">DeepSeekMath (GRPO)</a>, 2024</li>
