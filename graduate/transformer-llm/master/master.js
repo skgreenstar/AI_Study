@@ -30,3 +30,52 @@
     if(txt)txt.textContent=cards.length+'개 장 중 '+n+'개 이해 완료';
   }
 })();
+
+/* 메인 전용 보기 전환. JS가 없으면 두 보기를 모두 읽을 수 있다. */
+(function(){
+  var tabs=Array.from(document.querySelectorAll('[data-master-view]'));
+  if(!tabs.length)return;
+  var panels=Array.from(document.querySelectorAll('.master-view'));
+  var list=document.querySelector('.master-view-tabs');
+  list.setAttribute('role','tablist');
+  var media=window.matchMedia('(max-width:760px)');
+  function orientation(){list.setAttribute('aria-orientation',media.matches?'horizontal':'vertical')}
+  orientation();
+  if(media.addEventListener)media.addEventListener('change',orientation);
+  tabs.forEach(function(tab){
+    tab.setAttribute('role','tab');
+    tab.setAttribute('aria-controls',tab.dataset.masterView);
+  });
+  panels.forEach(function(panel){panel.setAttribute('role','tabpanel');panel.tabIndex=0});
+  function activate(id){
+    panels.forEach(function(panel){panel.hidden=panel.id!==id});
+    tabs.forEach(function(tab){
+      var active=tab.dataset.masterView===id;
+      tab.setAttribute('aria-selected',String(active));
+      tab.tabIndex=active?0:-1;
+    });
+  }
+  function fromHash(scroll){
+    var id;
+    try{id=decodeURIComponent(window.location.hash.slice(1))}catch(e){id=''}
+    var target=id?document.getElementById(id):null;
+    var panel=target&&target.closest('.master-view');
+    activate(panel?panel.id:'history');
+    if(scroll&&panel&&target)target.scrollIntoView({block:'start'});
+  }
+  tabs.forEach(function(tab,index){
+    tab.addEventListener('click',function(){activate(tab.dataset.masterView)});
+    tab.addEventListener('keydown',function(event){
+      var next=index;
+      if(event.key==='ArrowDown'||event.key==='ArrowRight')next=(index+1)%tabs.length;
+      else if(event.key==='ArrowUp'||event.key==='ArrowLeft')next=(index+tabs.length-1)%tabs.length;
+      else if(event.key==='Home')next=0;
+      else if(event.key==='End')next=tabs.length-1;
+      else if(event.key===' '){event.preventDefault();tab.click();return}
+      else return;
+      event.preventDefault();tabs[next].focus();tabs[next].click();
+    });
+  });
+  window.addEventListener('hashchange',function(){fromHash(true)});
+  fromHash(!!window.location.hash);
+})();
