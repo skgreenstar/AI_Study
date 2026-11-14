@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="트랜스포머와 LLM을 원리부터 이해하는 전문가 마스터 과정 — Stanford CME295 1~9강 기반 9개 장">
+<title>🎓 전문가 마스터 · 트랜스포머와 거대언어모델 | AI Study</title>
+<link rel="stylesheet" href="master.css">
+<link rel="stylesheet" href="../../../assets/inline-terms.css">
+</head>
+<body><main class="wrap">
+<div class="topbar"><a href="../../index.html">← 대학원 · 2026년 2학기</a>
+<nav class="tabs" aria-label="보기 전환"><a href="../index.html">📚 수업 자료</a><a class="on" href="index.html" aria-current="page">🎓 전문가 마스터</a></nav></div>
+
+<header class="hero"><span class="pill">TRANSFORMER &amp; LLM · MASTER TRACK</span>
+<h1>트랜스포머와 LLM,<br>원리부터 끝까지</h1>
+<p>수업 진도와 별개로, <b>"왜 이렇게 만들었는가"</b>를 스스로 설명할 수 있게 되는 것이 목표입니다. Stanford CME295 (Fall 2025) 1~9강 슬라이드를 한 강의 = 한 장으로 다시 풀어 썼습니다.</p>
+<div class="goals"><div><b>대상</b>트랜스포머·LLM을 처음 접하는 사람</div><div><b>방식</b>그림 → 비유 → 수식 해부 → 숫자 예제</div><div><b>완료 기준</b>각 장 퀴즈 3문항을 자기 말로 답하기</div></div></header>
+
+<section class="section" id="map"><h2>한눈에 보는 전체 지도</h2>
+<p class="lead">9개 장은 세 덩어리입니다. 모델 <b>안</b>에서 일어나는 일, 모델을 <b>만드는</b> 일, 모델을 <b>세상과 연결하고 검증하는</b> 일.</p>
+<div class="legend"><span class="tag p">분홍 · 먼저 알아야 하는 핵심</span><span class="tag y">노랑 · 함께 보충</span><span class="tag g">민트 · 후속 확장</span></div>
+<div class="big-picture">
+<div class="flow"><div class="node p">① 텍스트 → 숫자<br><small>토큰·임베딩</small></div><div class="arrow">→</div><div class="node p">① Self-Attention<br><small>Q·K·V</small></div><div class="arrow">→</div><div class="node p">① Transformer<br><small>인코더·디코더</small></div><div class="arrow">→</div><div class="node p">② 개량과 분화<br><small>RoPE·GQA·BERT</small></div><div class="arrow">→</div><div class="node p">③ LLM의 생성<br><small>디코딩·프롬프트</small></div></div>
+<p style="text-align:center">▼ 이 구조에 <b>지식과 행동</b>을 넣는다</p>
+<div class="flow"><div class="node y">④ 사전학습·SFT<br><small>다음 토큰 맞히기</small></div><div class="arrow">→</div><div class="node y">⑤ 선호 튜닝<br><small>RLHF·DPO</small></div><div class="arrow">→</div><div class="node y">⑥ 추론 모델<br><small>검증 가능한 보상·GRPO</small></div></div>
+<p style="text-align:center">▼ 고정된 모델의 <b>한계를 바깥에서</b> 메운다</p>
+<div class="flow"><div class="node g">⑦ 에이전틱 LLM<br><small>RAG·도구·에이전트</small></div><div class="arrow">→</div><div class="node g">⑧ 평가<br><small>LaaJ·벤치마크</small></div><div class="arrow">→</div><div class="node g">⑨ 트랜스포머 너머<br><small>ViT·VLM·디퓨전 LLM</small></div></div>
+<p><b>한 문장으로:</b> 글을 숫자 조각으로 바꾸고(①), 조각끼리 서로를 참고하게 만든 구조를 쌓아(①②), 다음 조각을 하나씩 뽑아 문장을 만든다(③). 그 구조를 엄청난 글로 훈련하고(④) 사람의 선호와 추론 습관을 입힌 뒤(⑤⑥), 모르는 것은 찾아보고 행동하게 하며(⑦), 정말 잘하는지 잰다(⑧).</p>
+</div></section>
+
+<section class="section" id="chapters"><h2>9개 장</h2>
+<p class="lead" id="progress-text">9개 장 중 0개 이해 완료</p>
+<div class="progress" aria-hidden="true"><i></i></div>
+<div class="chapgrid">
+<a class="chap" data-chapter="ch1" href="ch1.html"><span class="n">1장 · LECTURE 1</span><h3>Transformer의 탄생</h3><p>토큰화, 임베딩, RNN의 한계, Self-Attention 손계산, 인코더·디코더 한 바퀴</p><span class="st">읽으러 가기 →</span></a>
+<a class="chap" data-chapter="ch2" href="ch2.html"><span class="n">2장 · LECTURE 2</span><h3>Transformer의 개량과 BERT</h3><p>위치 정보(사인·RoPE), Pre-Norm·RMSNorm, GQA, 세 갈래 모델, BERT 해부</p><span class="st">읽으러 가기 →</span></a>
+<a class="chap" data-chapter="ch3" href="ch3.html"><span class="n">3장 · LECTURE 3</span><h3>LLM은 어떻게 답을 만드나</h3><p>MoE, 온도·top-k·top-p 실험기, 프롬프팅, KV 캐시와 추론 최적화</p><span class="st">읽으러 가기 →</span></a>
+<a class="chap" data-chapter="ch4" href="ch4.html"><span class="n">4장 · LECTURE 4</span><h3>LLM의 학습</h3><p>사전학습과 스케일링 법칙, 분산 학습·FlashAttention, SFT, LoRA·QLoRA</p><span class="st">읽으러 가기 →</span></a>
+<a class="chap" data-chapter="ch5" href="ch5.html"><span class="n">5장 · LECTURE 5</span><h3>선호 튜닝</h3><p>선호 데이터, 보상 모델과 Bradley-Terry, PPO, Best-of-N, DPO</p><span class="st">읽으러 가기 →</span></a>
+<a class="chap" data-chapter="ch6" href="ch6.html"><span class="n">6장 · LECTURE 6</span><h3>추론 모델</h3><p>CoT를 대규모로, 검증 가능한 보상, GRPO, DeepSeek-R1 파이프라인</p><span class="st">읽으러 가기 →</span></a>
+<a class="chap" data-chapter="ch7" href="ch7.html"><span class="n">7장 · LECTURE 7</span><h3>에이전틱 LLM</h3><p>RAG 검색 2단계와 지표, 도구 호출, MCP, ReAct, A2A, 안전</p><span class="st">읽으러 가기 →</span></a>
+<a class="chap" data-chapter="ch8" href="ch8.html"><span class="n">8장 · LECTURE 8</span><h3>LLM의 평가</h3><p>사람 평가와 카파, BLEU·ROUGE, LLM-as-a-Judge, 에이전트 실패 유형, 벤치마크</p><span class="st">읽으러 가기 →</span></a>
+<a class="chap" data-chapter="ch9" href="ch9.html"><span class="n">9장 · LECTURE 9</span><h3>트랜스포머 너머와 앞으로</h3><p>ViT·VLM, 디퓨전 LLM, 모달리티 교차, 하드웨어, 남은 과제</p><span class="st">읽으러 가기 →</span></a>
+</div></section>
+
+<section class="section" id="how"><h2>이 탭을 읽는 법</h2>
+<div class="grid g3">
+<div class="card must"><span class="tag p">1</span><h3>큰 그림부터</h3><p>각 장 첫 화면의 흐름도만 보고 "무엇이 무엇으로 바뀌는지"를 말해 봅니다. 세부는 그다음입니다.</p></div>
+<div class="card along"><span class="tag y">2</span><h3>수식은 읽는 법까지</h3><p>모든 수식에 기호별 발음·뜻·역할과 "문장으로 읽기"가 붙어 있습니다. 숫자 예제를 손으로 따라가면 충분합니다.</p></div>
+<div class="card later"><span class="tag g">3</span><h3>퀴즈로 닫기</h3><p>3문항을 답을 열기 전에 말로 답합니다. 막히면 그 장의 "자주 하는 오해"로 돌아갑니다.</p></div>
+</div>
+<div class="note" style="margin-top:16px"><b>수업 자료와의 차이.</b> <a href="../index.html">수업 자료 탭</a>은 실제 수업 주차와 시험 대비가 중심이고, 이 탭은 개념의 이유와 연결이 중심입니다. 같은 강의를 다루므로 각 장 끝에서 해당 차시 자료로 이어집니다.</div>
+<div class="stop" style="margin-top:12px"><b>범위에 대한 주의.</b> 본문은 슬라이드에 나온 내용을 기준으로 썼고, 수식은 슬라이드 이미지와 대조했습니다. 슬라이드에 식이 없는 것(4장 다음 토큰 손실, 2장 RMSNorm, 9장 마스크 디퓨전 손실)은 원 논문의 표준 표기입니다. 모델 이름·가격·순위처럼 빨리 바뀌는 정보는 2025년 가을 강의 시점 기준입니다.</div>
+</section>
+
+<section class="section"><h2>출처</h2>
+<ul class="sources">
+<li>Afshine Amidi &amp; Shervine Amidi, <a href="https://cme295.stanford.edu/">Stanford CME 295: Transformers &amp; Large Language Models (Fall 2025)</a> 강의 슬라이드 Lecture 1~9 — 확인일 2026-11-14</li>
+<li>같은 저자, <a href="https://github.com/afshinea/stanford-cme-295-transformers-large-language-models">VIP Cheatsheet</a> (한국어 번역 포함) — 확인일 2026-11-14</li>
+<li>각 장의 원 논문 출처는 장 하단에 따로 적었습니다. 논문 제목·저자·연도는 슬라이드의 인용을 따랐고, arXiv 링크는 번호로 연결한 것이라 열어서 확인하지는 못했습니다(status: draft).</li>
+</ul>
+<div class="meta">id: transformer-llm-master · area: LLM · level: 입문→중급 · prerequisites: 머신러닝 기초, 선형대수 기초 · author: Claude · reviewer: 미지정 · status: draft · updated: 2026-11-14</div>
+</section>
+<div class="footer">AI Study · 트랜스포머와 거대언어모델 · 전문가 마스터</div>
+</main><script src="master.js"></script><script src="../../../assets/inline-terms.js" defer></script></body></html>
